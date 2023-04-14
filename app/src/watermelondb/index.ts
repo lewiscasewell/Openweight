@@ -1,7 +1,7 @@
 import {Database} from '@nozbe/watermelondb';
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
-import schema from './model/schema';
-import migrations from './model/migrations';
+import schema from './schema';
+import migrations from './migrations';
 import Profile from './model/Profile';
 import Weight from './model/Weight';
 
