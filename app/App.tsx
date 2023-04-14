@@ -5,114 +5,87 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Session} from '@supabase/supabase-js';
+import React, {useEffect, useState} from 'react';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {StatusBar} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {LoginScreen} from './src/screens/auth/login';
+import {HomeScreen} from './src/screens/home';
+import {supabase} from './src/supabase';
+import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
+import {database} from './src/watermelondb';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {ProfileScreen} from './src/screens/profile';
+import {RegisterScreen} from './src/screens/auth/register';
+import {CaloriesScreen} from './src/screens/calories';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#000000',
+    primary: '#fff',
+    text: '#faf5ff',
+    border: '#000000',
+    notification: 'red',
+    card: '#000000',
+  },
+};
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const NoAuthStack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator();
+const TabStack = createBottomTabNavigator();
+const Tabs = () => (
+  <TabStack.Navigator>
+    <TabStack.Screen name="Weights" component={HomeScreen} />
+    <TabStack.Screen name="Analytics" component={ProfileScreen} />
+    <TabStack.Screen name="Calories" component={CaloriesScreen} />
+    <TabStack.Screen name="Profile" component={ProfileScreen} />
+  </TabStack.Navigator>
+);
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [userSession, setSession] = useState<Session | null>(null);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  useEffect(() => {
+    supabase.auth.getSession().then(({data: {session}}) => {
+      setSession(session);
+    });
 
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  console.log('userSession', userSession);
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer theme={theme}>
+      <DatabaseProvider database={database}>
+        <SafeAreaProvider>
+          <StatusBar barStyle="dark-content" />
+          {userSession && (
+            <AuthStack.Navigator
+              screenOptions={() => {
+                return {
+                  headerShown: false,
+                };
+              }}>
+              <AuthStack.Screen name="index" component={Tabs} />
+            </AuthStack.Navigator>
+          )}
+          {!userSession && (
+            <NoAuthStack.Navigator>
+              <NoAuthStack.Screen name="Login" component={LoginScreen} />
+              <NoAuthStack.Screen name="Register" component={RegisterScreen} />
+            </NoAuthStack.Navigator>
+          )}
+        </SafeAreaProvider>
+      </DatabaseProvider>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
