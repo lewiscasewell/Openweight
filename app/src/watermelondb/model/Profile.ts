@@ -41,20 +41,21 @@ class Profile extends Model {
       weightRecord.date = dateOfWeight;
       weightRecord.unit = unit;
       weightRecord.supabase_id = this.supabase_id;
+      // @ts-ignore
       weightRecord.profile.set(this);
     });
   }
 
   get hasCompletedProfile() {
-    return (
+    return Boolean(
       this.gender &&
-      this.dob &&
-      this.height &&
-      this.height_unit &&
-      this.target_weight &&
-      this.target_weight_unit &&
-      this.activity_level &&
-      this.calorie_surplus
+        this.dob &&
+        this.height &&
+        this.height_unit &&
+        this.target_weight &&
+        this.target_weight_unit &&
+        this.activity_level &&
+        this.calorie_surplus,
     );
   }
 }

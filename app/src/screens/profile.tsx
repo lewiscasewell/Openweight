@@ -1,24 +1,18 @@
+import {useAtom} from 'jotai';
 import React from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button, StyleSheet} from 'react-native';
+import {sessionAtom} from '../atoms/session.atom';
 import ProfileCompoonent from '../components/ProfileCompoonent';
 import {supabase} from '../supabase';
 
 export const ProfileScreen = () => {
-  const [session, setSession] = React.useState<string | undefined>(undefined);
-
-  React.useEffect(() => {
-    supabase.auth.getSession().then(session => {
-      setSession(session.data.session?.user.id);
-    });
-  }, []);
-
-  console.log(session && session);
+  const [session] = useAtom(sessionAtom);
 
   return (
     <View>
       <Text>Logged in</Text>
 
-      {session !== undefined && <ProfileCompoonent id={session} />}
+      {session && <ProfileCompoonent id={session.user.id} />}
 
       <Button
         title="Logout"
@@ -29,3 +23,5 @@ export const ProfileScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({});
