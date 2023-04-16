@@ -14,15 +14,16 @@ class Profile extends Model {
   @field('email') email!: string;
   @date('created_at') createdAt!: Date;
   @date('updated_at') updatedAt!: Date;
-  @field('supabase_id') supabase_id!: string;
+  @field('default_unit') defaultUnit!: string;
+  @field('supabase_id') supabaseId!: string;
   @field('gender') gender?: string;
   @date('dob') dob?: Date;
   @field('height') height?: number;
-  @field('height_unit') height_unit?: string;
-  @field('target_weight') target_weight?: number;
-  @field('target_weight_unit') target_weight_unit?: string;
-  @field('activity_level') activity_level?: string;
-  @field('calorie_surplus') calorie_surplus?: number;
+  @field('height_unit') heightUnit?: string;
+  @field('target_weight') targetWeight?: number;
+  @field('target_weight_unit') targetWeightUnit?: string;
+  @field('activity_level') activityLevel?: string;
+  @field('calorie_surplus') calorieSurplus?: number;
 
   @children('weights') weights!: Query<Weight>;
 
@@ -40,7 +41,7 @@ class Profile extends Model {
       weightRecord.weight = weight;
       weightRecord.date = dateOfWeight;
       weightRecord.unit = unit;
-      weightRecord.supabase_id = this.supabase_id;
+      weightRecord.supabaseId = this.supabaseId;
       // @ts-ignore
       weightRecord.profile.set(this);
     });
@@ -51,11 +52,11 @@ class Profile extends Model {
       this.gender &&
         this.dob &&
         this.height &&
-        this.height_unit &&
-        this.target_weight &&
-        this.target_weight_unit &&
-        this.activity_level &&
-        this.calorie_surplus,
+        this.heightUnit &&
+        this.targetWeight &&
+        this.targetWeightUnit &&
+        this.activityLevel &&
+        this.calorieSurplus,
     );
   }
 }

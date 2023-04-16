@@ -14,7 +14,7 @@ export const RegisterScreen = () => {
   const database = useDatabase();
 
   async function signInWithEmail() {
-    const {error, data} = await supabase.auth.signInWithPassword({
+    const {error} = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
@@ -22,11 +22,11 @@ export const RegisterScreen = () => {
     if (error) Alert.alert(error.message);
   }
   async function signUpWithEmail() {
-    const {error, data} = await supabase.auth.signUp({
+    const {error: supabaseError, data} = await supabase.auth.signUp({
       email: email,
       password: password,
     });
-    console.log({error, data});
+    console.log({supabaseError, data});
 
     if (data.user && data.user?.id) {
       await database.write(async () => {
@@ -35,7 +35,8 @@ export const RegisterScreen = () => {
           .create(profile => {
             profile.email = email;
             profile.name = name;
-            profile.supabase_id = data.user!.id;
+            profile.supabaseId = data.user!.id;
+            profile.defaultUnit = 'kg';
             // });
           })
           .then(value => {
@@ -51,7 +52,7 @@ export const RegisterScreen = () => {
       signInWithEmail();
     }
 
-    if (error) Alert.alert(error.message);
+    if (supabaseError) Alert.alert(supabaseError.message);
   }
 
   return (

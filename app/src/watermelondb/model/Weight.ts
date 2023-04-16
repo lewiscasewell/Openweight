@@ -1,5 +1,5 @@
 import {associations, Model} from '@nozbe/watermelondb';
-import {date, field, relation} from '@nozbe/watermelondb/decorators';
+import {date, field, immutableRelation} from '@nozbe/watermelondb/decorators';
 import Profile from './Profile';
 
 export default class Weight extends Model {
@@ -11,11 +11,11 @@ export default class Weight extends Model {
   ]);
 
   @field('weight') weight!: number;
-  @date('created_at') created_at!: Date;
-  @date('updated_at') updated_at!: Date;
-  @field('supabase_id') supabase_id!: string;
+  @date('created_at') createdAt!: Date;
+  @date('updated_at') updatedAt!: Date;
+  @field('supabase_id') supabaseId!: string;
   @date('date') date!: Date;
   @field('unit') unit!: string;
 
-  @relation('profiles', 'profile_id') profile!: Profile;
+  @immutableRelation('profiles', 'profile_id') profile!: Profile;
 }

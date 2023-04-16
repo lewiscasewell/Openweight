@@ -1,9 +1,16 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Button} from 'react-native';
+import {sync} from '../watermelondb/sync';
 
 export const CaloriesScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Calories</Text>
+      <Button
+        title="SYNC"
+        onPress={() => {
+          sync();
+        }}
+      />
     </View>
   );
 };

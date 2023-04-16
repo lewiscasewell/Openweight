@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    height: '100%',
   },
   weightItemContainer: {
     flexDirection: 'row',
