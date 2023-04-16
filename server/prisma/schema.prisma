@@ -16,6 +16,7 @@ model Profile {
     supabaseId       String
     gender           String?
     dob              DateTime?
+    defaultUnit      String
     height           Float?
     heightUnit       String?
     targetWeight     Float?

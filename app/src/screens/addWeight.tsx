@@ -71,7 +71,7 @@ export const AddWeightScreen = () => {
         weight.weight = parseFloat(weightInput);
         weight.unit = 'kg';
         weight.date = new Date();
-        weight.supabase_id = session?.user.id!;
+        weight.supabaseId = session?.user.id!;
       });
 
       navigation.goBack();

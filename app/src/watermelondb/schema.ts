@@ -1,7 +1,7 @@
 import {appSchema, tableSchema} from '@nozbe/watermelondb';
 
 export default appSchema({
-  version: 1,
+  version: 2,
   tables: [
     tableSchema({
       name: 'profiles',
@@ -11,6 +11,7 @@ export default appSchema({
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
         {name: 'supabase_id', type: 'string'},
+        {name: 'default_unit', type: 'string'},
         {name: 'gender', type: 'string', isOptional: true},
         {name: 'dob', type: 'number', isOptional: true},
         {name: 'height', type: 'number', isOptional: true},

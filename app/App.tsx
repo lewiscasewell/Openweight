@@ -41,6 +41,10 @@ const theme = {
   },
 };
 
+// database.write(async () => {
+//   await database.unsafeResetDatabase();
+// });
+
 const NoAuthStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const TabStack = createBottomTabNavigator();

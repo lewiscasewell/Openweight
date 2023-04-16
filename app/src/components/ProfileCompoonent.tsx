@@ -37,7 +37,10 @@ const ProfileItem: React.FC<ProfileItemProps> = ({title, value}) => {
           height: width / 2.5,
           borderRadius: 10,
         }}>
-        <Text style={{color: 'white', fontSize: 30, flex: 1}}>{title}</Text>
+        <Text
+          style={{color: 'white', fontSize: 26, fontWeight: '700', flex: 1}}>
+          {title}
+        </Text>
         <Text style={{color: 'white', fontSize: 50}}>{value}</Text>
       </TouchableOpacity>
     </View>
@@ -73,25 +76,24 @@ const ProfileComponent = ({profiles}: Props) => {
           {
             title: 'Height',
             value:
-              currentProfile?.height && currentProfile?.height_unit
-                ? `${currentProfile.height} ${currentProfile.height_unit}`
+              currentProfile?.height && currentProfile?.heightUnit
+                ? `${currentProfile.height} ${currentProfile.heightUnit}`
                 : '-',
           },
           {
             title: 'Weight',
             value:
-              currentProfile?.target_weight &&
-              currentProfile?.target_weight_unit
-                ? `${currentProfile.target_weight} ${currentProfile.target_weight_unit}}`
+              currentProfile?.targetWeight && currentProfile?.targetWeightUnit
+                ? `${currentProfile.targetWeight} ${currentProfile.targetWeightUnit}}`
                 : '-',
           },
           {
             title: 'Activity',
-            value: currentProfile?.activity_level ?? '-',
+            value: currentProfile?.activityLevel ?? '-',
           },
           {
             title: 'Calorie goal',
-            value: currentProfile?.calorie_surplus ?? '-',
+            value: currentProfile?.calorieSurplus ?? '-',
           },
         ]}
         numColumns={2}
@@ -103,12 +105,12 @@ const ProfileComponent = ({profiles}: Props) => {
   );
 };
 
-const withModels = withObservables(['id'], ({database, id}: Props) => {
+const withModels = withObservables(['profiles'], ({database, id}: Props) => {
   return {
     profiles: database
       .get<Profile>('profiles')
       .query(Q.where('supabase_id', id))
-      .observe(),
+      .observeWithColumns(['name']),
   };
 });
 
