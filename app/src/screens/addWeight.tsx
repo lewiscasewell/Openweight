@@ -1,6 +1,6 @@
 import {Database, Q} from '@nozbe/watermelondb';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useAtom} from 'jotai';
 import {DateTime} from 'luxon';
 import React from 'react';
@@ -20,7 +20,8 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
-import {colors} from '../styles/colors';
+import {colors} from '../styles/theme';
+import {AuthStackParamList, TabStackNavigationProps} from '../../App';
 
 type Props = {
   database: Database;
@@ -28,8 +29,10 @@ type Props = {
   weights: Weight[];
 };
 
+type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
+
 const AddWeightScreen = ({weights}: Props) => {
-  const route = useRoute();
+  const route = useRoute<AddWeightScreenRouteProp>();
   const [weightInput, setWeightInput] = React.useState(
     weights
       .find(weight => weight.dateString === route.params.dateToPass)
@@ -38,7 +41,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
-  const navigation = useNavigation();
+  const navigation = useNavigation<TabStackNavigationProps>();
   const [dateString, setDateString] = React.useState(route.params.dateToPass);
 
   const [date, setDate] = React.useState(

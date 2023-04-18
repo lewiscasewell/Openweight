@@ -1,6 +1,5 @@
 import React from 'react';
-import {Text, StyleSheet, Button, ScrollView} from 'react-native';
-import {LineGraph} from 'react-native-graph';
+import {StyleSheet, Button, ScrollView} from 'react-native';
 import {sync} from '../watermelondb/sync';
 
 export const CaloriesScreen = () => {

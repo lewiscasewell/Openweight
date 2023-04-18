@@ -1,3 +1,5 @@
+import {DefaultTheme} from '@react-navigation/native';
+
 export const colors = {
   black: '#000000',
   white: '#FFFFFF',
@@ -16,5 +18,18 @@ export const colors = {
     700: '#374151',
     800: '#1F2937',
     900: '#111827',
+  },
+};
+
+export const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: colors.black,
+    primary: colors.white,
+    text: colors.white,
+    border: colors.black,
+    notification: 'red',
+    card: colors.black,
   },
 };

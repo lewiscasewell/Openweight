@@ -6,11 +6,14 @@
  */
 
 import {
-  DefaultTheme,
+  CompositeNavigationProp,
   NavigationContainer,
   useNavigation,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
 import {LogBox, StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -19,7 +22,10 @@ import {supabase} from './src/supabase';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {database} from './src/watermelondb';
 
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {
+  BottomTabNavigationProp,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
 import {HomeScreen} from './src/screens/home';
 import {ProfileScreen} from './src/screens/profile';
 import {RegisterScreen} from './src/screens/auth/register';
@@ -31,32 +37,44 @@ import {sessionAtom} from './src/atoms/session.atom';
 import {useSyncDatabase} from './src/watermelondb/sync/use-sync';
 
 import {DateTime} from 'luxon';
-import {colors} from './src/styles/colors';
+import {colors, theme} from './src/styles/theme';
 
 LogBox.ignoreLogs(['useSharedValueEffect()']);
-
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: '#000000',
-    primary: '#fff',
-    text: '#faf5ff',
-    border: '#000000',
-    notification: 'red',
-    card: '#000000',
-  },
-};
 
 // database.write(async () => {
 //   await database.unsafeResetDatabase();
 // });
 
-const NoAuthStack = createNativeStackNavigator();
-const AuthStack = createNativeStackNavigator();
-const TabStack = createBottomTabNavigator();
+export type TabStackParamList = {
+  Weights: undefined;
+  Calories: undefined;
+  Profile: undefined;
+};
+
+export type AuthStackParamList = {
+  index: undefined;
+  AddWeight: {dateToPass: string; id: string | undefined};
+};
+
+export type NoAuthStackParamList = {
+  Login: undefined;
+  Register: undefined;
+};
+
+export type NoAuthStackNavigationProps =
+  NativeStackNavigationProp<NoAuthStackParamList>;
+
+export type TabStackNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<TabStackParamList>,
+  NativeStackNavigationProp<AuthStackParamList>
+>;
+
+const NoAuthStack = createNativeStackNavigator<NoAuthStackParamList>();
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+const TabStack = createBottomTabNavigator<TabStackParamList>();
+
 const Tabs = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<TabStackNavigationProps>();
   const {isSyncing, error} = useSyncDatabase();
   const [session] = useAtom(sessionAtom);
 
@@ -69,7 +87,6 @@ const Tabs = () => {
     <>
       <TabStack.Navigator screenOptions={{headerShown: false}}>
         <TabStack.Screen name="Weights" component={HomeScreen} />
-
         <TabStack.Screen name="Calories" component={CaloriesScreen} />
         <TabStack.Screen name="Profile" component={ProfileScreen} />
       </TabStack.Navigator>

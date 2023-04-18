@@ -21,8 +21,9 @@ import * as R from 'remeda';
 import {map, pipe} from 'rxjs';
 import {DateTime} from 'luxon';
 
-import {colors} from '../styles/colors';
+import {colors} from '../styles/theme';
 import {GraphPoint, LineGraph} from 'react-native-graph';
+import {TabStackNavigationProps} from '../../App';
 
 const {width} = Dimensions.get('screen');
 
@@ -150,7 +151,7 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
 
 const WeightList = ({weights}: Props) => {
   const [session] = useAtom(sessionAtom);
-  const navigation = useNavigation();
+  const navigation = useNavigation<TabStackNavigationProps>();
 
   const WEIGHT_DATA = R.pipe(
     weights,
@@ -312,20 +313,24 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   dateRangeButton: {
-    backgroundColor: '#1d1d1d',
+    backgroundColor: colors.transparent,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
   },
   dateRangeButtonText: {
-    color: 'white',
+    color: 'darkgrey',
     fontWeight: 'bold',
   },
   dateRangeButtonActive: {
-    backgroundColor: colors.transparent,
+    backgroundColor: '#1d1d1d',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
+  },
+  dateRangeButtonTextActive: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   calendarDate: {
     width: 60,
