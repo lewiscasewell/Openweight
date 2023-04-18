@@ -1,7 +1,7 @@
 import {appSchema, tableSchema} from '@nozbe/watermelondb';
 
 export default appSchema({
-  version: 2,
+  version: 3,
   tables: [
     tableSchema({
       name: 'profiles',
@@ -31,6 +31,7 @@ export default appSchema({
         {name: 'profile_id', type: 'string', isIndexed: true},
         {name: 'supabase_id', type: 'string'},
         {name: 'date', type: 'number'},
+        {name: 'date_string', type: 'string'},
         {name: 'unit', type: 'string'},
       ],
     }),

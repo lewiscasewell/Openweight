@@ -4,7 +4,7 @@ import {
   profileSchema,
   profileWatermelonSchema,
 } from "../profile/profile.schema";
-import { weightSchema } from "../weight/weight.schema";
+import { weightSchema, weightWatermelonSchema } from "../weight/weight.schema";
 
 export const pullChangesSchema = z.object({
   timestamp: z.number(),
@@ -32,8 +32,8 @@ export const pullChangesSchema = z.object({
 
 export const pushChangesSchema = z.object({
   weights: z.object({
-    created: z.array(weightSchema),
-    updated: z.array(weightSchema),
+    created: z.array(weightWatermelonSchema),
+    updated: z.array(weightWatermelonSchema),
     deleted: z.array(
       z.object({
         id: z.string(),

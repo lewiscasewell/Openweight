@@ -30,8 +30,10 @@ model Weight {
     id         String   @id
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
+    date       DateTime
     weight     Float
-    weightUnit String
+    unit       String
+    dateString String   @default("01-01-1970")
     profileId  String
     supabaseId String
     profile    Profile  @relation(fields: [profileId], references: [id])

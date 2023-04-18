@@ -14,5 +14,14 @@ export default schemaMigrations({
         }),
       ],
     },
+    {
+      toVersion: 3,
+      steps: [
+        addColumns({
+          table: 'weights',
+          columns: [{name: 'date_string', type: 'string'}],
+        }),
+      ],
+    },
   ],
 });

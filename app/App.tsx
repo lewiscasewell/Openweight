@@ -15,18 +15,22 @@ import React, {useEffect} from 'react';
 import {StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {LoginScreen} from './src/screens/auth/login';
-import {HomeScreen} from './src/screens/home';
 import {supabase} from './src/supabase';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {database} from './src/watermelondb';
+
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {HomeScreen} from './src/screens/home';
 import {ProfileScreen} from './src/screens/profile';
 import {RegisterScreen} from './src/screens/auth/register';
 import {CaloriesScreen} from './src/screens/calories';
-import {AddWeightScreen} from './src/screens/addWeight';
+import AddWeightScreen from './src/screens/addWeight';
 
 import {useAtom} from 'jotai';
 import {sessionAtom} from './src/atoms/session.atom';
+import {useSyncDatabase} from './src/watermelondb/sync/use-sync';
+import {AnalyticsScreen} from './src/screens/analytics';
+import {DateTime} from 'luxon';
 
 const theme = {
   ...DefaultTheme,
@@ -50,18 +54,29 @@ const AuthStack = createNativeStackNavigator();
 const TabStack = createBottomTabNavigator();
 const Tabs = () => {
   const navigation = useNavigation();
+  const {isSyncing, error} = useSyncDatabase();
+  const [session] = useAtom(sessionAtom);
+
+  if (isSyncing || error) {
+    console.log('isSyncing', isSyncing);
+    console.log('error', error);
+  }
+
   return (
     <>
       <TabStack.Navigator>
         <TabStack.Screen name="Weights" component={HomeScreen} />
-        <TabStack.Screen name="Analytics" component={ProfileScreen} />
+        <TabStack.Screen name="Analytics" component={AnalyticsScreen} />
         <TabStack.Screen name="Calories" component={CaloriesScreen} />
         <TabStack.Screen name="Profile" component={ProfileScreen} />
       </TabStack.Navigator>
       {
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('AddWeight');
+            navigation.navigate('AddWeight', {
+              dateToPass: DateTime.now().toFormat('dd-MM-yyyy'),
+              id: session?.user.id,
+            });
           }}
           style={styles.addButton}
         />
