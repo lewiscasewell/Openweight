@@ -20,6 +20,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
+import {colors} from '../styles/colors';
 
 type Props = {
   database: Database;
@@ -97,6 +98,20 @@ const AddWeightScreen = ({weights}: Props) => {
         keyboardVerticalOffset={80}>
         <View style={styles.contentContainer}>
           <View style={styles.weightInputContainer}>
+            <TouchableOpacity
+              onPressIn={() => {
+                setWeightInput(currentWeightInput =>
+                  (parseFloat(currentWeightInput!) - 0.1).toFixed(1),
+                );
+              }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: colors.grey[900],
+              }}>
+              <Text style={{color: 'white'}}>-</Text>
+            </TouchableOpacity>
             <TextInput
               style={styles.weightInput}
               keyboardType="numeric"
@@ -107,9 +122,38 @@ const AddWeightScreen = ({weights}: Props) => {
                 setWeightInput(text);
               }}
             />
+            <TouchableOpacity
+              onPressIn={() => {
+                setWeightInput(currentWeightInput =>
+                  (parseFloat(currentWeightInput!) + 0.1).toFixed(1),
+                );
+              }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: colors.grey[900],
+              }}>
+              <Text style={{color: 'white', fontSize: 20}}>+</Text>
+            </TouchableOpacity>
           </View>
           {date && (
-            <View style={{alignItems: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#1d1d1d',
+                  paddingVertical: 6,
+                  paddingHorizontal: 12,
+                  borderRadius: 10,
+                }}>
+                <Text style={{color: 'white', fontSize: 18}}>Delete</Text>
+              </TouchableOpacity>
+
               <RNDateTimePicker
                 themeVariant="dark"
                 value={date instanceof Date ? date : new Date()}
@@ -166,14 +210,15 @@ const styles = StyleSheet.create({
   },
   weightInputContainer: {
     backgroundColor: 'black',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   weightInput: {
-    backgroundColor: 'black',
+    // backgroundColor: 'red',
     height: 200,
-    width: 300,
-    fontSize: 110,
+    width: 250,
+    fontSize: 100,
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',

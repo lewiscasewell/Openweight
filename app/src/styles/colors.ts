@@ -4,6 +4,7 @@ export const colors = {
   transparent: 'transparent',
   success: '#ef4444',
   error: '#22c55e',
+  primary: '#38bdf8',
   grey: {
     50: '#F9FAFB',
     100: '#F3F4F6',

@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import {StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
+import {LogBox, StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {LoginScreen} from './src/screens/auth/login';
 import {supabase} from './src/supabase';
@@ -29,8 +29,11 @@ import AddWeightScreen from './src/screens/addWeight';
 import {useAtom} from 'jotai';
 import {sessionAtom} from './src/atoms/session.atom';
 import {useSyncDatabase} from './src/watermelondb/sync/use-sync';
-import {AnalyticsScreen} from './src/screens/analytics';
+
 import {DateTime} from 'luxon';
+import {colors} from './src/styles/colors';
+
+LogBox.ignoreLogs(['useSharedValueEffect()']);
 
 const theme = {
   ...DefaultTheme,
@@ -64,9 +67,9 @@ const Tabs = () => {
 
   return (
     <>
-      <TabStack.Navigator>
+      <TabStack.Navigator screenOptions={{headerShown: false}}>
         <TabStack.Screen name="Weights" component={HomeScreen} />
-        <TabStack.Screen name="Analytics" component={AnalyticsScreen} />
+
         <TabStack.Screen name="Calories" component={CaloriesScreen} />
         <TabStack.Screen name="Profile" component={ProfileScreen} />
       </TabStack.Navigator>
@@ -137,7 +140,7 @@ export default App;
 
 const styles = StyleSheet.create({
   addButton: {
-    backgroundColor: 'skyblue',
+    backgroundColor: colors.primary,
     height: 60,
     width: 60,
     position: 'absolute',
