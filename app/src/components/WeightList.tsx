@@ -5,12 +5,22 @@ import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {DateTime} from 'luxon';
 
-import {FlatList, SectionList, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  SectionList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import * as R from 'remeda';
 
 import Weight from '../watermelondb/model/Weight';
 import {groupBy, map, mergeAll, of, pipe, toArray} from 'rxjs';
 import {colors} from '../styles/colors';
+import {useNavigation} from '@react-navigation/native';
+import {useAtom} from 'jotai';
+import {sessionAtom} from '../atoms/session.atom';
 
 type Props = {
   database: Database;
@@ -19,29 +29,13 @@ type Props = {
 };
 
 const WeightList = ({weights}: Props) => {
+  const [session] = useAtom(sessionAtom);
   console.log(
     'weights',
     weights.map(weight => weight.weight),
   );
 
-  const DATA = [
-    {
-      title: 'Apr 2023',
-      data: [
-        {weight: '90', unit: 'kg', dateString: '20-02-2023'},
-        {weight: '90', unit: 'kg', dateString: '20-02-2023'},
-        {weight: '90', unit: 'kg', dateString: '20-02-2023'},
-      ],
-    },
-    {
-      title: 'Mar 2023',
-      data: [
-        {weight: '90', unit: 'kg', dateString: '20-02-2023'},
-        {weight: '90', unit: 'kg', dateString: '20-02-2023'},
-        {weight: '90', unit: 'kg', dateString: '20-02-2023'},
-      ],
-    },
-  ];
+  const navigation = useNavigation();
 
   // convert weights in format above
   const WEIGHT_DATA = R.pipe(
@@ -123,7 +117,14 @@ const WeightList = ({weights}: Props) => {
             1,
           ).toFormat('LLL');
           return (
-            <View style={styles.weightItemContainer}>
+            <TouchableOpacity
+              style={styles.weightItemContainer}
+              onPress={() => {
+                navigation.navigate('AddWeight', {
+                  dateToPass: weight.dateString,
+                  id: session?.user.id,
+                });
+              }}>
               <View style={styles.calendarDate}>
                 <Text style={styles.calendarDateDay}>{dayString}</Text>
                 <Text style={styles.calendarDateMonth}>{monthString}</Text>
@@ -147,7 +148,7 @@ const WeightList = ({weights}: Props) => {
                   {weight.unit}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         }}
         renderSectionHeader={({section}) => {
@@ -183,7 +184,7 @@ const WeightList = ({weights}: Props) => {
               1,
             ).toFormat('LLL');
             return (
-              <View style={styles.weightItemContainer}>
+              <TouchableOpacity style={styles.weightItemContainer}>
                 <View style={styles.calendarDate}>
                   <Text style={styles.calendarDateDay}>{dayString}</Text>
                   <Text style={styles.calendarDateMonth}>{monthString}</Text>
@@ -208,7 +209,7 @@ const WeightList = ({weights}: Props) => {
                     {weight.unit}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           }}
         />
