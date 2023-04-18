@@ -411,6 +411,8 @@ PODS:
     - React-RCTImage
   - RNStaticSafeAreaInsets (2.2.0):
     - React-Core
+  - RNVectorIcons (9.2.0):
+    - React-Core
   - simdjson (1.0.0)
   - WatermelonDB (0.25.5):
     - React
@@ -465,6 +467,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNStaticSafeAreaInsets (from `../node_modules/react-native-static-safe-area-insets`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - "simdjson (from `../node_modules/@nozbe/simdjson`)"
   - "WatermelonDB (from `../node_modules/@nozbe/watermelondb`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -565,6 +568,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNStaticSafeAreaInsets:
     :path: "../node_modules/react-native-static-safe-area-insets"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   simdjson:
     :path: "../node_modules/@nozbe/simdjson"
   WatermelonDB:
@@ -621,6 +626,7 @@ SPEC CHECKSUMS:
   RNReanimated: f0dd6b881808e635ef0673f89642937d6c141314
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNStaticSafeAreaInsets: 055ddbf5e476321720457cdaeec0ff2ba40ec1b8
+  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   simdjson: c96317b3a50dff3468a42f586ab7ed22c6ab2fd9
   WatermelonDB: 6ae836b52d11281d87187ff2283480e44b111771
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a

@@ -24,6 +24,7 @@ import {DateTime} from 'luxon';
 import {colors} from '../styles/theme';
 import {GraphPoint, LineGraph} from 'react-native-graph';
 import {TabStackNavigationProps} from '../../App';
+import {MaterialIcon} from '../icons/material-icons';
 
 const {width} = Dimensions.get('screen');
 
@@ -263,7 +264,22 @@ const WeightList = ({weights}: Props) => {
 
           return (
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionHeaderTitle}>{section.title}</Text>
+              <Text style={styles.sectionHeaderTitle}>
+                {diffBetweenWeights > 0 ? (
+                  <MaterialIcon
+                    name="arrow-up"
+                    size={24}
+                    color={colors.grey[300]}
+                  />
+                ) : (
+                  <MaterialIcon
+                    name="arrow-down"
+                    size={24}
+                    color={colors.grey[300]}
+                  />
+                )}{' '}
+                {section.title}
+              </Text>
               <Text style={styles.sectionHeaderTitle}>
                 {diffBetweenWeights} kg
               </Text>
