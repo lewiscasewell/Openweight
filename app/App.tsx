@@ -38,6 +38,7 @@ import {useSyncDatabase} from './src/watermelondb/sync/use-sync';
 
 import {DateTime} from 'luxon';
 import {colors, theme} from './src/styles/theme';
+import {MaterialIcon} from './src/icons/material-icons';
 
 LogBox.ignoreLogs(['useSharedValueEffect()']);
 
@@ -86,9 +87,33 @@ const Tabs = () => {
   return (
     <>
       <TabStack.Navigator screenOptions={{headerShown: false}}>
-        <TabStack.Screen name="Weights" component={HomeScreen} />
-        <TabStack.Screen name="Calories" component={CaloriesScreen} />
-        <TabStack.Screen name="Profile" component={ProfileScreen} />
+        <TabStack.Screen
+          name="Weights"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <MaterialIcon name="scale-bathroom" color={color} size={size} />
+            ),
+          }}
+        />
+        <TabStack.Screen
+          name="Calories"
+          component={CaloriesScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <MaterialIcon name="fire-circle" color={color} size={size} />
+            ),
+          }}
+        />
+        <TabStack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <MaterialIcon name="account-circle" color={color} size={size} />
+            ),
+          }}
+        />
       </TabStack.Navigator>
       {
         <TouchableOpacity
@@ -98,8 +123,9 @@ const Tabs = () => {
               id: session?.user.id,
             });
           }}
-          style={styles.addButton}
-        />
+          style={styles.addButton}>
+          <MaterialIcon name="plus" color={colors.grey[900]} size={40} />
+        </TouchableOpacity>
       }
     </>
   );
@@ -164,5 +190,7 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 100,
     borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
