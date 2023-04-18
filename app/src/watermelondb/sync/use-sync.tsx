@@ -46,7 +46,8 @@ export function useSyncDatabase() {
           map(() => setIsSyncing(false)),
           catchError(async (error, caught) => {
             console.log('Syncronization error', error, caught);
-            setIsSyncing(false), setErrorMessage('Could not sync to database!');
+            setIsSyncing(false);
+            setErrorMessage('Could not sync to database!');
           }),
         )
         .subscribe();

@@ -19,7 +19,9 @@ export const RegisterScreen = () => {
       password: password,
     });
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+    }
   }
   async function signUpWithEmail() {
     const {error: supabaseError, data} = await supabase.auth.signUp({
@@ -52,7 +54,9 @@ export const RegisterScreen = () => {
       signInWithEmail();
     }
 
-    if (supabaseError) Alert.alert(supabaseError.message);
+    if (supabaseError) {
+      Alert.alert(supabaseError.message);
+    }
   }
 
   return (
@@ -60,8 +64,8 @@ export const RegisterScreen = () => {
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={100}
-        style={{flex: 1}}>
-        <View style={{padding: 10, flex: 1}}>
+        style={styles.flex}>
+        <View style={[styles.flex, styles.paddingTen]}>
           <PrimaryTextInput
             onChangeText={text => setName(text)}
             value={name}
@@ -84,10 +88,7 @@ export const RegisterScreen = () => {
             secureTextEntry={true}
           />
         </View>
-        <View
-          style={{
-            padding: 10,
-          }}>
+        <View style={styles.paddingTen}>
           <SecondaryButton
             title="Register"
             onPress={() => {
@@ -101,6 +102,12 @@ export const RegisterScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  paddingTen: {
+    padding: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: '#000',

@@ -1,6 +1,6 @@
 import {Database, Q} from '@nozbe/watermelondb';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useAtom} from 'jotai';
 import {DateTime} from 'luxon';
 import React from 'react';
@@ -20,6 +20,8 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
+import {colors} from '../styles/theme';
+import {AuthStackParamList, TabStackNavigationProps} from '../../App';
 
 type Props = {
   database: Database;
@@ -27,8 +29,10 @@ type Props = {
   weights: Weight[];
 };
 
+type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
+
 const AddWeightScreen = ({weights}: Props) => {
-  const route = useRoute();
+  const route = useRoute<AddWeightScreenRouteProp>();
   const [weightInput, setWeightInput] = React.useState(
     weights
       .find(weight => weight.dateString === route.params.dateToPass)
@@ -37,7 +41,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
-  const navigation = useNavigation();
+  const navigation = useNavigation<TabStackNavigationProps>();
   const [dateString, setDateString] = React.useState(route.params.dateToPass);
 
   const [date, setDate] = React.useState(
@@ -97,6 +101,20 @@ const AddWeightScreen = ({weights}: Props) => {
         keyboardVerticalOffset={80}>
         <View style={styles.contentContainer}>
           <View style={styles.weightInputContainer}>
+            <TouchableOpacity
+              onPressIn={() => {
+                setWeightInput(currentWeightInput =>
+                  (parseFloat(currentWeightInput!) - 0.1).toFixed(1),
+                );
+              }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: colors.grey[900],
+              }}>
+              <Text style={{color: 'white'}}>-</Text>
+            </TouchableOpacity>
             <TextInput
               style={styles.weightInput}
               keyboardType="numeric"
@@ -107,9 +125,38 @@ const AddWeightScreen = ({weights}: Props) => {
                 setWeightInput(text);
               }}
             />
+            <TouchableOpacity
+              onPressIn={() => {
+                setWeightInput(currentWeightInput =>
+                  (parseFloat(currentWeightInput!) + 0.1).toFixed(1),
+                );
+              }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: colors.grey[900],
+              }}>
+              <Text style={{color: 'white', fontSize: 20}}>+</Text>
+            </TouchableOpacity>
           </View>
           {date && (
-            <View style={{alignItems: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#1d1d1d',
+                  paddingVertical: 6,
+                  paddingHorizontal: 12,
+                  borderRadius: 10,
+                }}>
+                <Text style={{color: 'white', fontSize: 18}}>Delete</Text>
+              </TouchableOpacity>
+
               <RNDateTimePicker
                 themeVariant="dark"
                 value={date instanceof Date ? date : new Date()}
@@ -166,14 +213,15 @@ const styles = StyleSheet.create({
   },
   weightInputContainer: {
     backgroundColor: 'black',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   weightInput: {
-    backgroundColor: 'black',
+    // backgroundColor: 'red',
     height: 200,
-    width: 300,
-    fontSize: 110,
+    width: 250,
+    fontSize: 100,
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',

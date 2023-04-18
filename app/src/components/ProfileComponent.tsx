@@ -27,6 +27,15 @@ type ProfileItemProps = {
 
 const {width} = Dimensions.get('screen');
 
+const Header: React.FC<{currentProfile: Profile}> = ({currentProfile}) => {
+  return (
+    <>
+      <Text style={styles.text}>Hey, {currentProfile?.name}</Text>
+      <Text style={styles.text}>{currentProfile?.email}</Text>
+    </>
+  );
+};
+
 const ProfileItem: React.FC<ProfileItemProps> = ({title, value}) => {
   return (
     <View style={{width: width / 2, padding: 10}}>
@@ -53,15 +62,7 @@ const ProfileComponent = ({profiles}: Props) => {
   return (
     <View>
       <FlatList
-        ListHeaderComponent={() => {
-          return (
-            <>
-              <Text style={styles.text}>Hey, {currentProfile?.name}</Text>
-
-              <Text style={styles.text}>{currentProfile?.email}</Text>
-            </>
-          );
-        }}
+        ListHeaderComponent={() => <Header currentProfile={currentProfile} />}
         data={[
           {title: 'Gender', value: currentProfile?.gender ?? '-'},
           {
@@ -98,7 +99,7 @@ const ProfileComponent = ({profiles}: Props) => {
         ]}
         numColumns={2}
         renderItem={({item}) => (
-          <ProfileItem title={item.title} value={item.value} />
+          <ProfileItem title={item.title} value={String(item.value)} />
         )}
       />
     </View>

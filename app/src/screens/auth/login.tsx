@@ -7,12 +7,13 @@ import {PrimaryTextInput} from '../../components/TextInput';
 import {supabase} from '../../supabase';
 
 import {useNavigation} from '@react-navigation/native';
+import {NoAuthStackNavigationProps} from '../../../App';
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [, setLoading] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NoAuthStackNavigationProps>();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -22,7 +23,9 @@ export const LoginScreen = () => {
       password: password,
     });
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+    }
 
     setLoading(false);
   }

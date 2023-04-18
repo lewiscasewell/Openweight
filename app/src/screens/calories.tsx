@@ -1,25 +1,28 @@
-import {View, Text, StyleSheet, Button} from 'react-native';
+import React from 'react';
+import {StyleSheet, Button, ScrollView} from 'react-native';
 import {sync} from '../watermelondb/sync';
 
 export const CaloriesScreen = () => {
+  const months = ['2023-01', '2023-02', '2022-12', '2022-11', '2023-10'];
+  const sortedMonths = months.sort((a, b) => {
+    return b.localeCompare(a);
+  });
+  console.log(sortedMonths);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Calories</Text>
-      <Button
-        title="SYNC"
-        onPress={() => {
-          sync();
-        }}
-      />
-    </View>
+    <ScrollView style={styles.container}>
+      <Button title="sync" onPress={() => sync()} />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  graph: {
+    flex: 1,
+    height: 200,
+    width: 300,
   },
   title: {
     fontSize: 20,
