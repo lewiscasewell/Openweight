@@ -32,7 +32,7 @@ export async function pullChangesHandler(
 ) {
   const lastPulledAt = getSafeLastPulledAt(request);
   console.log(lastPulledAt, request.query.last_pulled_at);
-
+  console.log("request.user.id", request.user.id);
   const createdProfiles = await prisma.profile.findMany({
     where: {
       AND: [
@@ -68,6 +68,43 @@ export async function pullChangesHandler(
     },
   });
 
+  const createdWeights = await prisma.weight.findMany({
+    where: {
+      AND: [
+        {
+          createdAt: {
+            gt: lastPulledAt,
+          },
+        },
+        {
+          supabaseId: request.user.id,
+        },
+      ],
+    },
+  });
+
+  const updatedWeights = await prisma.weight.findMany({
+    where: {
+      AND: [
+        {
+          updatedAt: {
+            gt: lastPulledAt,
+          },
+        },
+        {
+          createdAt: {
+            lte: lastPulledAt,
+          },
+        },
+        {
+          supabaseId: request.user.id,
+        },
+      ],
+    },
+  });
+
+  console.log(updatedWeights);
+
   const pullChangesResponse: PullChangeResponse = {
     changes: {
       profiles: {
@@ -76,8 +113,8 @@ export async function pullChangesHandler(
         deleted: [],
       },
       weights: {
-        created: [],
-        updated: [],
+        created: createdWeights,
+        updated: updatedWeights,
         deleted: [],
       },
     },
@@ -147,6 +184,44 @@ export async function pushChangesHandler(
         });
       }
     );
+    await Promise.all(updatedDataPromises);
+  }
+
+  if (changes.weights.created.length > 0) {
+    const createdWeightData = changes.weights.created.map((weight) => ({
+      id: weight.id,
+      createdAt: new Date(weight.created_at),
+      updatedAt: new Date(weight.updated_at),
+      supabaseId: weight.supabase_id,
+      weight: weight.weight,
+      unit: weight.unit,
+      date: new Date(weight.date),
+      profileId: weight.profile_id,
+      dateString: weight.date_string,
+    }));
+    await prisma.weight.createMany({
+      data: createdWeightData,
+    });
+  }
+
+  if (changes.weights.updated.length > 0) {
+    const updatedDataPromises = changes.weights.updated.map(async (weight) => {
+      return prisma.weight.update({
+        where: {
+          id: weight.id,
+        },
+        data: {
+          dateString: weight.date_string,
+          createdAt: new Date(weight.created_at),
+          updatedAt: new Date(weight.updated_at),
+          supabaseId: weight.supabase_id,
+          weight: weight.weight,
+          unit: weight.unit,
+          date: new Date(weight.date),
+          profileId: weight.profile_id,
+        },
+      });
+    });
     await Promise.all(updatedDataPromises);
   }
 

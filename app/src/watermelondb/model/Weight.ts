@@ -16,6 +16,7 @@ export default class Weight extends Model {
   @field('supabase_id') supabaseId!: string;
   @date('date') date!: Date;
   @field('unit') unit!: string;
+  @field('date_string') dateString!: string;
 
   @immutableRelation('profiles', 'profile_id') profile!: Profile;
 }

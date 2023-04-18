@@ -52,6 +52,8 @@ target 'app' do
   # NOTE: This is required as of v0.23
   pod 'simdjson', path: '../node_modules/@nozbe/simdjson'
 
+  pod 'react-native-config/Extension', :path => '../node_modules/react-native-config'
+
   target 'appTests' do
     inherit! :complete
     # Pods for testing
