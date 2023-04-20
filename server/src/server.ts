@@ -3,6 +3,7 @@ import syncRoutes from "./modules/sync/sync.routes";
 import { syncSchemas } from "./modules/sync/sync.schema";
 import { User } from "@supabase/supabase-js";
 import { client } from "./plugins/supabase";
+import prisma from "../utils/prisma";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -37,6 +38,9 @@ function buildServer() {
   server.get(
     "/health",
     async (request: FastifyRequest, reply: FastifyReply) => {
+      await prisma.$queryRaw`
+        SELECT 1
+      `;
       return { status: "ok" };
     }
   );
