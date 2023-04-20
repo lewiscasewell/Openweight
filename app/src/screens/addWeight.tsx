@@ -22,6 +22,7 @@ import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {colors} from '../styles/theme';
 import {AuthStackParamList, TabStackNavigationProps} from '../../App';
+import {MaterialIcon} from '../icons/material-icons';
 
 type Props = {
   database: Database;
@@ -33,10 +34,11 @@ type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
+  console.log('weights', weights);
   const [weightInput, setWeightInput] = React.useState(
     weights
       .find(weight => weight.dateString === route.params.dateToPass)
-      ?.weight.toString(),
+      ?.weight.toString() ?? weights[0].weight.toString(),
   );
 
   const [session] = useAtom(sessionAtom);
@@ -107,13 +109,16 @@ const AddWeightScreen = ({weights}: Props) => {
                   (parseFloat(currentWeightInput!) - 0.1).toFixed(1),
                 );
               }}
+              activeOpacity={0.7}
               style={{
                 width: 60,
                 height: 60,
                 borderRadius: 30,
                 backgroundColor: colors.grey[900],
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-              <Text style={{color: 'white'}}>-</Text>
+              <MaterialIcon name="minus" color="white" size={30} />
             </TouchableOpacity>
             <TextInput
               style={styles.weightInput}
@@ -131,13 +136,16 @@ const AddWeightScreen = ({weights}: Props) => {
                   (parseFloat(currentWeightInput!) + 0.1).toFixed(1),
                 );
               }}
+              activeOpacity={0.7}
               style={{
                 width: 60,
                 height: 60,
                 borderRadius: 30,
                 backgroundColor: colors.grey[900],
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-              <Text style={{color: 'white', fontSize: 20}}>+</Text>
+              <MaterialIcon name="plus" color="white" size={30} />
             </TouchableOpacity>
           </View>
           {date && (
