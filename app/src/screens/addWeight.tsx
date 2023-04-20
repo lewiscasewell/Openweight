@@ -34,7 +34,7 @@ type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
-  console.log('weights', weights);
+  //   console.log('weights', weights);
   const [weightInput, setWeightInput] = React.useState(
     weights
       .find(weight => weight.dateString === route.params.dateToPass)
@@ -66,7 +66,7 @@ const AddWeightScreen = ({weights}: Props) => {
         .fetch();
 
       if (weightOnDate.length > 0 && weightInput) {
-        console.log('weight on date', weightOnDate[0]);
+        // console.log('weight on date', weightOnDate[0]);
         await weightOnDate[0]
           .update(weightRecord => {
             weightRecord.weight = parseFloat(weightInput);

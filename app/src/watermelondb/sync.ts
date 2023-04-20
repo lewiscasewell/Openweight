@@ -11,9 +11,9 @@ export async function sync() {
 
       const {data} = await supabase.auth.getSession();
       const urlParams = `last_pulled_at=${lastPulledAt}`;
-
+      console.log('data.session?.access_token', data.session?.access_token);
       const response = await fetch(
-        `http://localhost:3000/api/sync?${urlParams}`,
+        `https://weight-tracker-3.hop.sh/api/sync?${urlParams}`,
         {
           headers: {
             Authorization: `Bearer ${data.session?.access_token}`,
@@ -23,7 +23,7 @@ export async function sync() {
 
       if (!response.ok) {
         console.log('hwew');
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTPs error! status: ${response.status}`);
       }
 
       const {changes, timestamp} = await response.json();
@@ -35,7 +35,7 @@ export async function sync() {
 
       const urlParams = `last_pulled_at=${lastPulledAt}`;
       const response = await fetch(
-        `http://localhost:3000/api/sync?${urlParams}`,
+        `https://weight-tracker-3.hop.sh/api/sync?${urlParams}`,
         {
           headers: {
             'Content-Type': 'application/json',
