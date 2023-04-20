@@ -40,6 +40,10 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# local env files
+.env
+.env*.local
+
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
