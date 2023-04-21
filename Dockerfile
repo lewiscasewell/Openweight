@@ -13,7 +13,6 @@ RUN yarn install
 COPY server .
 
 RUN yarn build
-RUN yarn prisma generate
 
 FROM softonic/node-prune:latest AS pruner
 WORKDIR /server
