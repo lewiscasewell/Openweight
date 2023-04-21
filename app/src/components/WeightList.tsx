@@ -181,6 +181,8 @@ const WeightList = ({weights}: Props) => {
     };
   });
 
+  console.log('weights', weights);
+
   const points: GraphPoint[] = weights
     .map((weight, index) => {
       return {
@@ -195,7 +197,7 @@ const WeightList = ({weights}: Props) => {
       <SectionList
         sections={WEIGHT_DATA2}
         style={styles.weightList}
-        ListHeaderComponent={<Header points={points} weights={weights} />}
+        // ListHeaderComponent={<Header points={points} weights={weights} />}
         ListFooterComponent={<View style={styles.footer} />}
         keyExtractor={(item, index) => item.dateString + index}
         renderItem={({item: weight, index}) => {
