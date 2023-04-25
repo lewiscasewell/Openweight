@@ -38,7 +38,7 @@ const AddWeightScreen = ({weights}: Props) => {
   const [weightInput, setWeightInput] = React.useState(
     weights
       .find(weight => weight.dateString === route.params.dateToPass)
-      ?.weight.toString() ?? weights[0].weight.toString(),
+      ?.weight.toString() ?? weights[0]?.weight.toString(),
   );
 
   const [session] = useAtom(sessionAtom);

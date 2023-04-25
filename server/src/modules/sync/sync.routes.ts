@@ -25,6 +25,7 @@ async function syncRoutes(server: FastifyInstance) {
   server.post(
     "/",
     {
+      preValidation: [server.authenticate],
       //   schema: {
       //     querystring: {
       //       type: "object",

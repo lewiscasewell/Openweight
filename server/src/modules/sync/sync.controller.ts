@@ -1,5 +1,4 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { client } from "../../plugins/supabase";
 import { PullChangeResponse, PushChangeRequestBody } from "./sync.schema";
 import { weightSchema } from "../weight/weight.schema";
 import { z } from "zod";
@@ -32,16 +31,23 @@ export async function pullChangesHandler(
   request: PullChangesSyncFastifyRequest,
   reply: FastifyReply
 ) {
+  // in the future perhaps pass in dbConnection to perform SQL queries
+  // Is it performant to pass in dbConnection to every handler?
+  // Or should we just use the supabaseClient?
+  const client = request.supabaseClient;
   const lastPulledAt = getSafeLastPulledAt(request);
+
   console.log(lastPulledAt, request.query.last_pulled_at);
   console.log("request.user.id", request.user.id);
 
+  // Profiles
   const { data: updatedSupabaseProfiles } = await client
     .from("Profile")
     .select()
     .gt("updatedAt", lastPulledAt.toUTCString())
     .lte("createdAt", lastPulledAt.toUTCString())
     .eq("supabaseId", request.user.id);
+
   const { data: createdSupabaseProfiles } = await client
     .from("Profile")
     .select()
@@ -96,7 +102,7 @@ export async function pushChangesHandler(
   reply: FastifyReply
 ) {
   const changes = request.body;
-
+  const client = request.supabaseClient;
   if (!changes) {
     return reply.code(400).send({
       status:

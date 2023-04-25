@@ -181,7 +181,7 @@ const WeightList = ({weights}: Props) => {
     };
   });
 
-  console.log('weights', weights);
+  console.log('weightss', weights);
 
   const points: GraphPoint[] = weights
     .map((weight, index) => {

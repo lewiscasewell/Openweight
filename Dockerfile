@@ -1,6 +1,5 @@
 FROM node:18-alpine AS builder
 
-# Prisma deps
 RUN apk update && apk add --update --no-cache bash openssl1.1-compat python3 py3-pip make g++
 
 WORKDIR /server
