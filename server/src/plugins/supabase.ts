@@ -1,7 +1,18 @@
 import { createClient } from "@supabase/supabase-js";
-import dotenv from "dotenv";
-dotenv.config();
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_KEY!;
+import { FastifyPluginAsync } from "fastify";
+import fastifyPlugin from "fastify-plugin";
 
-export const client = createClient(supabaseUrl, supabaseKey, {});
+declare module "fastify" {
+  interface FastifyInstance {
+    supabase: ReturnType<typeof createClient>;
+  }
+}
+
+const supabasePlugin: FastifyPluginAsync = async (fastify, options) => {
+  const supabaseUrl = fastify.config.SUPABASE_URL;
+  const supabaseKey = fastify.config.SUPABASE_KEY;
+
+  fastify.decorate("supabase", createClient(supabaseUrl, supabaseKey, {}));
+};
+
+export default fastifyPlugin(supabasePlugin);

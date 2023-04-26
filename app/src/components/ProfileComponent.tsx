@@ -58,7 +58,7 @@ const ProfileItem: React.FC<ProfileItemProps> = ({title, value}) => {
 
 const ProfileComponent = ({profiles}: Props) => {
   const currentProfile = profiles?.[0];
-
+  console.log('profiles', profiles);
   return (
     <View>
       <FlatList

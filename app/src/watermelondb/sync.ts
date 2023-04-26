@@ -3,23 +3,25 @@ import {map} from 'rxjs';
 import {database} from '.';
 import {supabase} from '../supabase';
 
+// const baseUrl = 'https://weight-tracker-3.hop.sh/api/sync';
+const localUrl = 'http://localhost:3000/api/sync';
+
 export async function sync() {
+  const {data} = await supabase.auth.getSession();
+
   await synchronize({
     database,
     pullChanges: async ({lastPulledAt}) => {
       console.log('pullChanges...');
 
-      const {data} = await supabase.auth.getSession();
       const urlParams = `last_pulled_at=${lastPulledAt}`;
       console.log('data.session?.access_token', data.session?.access_token);
-      const response = await fetch(
-        `https://weight-tracker-3.hop.sh/api/sync?${urlParams}`,
-        {
-          headers: {
-            Authorization: `Bearer ${data.session?.access_token}`,
-          },
+
+      const response = await fetch(`${localUrl}/?${urlParams}`, {
+        headers: {
+          Authorization: `Bearer ${data.session?.access_token}`,
         },
-      );
+      });
 
       if (!response.ok) {
         console.log('hwew');
@@ -36,16 +38,14 @@ export async function sync() {
       console.log('pushChanges...');
 
       const urlParams = `last_pulled_at=${lastPulledAt}`;
-      const response = await fetch(
-        `https://weight-tracker-3.hop.sh/api/sync?${urlParams}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify(changes),
+      const response = await fetch(`${localUrl}/?${urlParams}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.session?.access_token}`,
         },
-      );
+        method: 'POST',
+        body: JSON.stringify(changes),
+      });
 
       if (!response.ok) {
         throw new Error(
