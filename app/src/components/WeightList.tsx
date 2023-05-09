@@ -243,10 +243,12 @@ const WeightList = ({weights}: Props) => {
 
           const diffBetweenWeights =
             sectionWeightBefore === undefined
-              ? sectionWeight -
-                sectionListWeights[sectionIndex].data[
-                  sectionListWeights[sectionIndex].data.length - 1
-                ].weight
+              ? Number(
+                  sectionWeight -
+                    sectionListWeights[sectionIndex].data[
+                      sectionListWeights[sectionIndex].data.length - 1
+                    ].weight,
+                ).toFixed(1)
               : (sectionWeight - sectionWeightBefore).toFixed(1);
 
           return (
