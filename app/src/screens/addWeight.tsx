@@ -2,7 +2,6 @@ import {Database, Q} from '@nozbe/watermelondb';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useAtom} from 'jotai';
-import {DateTime} from 'luxon';
 import React from 'react';
 import {
   View,
@@ -23,6 +22,9 @@ import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {colors} from '../styles/theme';
 import {AuthStackParamList, TabStackNavigationProps} from '../../App';
 import {MaterialIcon} from '../icons/material-icons';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 type Props = {
   database: Database;
@@ -34,40 +36,41 @@ type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
-  //   console.log('weights', weights);
+
   const [weightInput, setWeightInput] = React.useState(
     weights
-      .find(weight => weight.dateString === route.params.dateToPass)
-      ?.weight.toString() ?? weights[0]?.weight.toString(),
+      .find(
+        weight =>
+          dayjs(weight.dateAt).format('YYYY-MM-DD') === route.params.dateToPass,
+      )
+      ?.weight.toString() ??
+      weights[0]?.weight.toString() ??
+      '',
   );
 
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
   const navigation = useNavigation<TabStackNavigationProps>();
-  const [dateString, setDateString] = React.useState(route.params.dateToPass);
 
   const [date, setDate] = React.useState(
-    DateTime.fromFormat(dateString, 'dd-MM-yyyy').toJSDate(),
+    dayjs(route.params.dateToPass).startOf('day').utc(true).toDate(),
   );
 
   async function addWeight() {
     await database.write(async () => {
       const profile = await database
         .get<Profile>('profiles')
-        .query(Q.where('supabase_id', session?.user.id!))
+        .query(Q.where('supabase_user_id', session?.user.id!))
         .fetch();
 
-      const weightOnDate = await database
-        .get<Weight>('weights')
-        .query(
-          Q.where('supabase_id', session?.user.id!),
-          Q.where('date_string', dateString),
-        )
-        .fetch();
+      const weightOnDate = weights.find(
+        weight =>
+          dayjs(weight.dateAt).format('YYYY-MM-DD') ===
+          dayjs(date).format('YYYY-MM-DD'),
+      );
 
-      if (weightOnDate.length > 0 && weightInput) {
-        // console.log('weight on date', weightOnDate[0]);
-        await weightOnDate[0]
+      if (weightOnDate !== undefined && weightInput) {
+        await weightOnDate
           .update(weightRecord => {
             weightRecord.weight = parseFloat(weightInput);
           })
@@ -85,9 +88,8 @@ const AddWeightScreen = ({weights}: Props) => {
           weight.profile.set(profile[0]);
           weight.weight = parseFloat(weightInput);
           weight.unit = 'kg';
-          weight.date = date;
-          weight.supabaseId = session?.user.id!;
-          weight.dateString = dateString;
+          weight.dateAt = date;
+          weight.supabaseUserId = session?.user.id!;
         });
       }
 
@@ -167,23 +169,23 @@ const AddWeightScreen = ({weights}: Props) => {
 
               <RNDateTimePicker
                 themeVariant="dark"
-                value={date instanceof Date ? date : new Date()}
+                value={date}
                 maximumDate={new Date()}
                 onChange={value => {
-                  const newDateString = DateTime.fromMillis(
-                    value.nativeEvent.timestamp!,
-                  ).toFormat('dd-MM-yyyy');
+                  const newDate = dayjs(value.nativeEvent.timestamp!)
+                    .utc(true)
+                    .startOf('day')
+                    .toDate();
 
-                  setDate(new Date(value.nativeEvent.timestamp!));
-                  setDateString(newDateString);
+                  setDate(newDate);
 
-                  const getWeight = weights.find(
-                    weight => weight.dateString === newDateString,
-                  );
+                  // const getWeight = weights.find(
+                  //   weight => weight.dateString === newDateString,
+                  // );
 
-                  if (getWeight) {
-                    setWeightInput(getWeight.weight.toString());
-                  }
+                  // if (getWeight) {
+                  //   setWeightInput(getWeight.weight.toString());
+                  // }
                 }}
               />
             </View>
@@ -226,7 +228,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   weightInput: {
-    // backgroundColor: 'red',
     height: 200,
     width: 250,
     fontSize: 100,
@@ -248,14 +249,12 @@ const styles = StyleSheet.create({
 });
 
 const withModels = withObservables(['route'], ({database, route}: Props) => {
-  const {dateToPass, id} = route.params;
-
-  console.log('date to pass', dateToPass);
+  const {id} = route.params;
 
   const weights = database
     .get<Weight>('weights')
-    .query(Q.where('supabase_id', id))
-    .observeWithColumns(['weight', 'date_string']);
+    .query(Q.where('supabase_user_id', id))
+    .observeWithColumns(['weight', 'date_at']);
 
   return {
     weights: weights,

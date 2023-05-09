@@ -5,6 +5,7 @@ import { SupabaseClient, User } from "@supabase/supabase-js";
 // import { client } from "./plugins/supabase";
 import envPlugin from "./plugins/env";
 import supabasePlugin from "./plugins/supabase";
+import profileRoutes from "./modules/profile/profile.routes";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -12,7 +13,7 @@ declare module "fastify" {
     supabaseClient: SupabaseClient;
   }
   export interface FastifyInstance {
-    authenticate: any;
+    authenticate: () => Promise<void>;
   }
 }
 
@@ -26,7 +27,7 @@ const buildServer = () => {
     }
   );
 
-  server.register(envPlugin).after(() => {
+  server.register(envPlugin).after((instance) => {
     server.register(supabasePlugin).after(() => {
       server.addHook("onRequest", async (request, reply) => {
         request.supabaseClient = server.supabase;
@@ -58,6 +59,7 @@ const buildServer = () => {
       }
 
       server.register(syncRoutes, { prefix: "api/sync" });
+      server.register(profileRoutes, { prefix: "api/profiles" });
     });
   });
 

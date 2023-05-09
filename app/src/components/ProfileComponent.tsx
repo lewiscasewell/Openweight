@@ -28,10 +28,10 @@ type ProfileItemProps = {
 const {width} = Dimensions.get('screen');
 
 const Header: React.FC<{currentProfile: Profile}> = ({currentProfile}) => {
+  console.log(currentProfile);
   return (
     <>
       <Text style={styles.text}>Hey, {currentProfile?.name}</Text>
-      <Text style={styles.text}>{currentProfile?.email}</Text>
     </>
   );
 };
@@ -67,9 +67,9 @@ const ProfileComponent = ({profiles}: Props) => {
           {title: 'Gender', value: currentProfile?.gender ?? '-'},
           {
             title: 'Age',
-            value: currentProfile?.dob
+            value: currentProfile?.dobAt
               ? Interval.fromDateTimes(
-                  DateTime.fromJSDate(currentProfile.dob),
+                  DateTime.fromJSDate(currentProfile.dobAt),
                   DateTime.now(),
                 ).toFormat('y')
               : '-',
@@ -110,7 +110,7 @@ const withModels = withObservables(['profiles'], ({database, id}: Props) => {
   return {
     profiles: database
       .get<Profile>('profiles')
-      .query(Q.where('supabase_id', id))
+      .query(Q.where('supabase_user_id', id))
       .observeWithColumns(['name']),
   };
 });

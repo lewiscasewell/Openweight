@@ -1,19 +1,18 @@
 import {appSchema, tableSchema} from '@nozbe/watermelondb';
 
 export default appSchema({
-  version: 3,
+  version: 5,
   tables: [
     tableSchema({
       name: 'profiles',
       columns: [
         {name: 'name', type: 'string'},
-        {name: 'email', type: 'string'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
-        {name: 'supabase_id', type: 'string'},
+        {name: 'supabase_user_id', type: 'string', isIndexed: true},
         {name: 'default_unit', type: 'string'},
         {name: 'gender', type: 'string', isOptional: true},
-        {name: 'dob', type: 'number', isOptional: true},
+        {name: 'dob_at', type: 'number', isOptional: true},
         {name: 'height', type: 'number', isOptional: true},
         {name: 'height_unit', type: 'string', isOptional: true},
         {name: 'target_weight', type: 'number', isOptional: true},
@@ -29,9 +28,8 @@ export default appSchema({
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
         {name: 'profile_id', type: 'string', isIndexed: true},
-        {name: 'supabase_id', type: 'string'},
-        {name: 'date', type: 'number'},
-        {name: 'date_string', type: 'string'},
+        {name: 'supabase_user_id', type: 'string', isIndexed: true},
+        {name: 'date_at', type: 'number'},
         {name: 'unit', type: 'string'},
       ],
     }),

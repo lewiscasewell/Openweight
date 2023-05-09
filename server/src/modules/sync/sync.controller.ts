@@ -1,8 +1,14 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PullChangeResponse, PushChangeRequestBody } from "./sync.schema";
 import { weightSchema } from "../weight/weight.schema";
 import { z } from "zod";
 import { profileSchema } from "../profile/profile.schema";
+import { db } from "../../db/database";
+import { sql } from "kysely";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { Profiles } from "../../db/database";
+dayjs.extend(utc);
 
 type PullChangesSyncFastifyRequest = FastifyRequest<{
   Querystring: {
@@ -21,68 +27,137 @@ const getSafeLastPulledAt = (
   request: PullChangesSyncFastifyRequest | PushChangesSyncFastifyRequest
 ) => {
   const lastPulledAt = request.query.last_pulled_at;
+
   if (!lastPulledAt || lastPulledAt === "null") {
     return new Date(0);
   }
-  return new Date(parseInt(lastPulledAt, 10));
+
+  console.log("lastPulledAt in date", new Date(parseInt(lastPulledAt)));
+  return new Date(parseInt(lastPulledAt));
 };
 
 export async function pullChangesHandler(
   request: PullChangesSyncFastifyRequest,
   reply: FastifyReply
 ) {
-  // in the future perhaps pass in dbConnection to perform SQL queries
-  // Is it performant to pass in dbConnection to every handler?
-  // Or should we just use the supabaseClient?
-  const client = request.supabaseClient;
+  // @ts-ignore
+  const client = (this as FastifyInstance).supabase;
   const lastPulledAt = getSafeLastPulledAt(request);
 
-  console.log(lastPulledAt, request.query.last_pulled_at);
+  console.log("lastpulledat utc string", lastPulledAt.toUTCString());
   console.log("request.user.id", request.user.id);
+  console.log("request.query.last_pulled_at", request.query.last_pulled_at);
 
   // Profiles
-  const { data: updatedSupabaseProfiles } = await client
-    .from("Profile")
-    .select()
-    .gt("updatedAt", lastPulledAt.toUTCString())
-    .lte("createdAt", lastPulledAt.toUTCString())
-    .eq("supabaseId", request.user.id);
 
-  const { data: createdSupabaseProfiles } = await client
-    .from("Profile")
-    .select()
-    .gt("createdAt", lastPulledAt.toUTCString())
-    .eq("supabaseId", request.user.id);
+  const createdProfiles = await db
+    .selectFrom("profiles")
+    .selectAll()
+    .where("supabase_user_id", "=", request.user.id)
+    .where("created_at", ">", lastPulledAt)
+    .execute();
 
-  const updatedProfiles = z.array(profileSchema).parse(updatedSupabaseProfiles);
-  const createdProfiles = z.array(profileSchema).parse(createdSupabaseProfiles);
+  const updatedProfiles = await db
+    .selectFrom("profiles")
+    .selectAll()
+    .where("supabase_user_id", "=", request.user.id)
+    .where("updated_at", ">", lastPulledAt)
+    .execute();
 
-  const { data: updatedSupabaseWeights } = await client
-    .from("Weight")
-    .select()
-    .gt("updatedAt", lastPulledAt.toUTCString())
-    .lte("createdAt", lastPulledAt.toUTCString())
-    .eq("supabaseId", request.user.id);
+  // const { data: updatedSupabaseProfiles } = await client
+  //   .from("Profile")
+  //   .select()
+  //   .gt("updatedAt", lastPulledAt.toUTCString())
+  //   .lte("createdAt", lastPulledAt.toUTCString())
+  //   .eq("supabaseId", request.user.id);
 
-  const { data: createdSupabaseWeights } = await client
-    .from("Weight")
-    .select()
-    .gt("createdAt", lastPulledAt.toUTCString())
-    .eq("supabaseId", request.user.id);
+  // const { data: createdSupabaseProfiles } = await client
+  //   .from("Profile")
+  //   .select()
+  //   .gt("createdAt", lastPulledAt.toUTCString())
+  //   .eq("supabaseId", request.user.id);
 
-  const updatedWeights = z.array(weightSchema).parse(updatedSupabaseWeights);
-  const createdWeights = z.array(weightSchema).parse(createdSupabaseWeights);
+  // const updatedProfiles = z.array(profileSchema).parse(updatedSupabaseProfiles);
+  // const createdProfiles = z.array(profileSchema).parse(createdSupabaseProfiles);
+
+  // Weights
+
+  const createdWeights = await db
+    .selectFrom("weights")
+    .selectAll()
+    .where("supabase_user_id", "=", request.user.id)
+    .where("created_at", ">", lastPulledAt)
+    .execute();
+
+  const updatedWeights = await db
+    .selectFrom("weights")
+    .selectAll()
+    .where("supabase_user_id", "=", request.user.id)
+    .where("updated_at", ">", lastPulledAt)
+    .where("created_at", "<=", lastPulledAt)
+    .execute();
+
+  console.log("createdWeights", createdWeights);
+  console.log("updatedWeights", updatedWeights);
+
+  // const kyselyWeights = await db
+  //   .selectFrom("weights")
+  //   .selectAll()
+  //   // .where("Weight.supabase_user_id", "=", request.user.id)
+  //   .where(sql`"updated_at" > ${lastPulledAt}`)
+  //   .execute();
+
+  // console.log(
+  //   "kysely",
+  //   kyselyWeights.map((w) => ({
+  //     weight: w.weight,
+  //     lastPulledAt,
+  //     updatedAt: w.updated_at,
+  //     compare: w.updated_at > lastPulledAt,
+  //   }))
+  // );
+
+  // const { data: updatedSupabaseWeights } = await client
+  //   .from("Weight")
+  //   .select()
+  //   .gt("updatedAt", lastPulledAt.toUTCString())
+  //   .lte("createdAt", lastPulledAt.toUTCString())
+  //   .eq("supabaseId", request.user.id);
+
+  // const { data: createdSupabaseWeights } = await client
+  //   .from("Weight")
+  //   .select()
+  //   .gt("createdAt", lastPulledAt.toUTCString())
+  //   .eq("supabaseId", request.user.id);
+
+  // const updatedWeights = z.array(weightSchema).parse(updatedSupabaseWeights);
+  // const createdWeights = z.array(weightSchema).parse(createdSupabaseWeights);
 
   const pullChangesResponse: PullChangeResponse = {
     changes: {
       profiles: {
-        created: createdProfiles,
-        updated: updatedProfiles,
+        created: [],
+        updated: updatedProfiles.map((p) => ({
+          ...p,
+          created_at: dayjs(p.created_at).valueOf(),
+          updated_at: dayjs(p.updated_at).valueOf(),
+          dob_at: dayjs(p.dob_at).valueOf(),
+        })),
         deleted: [],
       },
       weights: {
-        created: createdWeights,
-        updated: updatedWeights,
+        created: createdWeights.map((w) => ({
+          ...w,
+          created_at: dayjs(w.created_at).valueOf(),
+          updated_at: dayjs(w.updated_at).valueOf(),
+          date_at: dayjs(w.date_at).valueOf(),
+        })),
+        updated: updatedWeights.map((w) => ({
+          ...w,
+          created_at: dayjs(w.created_at).valueOf(),
+          updated_at: dayjs(w.updated_at).valueOf(),
+          date_at: dayjs(w.date_at).valueOf(),
+        })),
         deleted: [],
       },
     },
@@ -112,81 +187,88 @@ export async function pushChangesHandler(
 
   const lastPulledAt = getSafeLastPulledAt(request);
   console.log(lastPulledAt, request.query.last_pulled_at);
-  console.log("changes", changes);
+  console.log("changes", changes.profiles.created?.[0]);
+  console.log(changes.weights.updated?.[0]);
 
   if (changes.profiles.created.length > 0) {
     const createdProfileData = changes.profiles.created.map((profile) => ({
       id: profile.id,
-      email: profile.email,
       name: profile.name,
-      createdAt: new Date(profile.created_at),
-      updatedAt: new Date(profile.updated_at),
-      supabaseId: profile.supabase_id,
-      defaultUnit: profile.default_unit,
+      activity_level: profile.activity_level,
+      calorie_surplus: profile.calorie_surplus,
+      created_at: dayjs(profile.created_at).toDate(),
+      default_weight_unit: profile.default_weight_unit,
+      dob_at: profile.dob_at && dayjs(profile.dob_at).toDate(),
+      gender: profile.gender,
+      height: profile.height,
+      height_unit: profile.height_unit,
+      supabase_user_id: profile.supabase_user_id,
+      target_weight: profile.target_weight,
+      target_weight_unit: profile.target_weight_unit,
+      updated_at: dayjs(profile.updated_at).toDate(),
     }));
-    await client.from("Profile").insert(createdProfileData);
+    await db.insertInto("profiles").values(createdProfileData).execute();
   }
 
   if (changes.profiles.updated.length > 0) {
     const updatedDataPromises = changes.profiles.updated.map(
       async (profile) => {
-        return client
-          .from("Profile")
-          .update({
-            email: profile.email,
+        return db
+          .updateTable("profiles")
+          .set({
             name: profile.name,
-            createdAt: profile.created_at,
-            updatedAt: profile.updated_at,
-            supabaseId: profile.supabase_id,
-            defaultUnit: profile.default_unit,
+            activity_level: profile.activity_level,
+            calorie_surplus: profile.calorie_surplus,
+            created_at: profile.created_at,
+            default_weight_unit: profile.default_weight_unit,
+            dob_at: profile.dob_at,
             gender: profile.gender,
             height: profile.height,
-            activityLevel: profile.activity_level,
-            calorieSurplus: profile.calorie_surplus,
-            dob: profile.dob,
-            heightUnit: profile.height_unit,
-            targetWeight: profile.target_weight,
-            targetWeightUnit: profile.target_weight_unit,
+            height_unit: profile.height_unit,
+            supabase_user_id: profile.supabase_user_id,
+            target_weight: profile.target_weight,
+            target_weight_unit: profile.target_weight_unit,
+            updated_at: profile.updated_at,
           })
-          .eq("id", profile.id)
-          .single();
+          .where("id", "=", profile.id)
+          .execute();
       }
     );
+
     await Promise.all(updatedDataPromises);
   }
 
   if (changes.weights.created.length > 0) {
     const createdWeightData = changes.weights.created.map((weight) => ({
       id: weight.id,
-      createdAt: new Date(weight.created_at),
-      updatedAt: new Date(weight.updated_at),
-      supabaseId: weight.supabase_id,
+      created_at: dayjs(weight.created_at).toDate(),
+      updated_at: dayjs(weight.updated_at).toDate(),
+      supabase_user_id: weight.supabase_user_id,
       weight: weight.weight,
       unit: weight.unit,
-      date: new Date(weight.date),
-      profileId: weight.profile_id,
-      dateString: weight.date_string,
+      date_at: dayjs(weight.date_at).toDate(),
+      profile_id: weight.profile_id,
     }));
-    await client.from("Weight").insert(createdWeightData);
+
+    await db.insertInto("weights").values(createdWeightData).execute();
   }
 
   if (changes.weights.updated.length > 0) {
     const updatedDataPromises = changes.weights.updated.map(async (weight) => {
-      console.log("weight to update", weight);
-      return client
-        .from("Weight")
-        .update({
-          dateString: weight.date_string,
-          createdAt: new Date(weight.created_at).toUTCString(),
-          updatedAt: new Date(weight.updated_at).toUTCString(),
-          supabaseId: weight.supabase_id,
+      return db
+        .updateTable("weights")
+        .set({
+          id: weight.id,
+          created_at: dayjs(weight.created_at).toDate(),
+          updated_at: dayjs(weight.updated_at).toDate(),
+          supabase_user_id: weight.supabase_user_id,
           weight: weight.weight,
           unit: weight.unit,
-          date: new Date(weight.date).toUTCString(),
-          profileId: weight.profile_id,
+          date_at: dayjs(weight.date_at).toDate(),
+          profile_id: weight.profile_id,
         })
-        .eq("id", weight.id)
-        .single();
+        .where("id", "=", weight.id)
+        .execute();
     });
     (await Promise.all(updatedDataPromises)).map((weight) => {
       console.log("updated weight", weight);

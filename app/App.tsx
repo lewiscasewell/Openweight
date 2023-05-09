@@ -4,7 +4,7 @@
  *
  * @format
  */
-
+import 'react-native-get-random-values';
 import {
   CompositeNavigationProp,
   NavigationContainer,
@@ -36,9 +36,12 @@ import {useAtom} from 'jotai';
 import {sessionAtom} from './src/atoms/session.atom';
 import {useSyncDatabase} from './src/watermelondb/sync/use-sync';
 
-import {DateTime} from 'luxon';
 import {colors, theme} from './src/styles/theme';
 import {MaterialIcon} from './src/icons/material-icons';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 LogBox.ignoreLogs(['useSharedValueEffect()']);
 
@@ -117,9 +120,10 @@ const Tabs = () => {
       </TabStack.Navigator>
       {
         <TouchableOpacity
+          activeOpacity={0.8}
           onPress={() => {
             navigation.navigate('AddWeight', {
-              dateToPass: DateTime.now().toFormat('dd-MM-yyyy'),
+              dateToPass: dayjs().format('YYYY-MM-DD'),
               id: session?.user.id,
             });
           }}
