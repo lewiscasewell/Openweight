@@ -18,13 +18,13 @@ import withObservables from '@nozbe/with-observables';
 import Weight from '../watermelondb/model/Weight';
 
 import * as R from 'remeda';
-import {map, pipe} from 'rxjs';
-import {DateTime} from 'luxon';
+import {map} from 'rxjs';
 
 import {colors} from '../styles/theme';
 import {GraphPoint, LineGraph} from 'react-native-graph';
 import {TabStackNavigationProps} from '../../App';
 import {MaterialIcon} from '../icons/material-icons';
+import dayjs from 'dayjs';
 
 const {width} = Dimensions.get('screen');
 
@@ -55,13 +55,9 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
   const max = Math.max(...points.map(point => point.value));
   const min = Math.min(...points.map(point => point.value));
 
-  const splitDate = weights?.[currentPoint.index].dateString.split('-');
+  const splitDate = weights?.[currentPoint.index].dateAt;
 
-  const displayDate = DateTime.fromObject({
-    year: Number(splitDate[2]),
-    month: Number(splitDate[1]),
-    day: Number(splitDate[0]),
-  }).toFormat('LLL dd, yyyy');
+  const displayDate = dayjs(splitDate).format('MMM DD, YYYY');
 
   const calcPercentageDifference = () => {
     const currentWeight = points[points.length - 1].value;
@@ -153,35 +149,29 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
 const WeightList = ({weights}: Props) => {
   const [session] = useAtom(sessionAtom);
   const navigation = useNavigation<TabStackNavigationProps>();
+  console.log('weights', weights);
 
-  const WEIGHT_DATA = R.pipe(
+  const weightsGroupedByMonth = R.pipe(
     weights,
     R.groupBy(weight => {
-      const splitDate = weight.dateString.split('-');
-      const date = DateTime.fromObject({
-        year: Number(splitDate[2]),
-        month: Number(splitDate[1]),
-        day: Number(splitDate[0]),
-      });
+      const formattedDate = dayjs(weight.dateAt).format('MMM YYYY');
 
-      return date.toFormat('LLL yyyy');
+      return formattedDate;
     }),
   );
 
-  const WEIGHT_DATA2 = Object.keys(WEIGHT_DATA).map(weight => {
+  const sectionListWeights = Object.keys(weightsGroupedByMonth).map(weight => {
     return {
       title: weight,
-      data: WEIGHT_DATA[weight].map(weight => {
+      data: weightsGroupedByMonth[weight].map(weight => {
         return {
           weight: weight.weight,
           unit: weight.unit,
-          dateString: weight.dateString,
+          dateAt: weight.dateAt,
         };
       }),
     };
   });
-
-  console.log('weightss', weights);
 
   const points: GraphPoint[] = weights
     .map((weight, index) => {
@@ -195,30 +185,25 @@ const WeightList = ({weights}: Props) => {
   return (
     <View>
       <SectionList
-        sections={WEIGHT_DATA2}
+        sections={sectionListWeights}
         style={styles.weightList}
-        // ListHeaderComponent={<Header points={points} weights={weights} />}
+        ListHeaderComponent={<Header points={points} weights={weights} />}
         ListFooterComponent={<View style={styles.footer} />}
-        keyExtractor={(item, index) => item.dateString + index}
+        keyExtractor={(item, index) => item.dateAt.toUTCString() + index}
         renderItem={({item: weight, index}) => {
           const weightBefore = weights?.[index + 1]?.weight;
-          // find the difference between the weight and trim it to 1 decimal
+
           const diffBetweenWeights = (weight.weight - weightBefore).toFixed(1);
-          // console.log(diffBetweenWeights);
-          const splitDate = weight.dateString.split('-');
-          // console.log(weight);
-          const dayString = splitDate[0];
-          const monthString = DateTime.local(
-            2020,
-            parseInt(splitDate[1], 10),
-            1,
-          ).toFormat('LLL');
+
+          const dayString = dayjs(weight.dateAt).format('DD');
+          const monthString = dayjs(weight.dateAt).format('MMM');
+
           return (
             <TouchableOpacity
               style={styles.weightItemContainer}
               onPress={() => {
                 navigation.navigate('AddWeight', {
-                  dateToPass: weight.dateString,
+                  dateToPass: dayjs(weight.dateAt).format('YYYY-MM-DD'),
                   id: session?.user.id,
                 });
               }}>
@@ -249,25 +234,25 @@ const WeightList = ({weights}: Props) => {
           );
         }}
         renderSectionHeader={({section}) => {
-          const sectionIndex = WEIGHT_DATA2.findIndex(
+          const sectionIndex = sectionListWeights.findIndex(
             weight => weight.title === section.title,
           );
-          const sectionWeight = WEIGHT_DATA2[sectionIndex].data[0].weight;
+          const sectionWeight = sectionListWeights[sectionIndex].data[0].weight;
           const sectionWeightBefore =
-            WEIGHT_DATA2[sectionIndex + 1]?.data[0]?.weight;
+            sectionListWeights[sectionIndex + 1]?.data[0]?.weight;
 
           const diffBetweenWeights =
             sectionWeightBefore === undefined
               ? sectionWeight -
-                WEIGHT_DATA2[sectionIndex].data[
-                  WEIGHT_DATA2[sectionIndex].data.length - 1
+                sectionListWeights[sectionIndex].data[
+                  sectionListWeights[sectionIndex].data.length - 1
                 ].weight
               : (sectionWeight - sectionWeightBefore).toFixed(1);
 
           return (
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionHeaderTitle}>
-                {diffBetweenWeights > 0 ? (
+                {Number(diffBetweenWeights) > 0 ? (
                   <MaterialIcon
                     name="arrow-up"
                     size={24}
@@ -404,45 +389,49 @@ const withModels = withObservables(
     return {
       weights: database
         .get<Weight>('weights')
-        .query(Q.where('supabase_id', Q.like(`%${query}%`)))
-        .observeWithColumns(['date_string', 'weight', 'unit', 'supabase_id'])
+        .query(Q.where('supabase_user_id', Q.like(`%${query}%`)))
+        .observeWithColumns(['weight', 'unit', 'supabase_user_id', 'date_at'])
         .pipe(
           map(weights =>
-            weights.sort((a, b) => b.dateString.localeCompare(a.dateString)),
-          ),
-          pipe(
-            map(weights =>
-              weights.reduce((acc, weight) => {
-                const month = weight.dateString.split('-')[1];
-                const year = weight.dateString.split('-')[2];
-                const monthYear = `${year}-${month}`;
-                console.log('year', year);
-                // @ts-ignore
-                if (acc[monthYear]) {
-                  // @ts-ignore
-                  acc[monthYear].push(weight);
-                } else {
-                  // @ts-ignore
-                  acc[monthYear] = [weight];
-                }
-                console.log('acc', acc);
-                return acc;
-              }, {}),
-            ),
-
-            map(weights => {
-              const monthYears = Object.keys(weights);
-              const sortedMonthYears = monthYears.sort((a, b) =>
-                b.localeCompare(a),
+            weights.sort((a, b) => {
+              return (
+                new Date(b.dateAt).getTime() - new Date(a.dateAt).getTime()
               );
-
-              return sortedMonthYears.reduce((acc, month) => {
-                // @ts-ignore
-                acc.push(...weights[month]);
-                return acc;
-              }, []);
             }),
           ),
+          //   pipe(
+          //     map(weights =>
+          //       weights.reduce((acc, weight) => {
+          //         const month = weight.dateString.split('-')[1];
+          //         const year = weight.dateString.split('-')[2];
+          //         const monthYear = `${year}-${month}`;
+          //         console.log('year', year);
+          //         // @ts-ignore
+          //         if (acc[monthYear]) {
+          //           // @ts-ignore
+          //           acc[monthYear].push(weight);
+          //         } else {
+          //           // @ts-ignore
+          //           acc[monthYear] = [weight];
+          //         }
+          //         console.log('acc', acc);
+          //         return acc;
+          //       }, {}),
+          //     ),
+
+          //     map(weights => {
+          //       const monthYears = Object.keys(weights);
+          //       const sortedMonthYears = monthYears.sort((a, b) =>
+          //         b.localeCompare(a),
+          //       );
+
+          //       return sortedMonthYears.reduce((acc, month) => {
+          //         // @ts-ignore
+          //         acc.push(...weights[month]);
+          //         return acc;
+          //       }, []);
+          //     }),
+          //   ),
         ),
     };
   },

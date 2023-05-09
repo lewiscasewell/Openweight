@@ -4,33 +4,12 @@ import { buildJsonSchemas } from "fastify-zod";
 export const profileSchema = z.object({
   id: z.string(),
   name: z.string(),
-  email: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  supabaseId: z.string(),
-  defaultUnit: z.string(),
+  created_at: z.number(),
+  updated_at: z.number(),
+  supabase_user_id: z.string(),
+  default_weight_unit: z.string(),
   gender: z.string().nullable(),
-  dob: z.date().nullable(),
-  height: z.number().nullable(),
-  heightUnit: z.string().nullable(),
-  targetWeight: z.number().nullable(),
-  targetWeightUnit: z.string().nullable(),
-  activityLevel: z.string().nullable(),
-  calorieSurplus: z.number().nullable(),
-});
-
-export const profileWatermelonSchema = z.object({
-  _status: z.string(),
-  _changed: z.string(),
-  id: z.string(),
-  name: z.string(),
-  email: z.string(),
-  created_at: z.date(),
-  updated_at: z.date(),
-  supabase_id: z.string(),
-  default_unit: z.string(),
-  gender: z.string().nullable(),
-  dob: z.date().nullable(),
+  dob_at: z.number().nullable(),
   height: z.number().nullable(),
   height_unit: z.string().nullable(),
   target_weight: z.number().nullable(),
@@ -38,6 +17,13 @@ export const profileWatermelonSchema = z.object({
   activity_level: z.string().nullable(),
   calorie_surplus: z.number().nullable(),
 });
+
+export const profileWatermelonSchema = profileSchema.merge(
+  z.object({
+    _status: z.string(),
+    _changed: z.string(),
+  })
+);
 
 const registerProfileSchema = z.object({
   name: z.string(),
@@ -53,6 +39,8 @@ const loginProfileSchema = z.object({
 
 export type RegisterProfileInput = z.infer<typeof registerProfileSchema>;
 export type UpdateProfileInput = z.infer<typeof profileSchema>;
+
+export type Profile = z.infer<typeof profileSchema>;
 
 export const { schemas: profileSchemas, $ref } = buildJsonSchemas({
   profileSchema,

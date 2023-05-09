@@ -6,64 +6,172 @@ import {PrimaryTextInput} from '../../components/TextInput';
 
 import {supabase} from '../../supabase';
 
-import {useNavigation} from '@react-navigation/native';
-import {NoAuthStackNavigationProps} from '../../../App';
+import Profile from '../../watermelondb/model/Profile';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
+
+// import {useNavigation} from '@react-navigation/native';
+// import {NoAuthStackNavigationProps} from '../../../App';
+
+// const parseUrlFromSupabase: (url: string) => {
+//   accessToken: string;
+//   refreshToken: string;
+// } = url => {
+//   const splitUrl = url.split('#');
+//   const urlParams = new URLSearchParams(splitUrl[1]);
+//   console.log(urlParams);
+//   const accessToken = urlParams.get('access_token');
+//   const refreshToken = urlParams.get('refresh_token');
+
+//   console.log({accessToken, refreshToken});
+
+//   return {accessToken: accessToken!, refreshToken: refreshToken!};
+// };
+
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const [, setLoading] = useState(false);
-  const navigation = useNavigation<NoAuthStackNavigationProps>();
+  const [token, setToken] = useState('');
 
-  async function signInWithEmail() {
-    setLoading(true);
-    console.log({email, password});
-    const {error} = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
+  const [hasSentEmail, setHasSentEmail] = useState(false);
+
+  const database = useDatabase();
+
+  async function signInWithMagicLink() {
+    const {error} = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: 'https://opencoach.app',
+      },
+    });
+
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      setHasSentEmail(true);
+    }
+  }
+
+  async function signInWithToken() {
+    const {data, error} = await supabase.auth.verifyOtp({
+      token,
+      email,
+      type: 'magiclink',
     });
 
     if (error) {
       Alert.alert(error.message);
     }
 
-    setLoading(false);
+    if (data.session?.access_token) {
+      // fetch profile from server if exists
+      // if not, create profile
+      // navigate to home screen
+      const response = await fetch('http://localhost:3000/api/profiles', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${data.session?.access_token}`,
+        },
+      });
+
+      if (response.status === 404) {
+        Alert.alert('Not Authorized');
+        return;
+      }
+      if (!response.ok) {
+        Alert.alert('Something went wrong');
+        return;
+      }
+
+      const profile = await response.json();
+
+      console.log('profile', profile);
+
+      if (!profile) {
+        Alert.alert('Something went wrong');
+        return;
+      }
+
+      if (profile) {
+        // delete all profiles from the database
+        await database.write(async () => {
+          await database.get('profiles').query().destroyAllPermanently();
+        });
+
+        await database
+          .write(async () => {
+            await database
+              .get<Profile>('profiles')
+              .create(newProfile => {
+                newProfile._raw._status = 'synced';
+                newProfile._raw._changed = '';
+                newProfile._raw.id = profile.id;
+                newProfile.name = profile.name;
+                newProfile.supabaseUserId = data.user!.id;
+                newProfile.createdAt = profile.created_at;
+                newProfile.updatedAt = profile.updated_at;
+                newProfile.gender = profile.gender;
+                newProfile.height = profile.height;
+                newProfile.heightUnit = profile.height_unit;
+                newProfile.activityLevel = profile.activity_level;
+                newProfile.targetWeight = profile.target_weight;
+                newProfile.targetWeightUnit = profile.target_weight_unit;
+                newProfile.dobAt = profile.dob_at;
+              })
+              .then(result => {
+                console.log('create', result);
+              });
+          })
+          .then(() => {
+            console.log('done');
+          });
+      }
+    }
   }
 
   return (
     <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <PrimaryTextInput
-          onChangeText={text => setEmail(text)}
-          value={email}
-          placeholder="email@address.com"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          label="Email"
-        />
-      </View>
+      {hasSentEmail ? (
+        <>
+          <View style={styles.verticallySpaced}>
+            <PrimaryTextInput
+              onChangeText={text => setToken(text)}
+              value={token}
+              label="Your 6 digit code"
+              placeholder="123456"
+            />
+          </View>
+          <View style={styles.verticallySpaced}>
+            <SecondaryButton
+              title="Login"
+              // disabled={loading}
+              onPress={() => {
+                signInWithToken();
+              }}
+            />
+          </View>
+        </>
+      ) : (
+        <>
+          <View style={[styles.verticallySpaced, styles.mt20]}>
+            <PrimaryTextInput
+              onChangeText={text => setEmail(text)}
+              value={email}
+              placeholder="email@address.com"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              label="Email"
+            />
+          </View>
 
-      <View style={styles.verticallySpaced}>
-        <PrimaryTextInput
-          onChangeText={text => setPassword(text)}
-          value={password}
-          label="Password"
-          secureTextEntry={true}
-          placeholder="Password"
-        />
-      </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <PrimaryButton title="Login" onPress={() => signInWithEmail()} />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <SecondaryButton
-          title="Register"
-          // disabled={loading}
-          onPress={() => {
-            navigation.navigate('Register');
-          }}
-        />
-      </View>
+          <View style={[styles.verticallySpaced, styles.mt20]}>
+            <PrimaryButton
+              title="Login with email"
+              onPress={() => signInWithMagicLink()}
+            />
+          </View>
+        </>
+      )}
     </View>
   );
 };

@@ -11,13 +11,12 @@ class Profile extends Model {
   ]);
 
   @field('name') name!: string;
-  @field('email') email!: string;
   @date('created_at') createdAt!: Date;
   @date('updated_at') updatedAt!: Date;
-  @field('default_unit') defaultUnit!: string;
-  @field('supabase_id') supabaseId!: string;
+  @field('default_weight_unit') defaultWeightUnit!: string;
+  @field('supabase_user_id') supabaseUserId!: string;
   @field('gender') gender?: string;
-  @date('dob') dob?: Date;
+  @date('dob_at') dobAt?: Date;
   @field('height') height?: number;
   @field('height_unit') heightUnit?: string;
   @field('target_weight') targetWeight?: number;
@@ -37,20 +36,22 @@ class Profile extends Model {
     dateOfWeight: Date;
     unit: string;
   }) {
-    return this.collections.get<Weight>('weights').create(weightRecord => {
-      weightRecord.weight = weight;
-      weightRecord.date = dateOfWeight;
-      weightRecord.unit = unit;
-      weightRecord.supabaseId = this.supabaseId;
-      // @ts-ignore
-      weightRecord.profile.set(this);
-    });
+    return await this.collections
+      .get<Weight>('weights')
+      .create(weightRecord => {
+        weightRecord.weight = weight;
+        weightRecord.dateAt = dateOfWeight;
+        weightRecord.unit = unit;
+        weightRecord.supabaseUserId = this.supabaseUserId;
+        // @ts-ignore
+        weightRecord.profile.set(this);
+      });
   }
 
   get hasCompletedProfile() {
     return Boolean(
       this.gender &&
-        this.dob &&
+        this.dobAt &&
         this.height &&
         this.heightUnit &&
         this.targetWeight &&
