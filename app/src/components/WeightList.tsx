@@ -25,6 +25,14 @@ import {GraphPoint, LineGraph} from 'react-native-graph';
 import {TabStackNavigationProps} from '../../App';
 import {MaterialIcon} from '../icons/material-icons';
 import dayjs from 'dayjs';
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+  FadeOut,
+  FadeOutUp,
+  Layout,
+} from 'react-native-reanimated';
 
 const {width} = Dimensions.get('screen');
 
@@ -46,8 +54,8 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
     index: number;
     value: number;
   }>({
-    value: points[points.length - 1].value,
-    index: points.length - 1,
+    value: points[points.length - 1]?.value,
+    index: points?.length - 1,
   });
 
   const dateRange = useState<DateRange>('1Y');
@@ -55,13 +63,13 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
   const max = Math.max(...points.map(point => point.value));
   const min = Math.min(...points.map(point => point.value));
 
-  const splitDate = weights?.[currentPoint.index].dateAt;
+  const splitDate = weights?.[currentPoint.index]?.dateAt;
 
   const displayDate = dayjs(splitDate).format('MMM DD, YYYY');
 
   const calcPercentageDifference = () => {
-    const currentWeight = points[points.length - 1].value;
-    const firstWeight = points[0].value;
+    const currentWeight = points[points.length - 1]?.value;
+    const firstWeight = points[0]?.value;
     const difference = currentWeight - firstWeight;
     const percentageDifference = ((difference / firstWeight) * 100).toFixed(1);
 
@@ -69,7 +77,10 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
   };
 
   return (
-    <View style={styles.headerContainer}>
+    <Animated.View
+      entering={FadeInUp}
+      layout={Layout.delay(200)}
+      style={styles.headerContainer}>
       <Text style={{color: 'white', fontSize: 16}}>{displayDate}</Text>
       <Text style={{color: 'white', fontSize: 50, fontWeight: '700'}}>
         {currentPoint.value}kg
@@ -79,12 +90,12 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
           fontWeight: '700',
           color:
             Number(
-              (points[points.length - 1].value - points[0].value)?.toFixed(1),
+              (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1),
             ) > 0
               ? colors.success
               : colors.error,
         }}>
-        {(points[points.length - 1].value - points[0]?.value)?.toFixed(1)}kg ({' '}
+        {(points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)}kg ({' '}
         {calcPercentageDifference()}% )
       </Text>
 
@@ -142,7 +153,7 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
           </View>
         </>
       )}
-    </View>
+    </Animated.View>
   );
 };
 
@@ -184,103 +195,131 @@ const WeightList = ({weights}: Props) => {
 
   return (
     <View>
-      <SectionList
-        sections={sectionListWeights}
-        style={styles.weightList}
-        ListHeaderComponent={<Header points={points} weights={weights} />}
-        ListFooterComponent={<View style={styles.footer} />}
-        keyExtractor={(item, index) => item.dateAt.toUTCString() + index}
-        renderItem={({item: weight, index}) => {
-          const weightBefore = weights?.[index + 1]?.weight;
+      {weights.length > 0 ? (
+        <SectionList
+          sections={sectionListWeights}
+          style={styles.weightList}
+          ListHeaderComponent={<Header points={points} weights={weights} />}
+          ListFooterComponent={<View style={styles.footer} />}
+          keyExtractor={(item, index) => item.dateAt.toUTCString() + index}
+          renderItem={({item: weight, index}) => {
+            const weightBefore = weights?.[index + 1]?.weight;
 
-          const diffBetweenWeights = (weight.weight - weightBefore).toFixed(1);
+            const diffBetweenWeights = (weight.weight - weightBefore).toFixed(
+              1,
+            );
 
-          const dayString = dayjs(weight.dateAt).format('DD');
-          const monthString = dayjs(weight.dateAt).format('MMM');
+            const dayString = dayjs(weight.dateAt).format('DD');
+            const monthString = dayjs(weight.dateAt).format('MMM');
 
-          return (
-            <TouchableOpacity
-              style={styles.weightItemContainer}
-              onPress={() => {
-                navigation.navigate('AddWeight', {
-                  dateToPass: dayjs(weight.dateAt).format('YYYY-MM-DD'),
-                  id: session?.user.id,
-                });
-              }}>
-              <View style={styles.calendarDate}>
-                <Text style={styles.calendarDateDay}>{dayString}</Text>
-                <Text style={styles.calendarDateMonth}>{monthString}</Text>
-              </View>
-              <View style={{justifyContent: 'center', alignItems: 'flex-end'}}>
-                <Text style={styles.weight}>
-                  {weight.weight} {weight.unit}
-                </Text>
-
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    color:
-                      diffBetweenWeights !== 'NaN'
-                        ? Number(diffBetweenWeights) > 0
-                          ? colors.success
-                          : colors.error
-                        : 'lightgrey',
+            return (
+              <Animated.View
+                entering={FadeInDown}
+                exiting={FadeOutUp}
+                layout={Layout.delay(index * 200)}>
+                <TouchableOpacity
+                  style={styles.weightItemContainer}
+                  onPress={() => {
+                    navigation.navigate('AddWeight', {
+                      dateToPass: dayjs(weight.dateAt).format('YYYY-MM-DD'),
+                      id: session?.user.id,
+                    });
                   }}>
-                  {diffBetweenWeights !== 'NaN' ? diffBetweenWeights : '-'}{' '}
-                  {weight.unit}
+                  <View style={styles.calendarDate}>
+                    <Text style={styles.calendarDateDay}>{dayString}</Text>
+                    <Text style={styles.calendarDateMonth}>{monthString}</Text>
+                  </View>
+                  <View
+                    style={{justifyContent: 'center', alignItems: 'flex-end'}}>
+                    <Text style={styles.weight}>
+                      {weight.weight} {weight.unit}
+                    </Text>
+
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        color:
+                          diffBetweenWeights !== 'NaN'
+                            ? Number(diffBetweenWeights) > 0
+                              ? colors.success
+                              : colors.error
+                            : 'lightgrey',
+                      }}>
+                      {diffBetweenWeights !== 'NaN' ? diffBetweenWeights : '-'}{' '}
+                      {weight.unit}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </Animated.View>
+            );
+          }}
+          renderSectionHeader={({section}) => {
+            const sectionIndex = sectionListWeights.findIndex(
+              weight => weight.title === section.title,
+            );
+            const sectionWeight =
+              sectionListWeights[sectionIndex].data[0].weight;
+            const sectionWeightBefore =
+              sectionListWeights[sectionIndex + 1]?.data[0]?.weight;
+
+            const diffBetweenWeights =
+              sectionWeightBefore === undefined
+                ? Number(
+                    sectionWeight -
+                      sectionListWeights[sectionIndex].data[
+                        sectionListWeights[sectionIndex].data.length - 1
+                      ].weight,
+                  ).toFixed(1)
+                : (sectionWeight - sectionWeightBefore).toFixed(1);
+
+            return (
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionHeaderTitle}>
+                  {Number(diffBetweenWeights) > 0 ? (
+                    <MaterialIcon
+                      name="arrow-up"
+                      size={24}
+                      color={colors.grey[300]}
+                    />
+                  ) : (
+                    <MaterialIcon
+                      name="arrow-down"
+                      size={24}
+                      color={colors.grey[300]}
+                    />
+                  )}{' '}
+                  {section.title}
+                </Text>
+                <Text style={styles.sectionHeaderTitle}>
+                  {diffBetweenWeights} kg
                 </Text>
               </View>
-            </TouchableOpacity>
-          );
-        }}
-        renderSectionHeader={({section}) => {
-          const sectionIndex = sectionListWeights.findIndex(
-            weight => weight.title === section.title,
-          );
-          const sectionWeight = sectionListWeights[sectionIndex].data[0].weight;
-          const sectionWeightBefore =
-            sectionListWeights[sectionIndex + 1]?.data[0]?.weight;
-
-          const diffBetweenWeights =
-            sectionWeightBefore === undefined
-              ? Number(
-                  sectionWeight -
-                    sectionListWeights[sectionIndex].data[
-                      sectionListWeights[sectionIndex].data.length - 1
-                    ].weight,
-                ).toFixed(1)
-              : (sectionWeight - sectionWeightBefore).toFixed(1);
-
-          return (
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionHeaderTitle}>
-                {Number(diffBetweenWeights) > 0 ? (
-                  <MaterialIcon
-                    name="arrow-up"
-                    size={24}
-                    color={colors.grey[300]}
-                  />
-                ) : (
-                  <MaterialIcon
-                    name="arrow-down"
-                    size={24}
-                    color={colors.grey[300]}
-                  />
-                )}{' '}
-                {section.title}
-              </Text>
-              <Text style={styles.sectionHeaderTitle}>
-                {diffBetweenWeights} kg
-              </Text>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      ) : (
+        <Animated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          layout={Layout.delay(100)}
+          style={styles.noWeightsContainer}>
+          <Text style={styles.noWeightsText}>No weights yet.</Text>
+        </Animated.View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  noWeightsContainer: {
+    paddingVertical: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noWeightsText: {
+    color: colors.grey[300],
+    fontSize: 20,
+  },
   headerContainer: {
     width: '100%',
     paddingVertical: 20,

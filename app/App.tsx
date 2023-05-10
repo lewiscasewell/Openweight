@@ -40,6 +40,8 @@ import {colors, theme} from './src/styles/theme';
 import {MaterialIcon} from './src/icons/material-icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import {EditProfileScreen} from './src/screens/editProfile';
+import {Text} from 'react-native';
 
 dayjs.extend(utc);
 
@@ -55,9 +57,21 @@ export type TabStackParamList = {
   Profile: undefined;
 };
 
+export type ProfileAttribute =
+  | 'height'
+  | 'name'
+  | 'gender'
+  | 'age'
+  | 'activityLevel'
+  | 'targetWeight'
+  | 'targetCalories';
+
 export type AuthStackParamList = {
   index: undefined;
   AddWeight: {dateToPass: string; id: string | undefined};
+  EditProfile: {
+    profileAttribute: ProfileAttribute;
+  };
 };
 
 export type NoAuthStackParamList = {
@@ -162,6 +176,23 @@ function App(): JSX.Element {
               }}>
               <AuthStack.Screen name="index" component={Tabs} />
               <AuthStack.Screen
+                name="EditProfile"
+                component={EditProfileScreen}
+                options={({route}) => ({
+                  headerShown: true,
+                  headerBackTitle: '',
+                  headerTitle: () => {
+                    const profileAttribute =
+                      route.params.profileAttribute.charAt(0).toUpperCase() +
+                      route.params.profileAttribute.slice(1);
+
+                    return (
+                      <Text style={styles.headerTitle}>{profileAttribute}</Text>
+                    );
+                  },
+                })}
+              />
+              <AuthStack.Screen
                 name="AddWeight"
                 component={AddWeightScreen}
                 options={{
@@ -196,5 +227,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.grey[200],
   },
 });

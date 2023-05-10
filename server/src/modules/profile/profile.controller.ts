@@ -1,8 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { Profiles, db } from "../../db/database";
+import { db } from "../../db/database";
 import { v4 as uuidV4 } from "uuid";
 import dayjs from "dayjs";
-import { InsertResult } from "kysely";
 
 export async function fetchProfileHandler(
   request: FastifyRequest,
@@ -37,15 +36,12 @@ export async function fetchProfileHandler(
 
     console.log("profile in the server after creation", newProfile);
 
-    return reply.code(201).send({
-      newProfile,
-      created_at: dayjs(newProfile.created_at).valueOf(),
-      updated_at: dayjs(newProfile.updated_at).valueOf(),
-    });
+    return reply.code(201).send(newProfile);
   }
 
   return reply.code(201).send({
     ...profile,
+    dob_at: dayjs(profile.dob_at).valueOf(),
     created_at: dayjs(profile.created_at).valueOf(),
     updated_at: dayjs(profile.updated_at).valueOf(),
   });
