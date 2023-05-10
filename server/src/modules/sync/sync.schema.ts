@@ -1,8 +1,8 @@
 import { buildJsonSchemas } from "fastify-zod";
 import { z } from "zod";
 import {
-  profileSchema,
-  profileWatermelonSchema,
+  profilePullChangesSchema,
+  profilePushChangesSchema,
 } from "../profile/profile.schema";
 import { weightSchema, weightWatermelonSchema } from "../weight/weight.schema";
 
@@ -19,8 +19,8 @@ export const pullChangesSchema = z.object({
       ),
     }),
     profiles: z.object({
-      created: z.array(profileSchema),
-      updated: z.array(profileSchema),
+      created: z.array(profilePullChangesSchema),
+      updated: z.array(profilePullChangesSchema),
       deleted: z.array(
         z.object({
           id: z.string(),
@@ -41,8 +41,8 @@ export const pushChangesSchema = z.object({
     ),
   }),
   profiles: z.object({
-    created: z.array(profileWatermelonSchema),
-    updated: z.array(profileWatermelonSchema),
+    created: z.array(profilePushChangesSchema),
+    updated: z.array(profilePushChangesSchema),
     deleted: z.array(
       z.object({
         id: z.string(),

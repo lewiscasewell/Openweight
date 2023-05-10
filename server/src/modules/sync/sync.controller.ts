@@ -2,7 +2,6 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PullChangeResponse, PushChangeRequestBody } from "./sync.schema";
 import { weightSchema } from "../weight/weight.schema";
 import { z } from "zod";
-import { profileSchema } from "../profile/profile.schema";
 import { db } from "../../db/database";
 import { sql } from "kysely";
 import dayjs from "dayjs";
@@ -40,8 +39,6 @@ export async function pullChangesHandler(
   request: PullChangesSyncFastifyRequest,
   reply: FastifyReply
 ) {
-  // @ts-ignore
-  const client = (this as FastifyInstance).supabase;
   const lastPulledAt = getSafeLastPulledAt(request);
 
   console.log("lastpulledat utc string", lastPulledAt.toUTCString());
@@ -49,7 +46,6 @@ export async function pullChangesHandler(
   console.log("request.query.last_pulled_at", request.query.last_pulled_at);
 
   // Profiles
-
   const createdProfiles = await db
     .selectFrom("profiles")
     .selectAll()
@@ -64,24 +60,7 @@ export async function pullChangesHandler(
     .where("updated_at", ">", lastPulledAt)
     .execute();
 
-  // const { data: updatedSupabaseProfiles } = await client
-  //   .from("Profile")
-  //   .select()
-  //   .gt("updatedAt", lastPulledAt.toUTCString())
-  //   .lte("createdAt", lastPulledAt.toUTCString())
-  //   .eq("supabaseId", request.user.id);
-
-  // const { data: createdSupabaseProfiles } = await client
-  //   .from("Profile")
-  //   .select()
-  //   .gt("createdAt", lastPulledAt.toUTCString())
-  //   .eq("supabaseId", request.user.id);
-
-  // const updatedProfiles = z.array(profileSchema).parse(updatedSupabaseProfiles);
-  // const createdProfiles = z.array(profileSchema).parse(createdSupabaseProfiles);
-
   // Weights
-
   const createdWeights = await db
     .selectFrom("weights")
     .selectAll()
@@ -96,42 +75,6 @@ export async function pullChangesHandler(
     .where("updated_at", ">", lastPulledAt)
     .where("created_at", "<=", lastPulledAt)
     .execute();
-
-  console.log("createdWeights", createdWeights);
-  console.log("updatedWeights", updatedWeights);
-
-  // const kyselyWeights = await db
-  //   .selectFrom("weights")
-  //   .selectAll()
-  //   // .where("Weight.supabase_user_id", "=", request.user.id)
-  //   .where(sql`"updated_at" > ${lastPulledAt}`)
-  //   .execute();
-
-  // console.log(
-  //   "kysely",
-  //   kyselyWeights.map((w) => ({
-  //     weight: w.weight,
-  //     lastPulledAt,
-  //     updatedAt: w.updated_at,
-  //     compare: w.updated_at > lastPulledAt,
-  //   }))
-  // );
-
-  // const { data: updatedSupabaseWeights } = await client
-  //   .from("Weight")
-  //   .select()
-  //   .gt("updatedAt", lastPulledAt.toUTCString())
-  //   .lte("createdAt", lastPulledAt.toUTCString())
-  //   .eq("supabaseId", request.user.id);
-
-  // const { data: createdSupabaseWeights } = await client
-  //   .from("Weight")
-  //   .select()
-  //   .gt("createdAt", lastPulledAt.toUTCString())
-  //   .eq("supabaseId", request.user.id);
-
-  // const updatedWeights = z.array(weightSchema).parse(updatedSupabaseWeights);
-  // const createdWeights = z.array(weightSchema).parse(createdSupabaseWeights);
 
   const pullChangesResponse: PullChangeResponse = {
     changes: {
@@ -198,7 +141,7 @@ export async function pushChangesHandler(
       calorie_surplus: profile.calorie_surplus,
       created_at: dayjs(profile.created_at).toDate(),
       default_weight_unit: profile.default_weight_unit,
-      dob_at: profile.dob_at && dayjs(profile.dob_at).toDate(),
+      dob_at: profile.dob_at ? dayjs(profile.dob_at).toDate() : null,
       gender: profile.gender,
       height: profile.height,
       height_unit: profile.height_unit,
@@ -216,19 +159,20 @@ export async function pushChangesHandler(
         return db
           .updateTable("profiles")
           .set({
+            id: profile.id,
             name: profile.name,
             activity_level: profile.activity_level,
             calorie_surplus: profile.calorie_surplus,
-            created_at: profile.created_at,
+            created_at: dayjs(profile.created_at).toDate(),
             default_weight_unit: profile.default_weight_unit,
-            dob_at: profile.dob_at,
+            dob_at: dayjs(profile.dob_at).toDate(),
             gender: profile.gender,
             height: profile.height,
             height_unit: profile.height_unit,
             supabase_user_id: profile.supabase_user_id,
             target_weight: profile.target_weight,
             target_weight_unit: profile.target_weight_unit,
-            updated_at: profile.updated_at,
+            updated_at: dayjs(profile.updated_at).toDate(),
           })
           .where("id", "=", profile.id)
           .execute();
