@@ -1,39 +1,18 @@
 import React, {useState} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
-
 import {PrimaryButton, SecondaryButton} from '../../components/Button';
 import {PrimaryTextInput} from '../../components/TextInput';
-
 import {supabase} from '../../supabase';
-
 import Profile from '../../watermelondb/model/Profile';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
+import Config from 'react-native-config';
 
-// import {useNavigation} from '@react-navigation/native';
-// import {NoAuthStackNavigationProps} from '../../../App';
-
-// const parseUrlFromSupabase: (url: string) => {
-//   accessToken: string;
-//   refreshToken: string;
-// } = url => {
-//   const splitUrl = url.split('#');
-//   const urlParams = new URLSearchParams(splitUrl[1]);
-//   console.log(urlParams);
-//   const accessToken = urlParams.get('access_token');
-//   const refreshToken = urlParams.get('refresh_token');
-
-//   console.log({accessToken, refreshToken});
-
-//   return {accessToken: accessToken!, refreshToken: refreshToken!};
-// };
+const baseUrl = Config.REACT_APP_BASE_URL;
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
-
   const [token, setToken] = useState('');
-
   const [hasSentEmail, setHasSentEmail] = useState(false);
-
   const database = useDatabase();
 
   async function signInWithMagicLink() {
@@ -64,12 +43,6 @@ export const LoginScreen = () => {
     }
 
     if (data.session?.access_token) {
-      // fetch profile from server if exists
-      // if not, create profile
-      // navigate to home screen
-
-      // const baseUrl = 'https://weight-tracker-3.hop.sh';
-      const baseUrl = 'http://localhost:3000';
       const response = await fetch(`${baseUrl}/api/profiles`, {
         method: 'POST',
         headers: {

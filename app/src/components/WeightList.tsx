@@ -126,6 +126,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
             }}
             onPointSelected={point => {
               const index = point.date.getTime();
+              console.log('point', point);
 
               if (!isDragging && currentPoint.index !== 0) {
                 setCurrentPoint({value: point.value, index});

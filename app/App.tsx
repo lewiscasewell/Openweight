@@ -28,7 +28,6 @@ import {
 } from '@react-navigation/bottom-tabs';
 import {HomeScreen} from './src/screens/home';
 import {ProfileScreen} from './src/screens/profile';
-import {RegisterScreen} from './src/screens/auth/register';
 import CaloriesScreen from './src/screens/calories';
 import AddWeightScreen from './src/screens/addWeight';
 
@@ -197,7 +196,6 @@ function App(): JSX.Element {
           {!userSession && (
             <NoAuthStack.Navigator>
               <NoAuthStack.Screen name="Login" component={LoginScreen} />
-              <NoAuthStack.Screen name="Register" component={RegisterScreen} />
             </NoAuthStack.Navigator>
           )}
         </SafeAreaProvider>

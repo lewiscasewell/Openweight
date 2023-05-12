@@ -28,6 +28,7 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {Controller, useForm} from 'react-hook-form';
 import {PrimaryTextInput} from '../components/TextInput';
 import {TextInput} from 'react-native';
+import {Slider} from '@miblanchard/react-native-slider';
 
 type EditProfileScreenRouteProp = RouteProp<AuthStackParamList, 'EditProfile'>;
 
@@ -49,6 +50,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
     name: string;
     height: string | undefined;
     activity_level: string | undefined;
+    calorie_surplus: number;
+    target_weight: string | undefined;
   }>({
     defaultValues: {
       name: profile.name ?? '',
@@ -56,6 +59,10 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
       dob_at: profile.dobAt ?? undefined,
       height: profile.height === null ? '' : String(profile.height),
       activity_level: profile.activityLevel ?? undefined,
+      calorie_surplus:
+        profile.calorieSurplus === null ? 0 : profile.calorieSurplus,
+      target_weight:
+        profile.targetWeight === null ? '' : String(profile.targetWeight),
     },
   });
 
@@ -71,6 +78,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
       height: string | undefined;
       height_unit: string | undefined;
       activity_level: string | undefined;
+      calorie_surplus: number;
+      target_weight: string | undefined;
     }) => {
       await database.write(async () => {
         await profile.update(updateProfile => {
@@ -81,6 +90,10 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
             data.height === '' ? undefined : Number(data.height);
           updateProfile.heightUnit = data.height_unit ?? undefined;
           updateProfile.activityLevel = data.activity_level;
+          updateProfile.calorieSurplus = data.calorie_surplus;
+          updateProfile.targetWeight =
+            data.target_weight === '' ? undefined : Number(data.target_weight);
+          updateProfile.targetWeightUnit = 'kg';
         });
         navigation.goBack();
       });
@@ -102,6 +115,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                 height: data.height,
                 height_unit: 'cm',
                 activity_level: data.activity_level,
+                calorie_surplus: data.calorie_surplus,
+                target_weight: data.target_weight,
               });
             })();
           }}>
@@ -375,6 +390,108 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     }}>
                     <Text style={styles.selectOptionText}>Very Active</Text>
                   </TouchableOpacity>
+                </View>
+              </Animated.View>
+            )}
+          </Animated.View>
+        )}
+      />
+
+      <Controller
+        name="calorie_surplus"
+        control={control}
+        render={({field: {value}}) => (
+          <Animated.View
+            layout={Layout.easing(Easing.inOut(Easing.ease))}
+            style={styles.genderContainer}>
+            <Pressable
+              onPress={() => {
+                isEditing === 'targetCalories'
+                  ? setIsEditing(null)
+                  : setIsEditing('targetCalories');
+              }}
+              style={styles.optionContainer}>
+              <View>
+                <Text style={styles.optionText}>Calorie surplus/defecit</Text>
+                <Text style={styles.optionValue}>{value} calories</Text>
+              </View>
+              <Text style={styles.editButtonText}>
+                {isEditing === 'targetCalories' ? 'Close' : 'Edit'}
+              </Text>
+            </Pressable>
+            {isEditing === 'targetCalories' && (
+              <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <Slider
+                    value={value}
+                    minimumValue={-1000}
+                    maximumValue={1000}
+                    step={100}
+                    minimumTrackTintColor={colors.primary}
+                    thumbTintColor={colors.primary}
+                    containerStyle={{flex: 1, height: 40}}
+                    onValueChange={value => {
+                      setValue('calorie_surplus', value[0]);
+                    }}
+                  />
+                </View>
+              </Animated.View>
+            )}
+          </Animated.View>
+        )}
+      />
+
+      <Controller
+        name="target_weight"
+        control={control}
+        render={({field: {value}}) => (
+          <Animated.View
+            layout={Layout.easing(Easing.inOut(Easing.ease))}
+            style={styles.genderContainer}>
+            <Pressable
+              onPress={() => {
+                isEditing === 'targetWeight'
+                  ? setIsEditing(null)
+                  : setIsEditing('targetWeight');
+              }}
+              style={styles.optionContainer}>
+              <View>
+                <Text style={styles.optionText}>Target Weight</Text>
+                <Text style={styles.optionValue}>
+                  {value !== '' ? value + ' kg' : 'Not provided'}
+                </Text>
+              </View>
+              <Text style={styles.editButtonText}>
+                {isEditing === 'targetWeight' ? 'Close' : 'Edit'}
+              </Text>
+            </Pressable>
+            {isEditing === 'targetWeight' && (
+              <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <TextInput
+                    style={[
+                      styles.selectOptionContainer,
+                      {flex: 1},
+                      value === 'male' ? {} : {opacity: 0.5},
+                    ]}
+                    onChangeText={text => {
+                      setValue('target_weight', text);
+                    }}
+                    value={value}
+                    keyboardType="numeric"
+                    placeholder="Enter your target weight"
+                    placeholderTextColor={colors.grey['400']}
+                  />
                 </View>
               </Animated.View>
             )}
