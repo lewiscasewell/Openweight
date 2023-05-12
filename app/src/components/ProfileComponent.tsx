@@ -1,22 +1,16 @@
 import React from 'react';
 import Profile from '../watermelondb/model/Profile';
 
-import {
-  FlatList,
-  Dimensions,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Pressable} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
-import {DateTime, Interval} from 'luxon';
-import {SecondaryButton} from './Button';
 import {supabase} from '../supabase';
-import {ProfileAttribute, TabStackNavigationProps} from '../../App';
+import {TabStackNavigationProps} from '../../App';
 import {useNavigation} from '@react-navigation/native';
+import {colors} from '../styles/theme';
+import {SecondaryButton} from './Button';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 
 type Props = {
   database: Database;
@@ -24,119 +18,47 @@ type Props = {
   profiles: Profile[];
 };
 
-type ProfileItemProps = {
-  title: string;
-  value: string;
-  attribute: ProfileAttribute;
-};
-
-const {width} = Dimensions.get('screen');
-
-const Header: React.FC<{currentProfile: Profile}> = ({currentProfile}) => {
-  console.log(currentProfile);
-  return (
-    <>
-      <Text style={styles.text}>Profile</Text>
-    </>
-  );
-};
-
-const ProfileItem: React.FC<ProfileItemProps> = ({title, value, attribute}) => {
-  const navigation = useNavigation<TabStackNavigationProps>();
-  return (
-    <View style={{width: width / 2, padding: 10}}>
-      <TouchableOpacity
-        style={{
-          backgroundColor: '#1d1d1d',
-          padding: 10,
-          height: width / 2.5,
-          borderRadius: 10,
-        }}
-        onPress={() => {
-          navigation.navigate('EditProfile', {profileAttribute: attribute});
-        }}>
-        <Text
-          style={{color: 'white', fontSize: 26, fontWeight: '700', flex: 1}}>
-          {title}
-        </Text>
-        <Text style={{color: 'white', fontSize: 50}}>{value}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
 const ProfileComponent = ({profiles}: Props) => {
   const currentProfile = profiles?.[0];
+  const navigation = useNavigation<TabStackNavigationProps>();
 
+  if (!currentProfile) {
+    return (
+      <SecondaryButton
+        title="Log out"
+        onPress={() => {
+          supabase.auth.signOut();
+        }}
+      />
+    );
+  }
   return (
     <View style={styles.container}>
-      <FlatList
-        style={styles.container}
-        ListFooterComponent={() => {
-          return (
-            <View style={styles.buttonContainer}>
-              <SecondaryButton
-                title="Logout"
-                onPress={() => {
-                  supabase.auth.signOut();
-                }}
-              />
-            </View>
-          );
-        }}
-        ListHeaderComponent={() => <Header currentProfile={currentProfile} />}
-        data={[
-          {
-            title: 'Gender',
-            attribute: 'gender',
-            value: currentProfile?.gender ?? '-',
-          },
-          {
-            title: 'Age',
-            attribute: 'age',
-            value: currentProfile?.dobAt
-              ? Interval.fromDateTimes(
-                  DateTime.fromJSDate(currentProfile.dobAt),
-                  DateTime.now(),
-                ).toFormat('y')
-              : '-',
-          },
-          {
-            title: 'Height',
-            attribute: 'height',
-            value:
-              currentProfile?.height && currentProfile?.heightUnit
-                ? `${currentProfile.height} ${currentProfile.heightUnit}`
-                : '-',
-          },
-          {
-            title: 'Weight',
-            attribute: 'targetWeight',
-            value:
-              currentProfile?.targetWeight && currentProfile?.targetWeightUnit
-                ? `${currentProfile.targetWeight} ${currentProfile.targetWeightUnit}}`
-                : '-',
-          },
-          {
-            title: 'Activity',
-            attribute: 'activityLevel',
-            value: currentProfile?.activityLevel ?? '-',
-          },
-          {
-            title: 'Calorie goal',
-            attribute: 'calorieGoal',
-            value: currentProfile?.calorieSurplus ?? '-',
-          },
-        ]}
-        numColumns={2}
-        renderItem={({item}) => (
-          <ProfileItem
-            title={item.title}
-            value={String(item.value)}
-            attribute={item.attribute}
-          />
-        )}
-      />
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.headingContainer}>
+          <Text style={styles.profileText}>Profile</Text>
+          <Text style={styles.nameText}>{currentProfile.name}</Text>
+        </View>
+        <View style={styles.optionsContainer}>
+          <TouchableHighlight
+            style={styles.optionContainer}
+            onPress={() => {
+              navigation.navigate('EditProfile', {id: currentProfile.id});
+            }}>
+            <Text style={styles.optionText}>Profile information</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.optionContainer}>
+            <Text style={styles.optionText}>Change email address</Text>
+          </TouchableHighlight>
+        </View>
+        <Pressable
+          style={styles.logoutButton}
+          onPress={() => {
+            supabase.auth.signOut();
+          }}>
+          <Text style={styles.buttonText}>Logout</Text>
+        </Pressable>
+      </ScrollView>
     </View>
   );
 };
@@ -156,13 +78,67 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  text: {
+  scrollContainer: {
+    flex: 1,
+    padding: 14,
+  },
+  profileText: {
     color: 'white',
-    fontSize: 26,
-    fontWeight: 'bold',
-    padding: 10,
+    fontSize: 34,
+    fontWeight: '500',
+  },
+  nameText: {
+    color: colors.grey['400'],
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  h3: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  headingContainer: {
+    paddingVertical: 40,
+  },
+  optionsContainer: {
+    paddingVertical: 40,
+  },
+  optionContainer: {
+    paddingVertical: 20,
+    borderBottomColor: colors.grey['500'],
+    borderBottomWidth: 0.5,
+  },
+  optionText: {
+    color: colors.grey['200'],
+    fontSize: 22,
+  },
+  profileItemContainer: {
+    padding: 20,
+    borderTopColor: colors.grey['400'],
+    borderWidth: 0.5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  optionItemContainer: {
+    padding: 20,
+    borderColor: colors.grey['500'],
+    borderWidth: 0.5,
+  },
+  value: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.grey['400'],
   },
   buttonContainer: {
     padding: 14,
+  },
+  buttonText: {
+    color: colors.grey['200'],
+    fontSize: 18,
+    textDecorationLine: 'underline',
+    fontWeight: '600',
+  },
+  logoutButton: {
+    paddingVertical: 60,
   },
 });

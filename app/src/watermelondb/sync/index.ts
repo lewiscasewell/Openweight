@@ -1,11 +1,10 @@
 import {hasUnsyncedChanges, synchronize} from '@nozbe/watermelondb/sync';
 import {map} from 'rxjs';
-import {database} from '.';
-import {supabase} from '../supabase';
+import {database} from '../index';
+import {supabase} from '../../supabase';
+import Config from 'react-native-config';
 
-// const baseUrl = 'https://weight-tracker-3.hop.sh/api/sync';
-const localUrl = 'http://localhost:3000/api/sync';
-
+const baseUrl = Config.REACT_APP_BASE_URL;
 export async function sync() {
   const {data} = await supabase.auth.getSession();
 
@@ -17,7 +16,7 @@ export async function sync() {
       const urlParams = `last_pulled_at=${lastPulledAt}`;
       console.log('data.session?.access_token', data.session?.access_token);
 
-      const response = await fetch(`${localUrl}/?${urlParams}`, {
+      const response = await fetch(`${baseUrl}/api/sync/?${urlParams}`, {
         headers: {
           Authorization: `Bearer ${data.session?.access_token}`,
         },
@@ -38,7 +37,7 @@ export async function sync() {
       console.log('pushChanges...');
 
       const urlParams = `last_pulled_at=${lastPulledAt}`;
-      const response = await fetch(`${localUrl}/?${urlParams}`, {
+      const response = await fetch(`${baseUrl}/api/sync/?${urlParams}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${data.session?.access_token}`,

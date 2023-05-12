@@ -11,7 +11,7 @@ import {
   switchMap,
   combineLatestWith,
 } from 'rxjs/operators';
-import {sync, whenUpdatableDataSetChanges} from '../sync';
+import {sync, whenUpdatableDataSetChanges} from '.';
 const TIME_DELAY_IN_MILLIS = 2000;
 export function useSyncDatabase() {
   const [isSyncing, setIsSyncing] = React.useState(false);

@@ -17,14 +17,6 @@ const adapter = new SQLiteAdapter({
   // onVersionChanged: ({ from, to }) => console.log(`Database version changed from ${from} to ${to}`),
   // For production:
   dbName: 'watermelondb',
-  // For Android:
-  // schemaVersion: 1,
-  // For iOS:
-  // useWebSQL: false,
-  // For React Native:
-  // synchronous: true,
-  // For Expo:
-  // disablePromise: true,
 });
 
 export const database = new Database({
