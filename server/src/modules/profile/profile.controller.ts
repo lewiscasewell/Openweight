@@ -31,6 +31,7 @@ export async function fetchProfileHandler(
         updated_at: new Date(),
         name: `user${randomId}`,
         id: uuidV4(),
+        calorie_surplus: 0,
       })
       .execute();
 
@@ -44,5 +45,6 @@ export async function fetchProfileHandler(
     dob_at: dayjs(profile.dob_at).valueOf(),
     created_at: dayjs(profile.created_at).valueOf(),
     updated_at: dayjs(profile.updated_at).valueOf(),
+    calorie_surplus: 0,
   });
 }

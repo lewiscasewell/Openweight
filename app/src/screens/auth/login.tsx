@@ -67,7 +67,10 @@ export const LoginScreen = () => {
       // fetch profile from server if exists
       // if not, create profile
       // navigate to home screen
-      const response = await fetch('http://localhost:3000/api/profiles', {
+
+      // const baseUrl = 'https://weight-tracker-3.hop.sh';
+      const baseUrl = 'http://localhost:3000';
+      const response = await fetch(`${baseUrl}/api/profiles`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${data.session?.access_token}`,
@@ -97,6 +100,7 @@ export const LoginScreen = () => {
         await database.write(async () => {
           await database.get('profiles').query().destroyAllPermanently();
         });
+        // TODO: eventually do the same for weights
 
         await database
           .write(async () => {
@@ -139,6 +143,7 @@ export const LoginScreen = () => {
               value={token}
               label="Your 6 digit code"
               placeholder="123456"
+              keyboardType="numeric"
             />
           </View>
           <View style={styles.verticallySpaced}>

@@ -120,7 +120,7 @@ export async function pushChangesHandler(
   reply: FastifyReply
 ) {
   const changes = request.body;
-  const client = request.supabaseClient;
+
   if (!changes) {
     return reply.code(400).send({
       status:
@@ -130,8 +130,8 @@ export async function pushChangesHandler(
 
   const lastPulledAt = getSafeLastPulledAt(request);
   console.log(lastPulledAt, request.query.last_pulled_at);
-  console.log("changes", changes.profiles.created?.[0]);
-  console.log(changes.weights.updated?.[0]);
+  console.log("changes", changes);
+  console.log(changes.profiles.updated?.[0]);
 
   if (changes.profiles.created.length > 0) {
     const createdProfileData = changes.profiles.created.map((profile) => ({
@@ -141,7 +141,10 @@ export async function pushChangesHandler(
       calorie_surplus: profile.calorie_surplus,
       created_at: dayjs(profile.created_at).toDate(),
       default_weight_unit: profile.default_weight_unit,
-      dob_at: profile.dob_at ? dayjs(profile.dob_at).toDate() : null,
+      dob_at:
+        typeof profile.dob_at === "number"
+          ? dayjs(profile.dob_at).toDate()
+          : null,
       gender: profile.gender,
       height: profile.height,
       height_unit: profile.height_unit,
@@ -165,7 +168,10 @@ export async function pushChangesHandler(
             calorie_surplus: profile.calorie_surplus,
             created_at: dayjs(profile.created_at).toDate(),
             default_weight_unit: profile.default_weight_unit,
-            dob_at: dayjs(profile.dob_at).toDate(),
+            dob_at:
+              typeof profile.dob_at === "number"
+                ? dayjs(profile.dob_at).toDate()
+                : null,
             gender: profile.gender,
             height: profile.height,
             height_unit: profile.height_unit,

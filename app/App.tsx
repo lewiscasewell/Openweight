@@ -29,7 +29,7 @@ import {
 import {HomeScreen} from './src/screens/home';
 import {ProfileScreen} from './src/screens/profile';
 import {RegisterScreen} from './src/screens/auth/register';
-import {CaloriesScreen} from './src/screens/calories';
+import CaloriesScreen from './src/screens/calories';
 import AddWeightScreen from './src/screens/addWeight';
 
 import {useAtom} from 'jotai';
@@ -40,8 +40,7 @@ import {colors, theme} from './src/styles/theme';
 import {MaterialIcon} from './src/icons/material-icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import {EditProfileScreen} from './src/screens/editProfile';
-import {Text} from 'react-native';
+import EditProfileScreen from './src/screens/editProfile';
 
 dayjs.extend(utc);
 
@@ -52,8 +51,8 @@ LogBox.ignoreLogs(['useSharedValueEffect()']);
 // });
 
 export type TabStackParamList = {
-  Weights: undefined;
-  Calories: undefined;
+  Weights: {id: string};
+  Calories: {id: string};
   Profile: undefined;
 };
 
@@ -68,9 +67,9 @@ export type ProfileAttribute =
 
 export type AuthStackParamList = {
   index: undefined;
-  AddWeight: {dateToPass: string; id: string | undefined};
+  AddWeight: {dateToPass: string; id: string};
   EditProfile: {
-    profileAttribute: ProfileAttribute;
+    id: string;
   };
 };
 
@@ -106,6 +105,7 @@ const Tabs = () => {
       <TabStack.Navigator screenOptions={{headerShown: false}}>
         <TabStack.Screen
           name="Weights"
+          initialParams={{id: session?.user.id}}
           component={HomeScreen}
           options={{
             tabBarIcon: ({color, size}) => (
@@ -115,6 +115,7 @@ const Tabs = () => {
         />
         <TabStack.Screen
           name="Calories"
+          initialParams={{id: session?.user.id}}
           component={CaloriesScreen}
           options={{
             tabBarIcon: ({color, size}) => (
@@ -132,19 +133,19 @@ const Tabs = () => {
           }}
         />
       </TabStack.Navigator>
-      {
+      {session && (
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
             navigation.navigate('AddWeight', {
               dateToPass: dayjs().format('YYYY-MM-DD'),
-              id: session?.user.id,
+              id: session.user.id,
             });
           }}
           style={styles.addButton}>
           <MaterialIcon name="plus" color={colors.grey[900]} size={40} />
         </TouchableOpacity>
-      }
+      )}
     </>
   );
 };
@@ -178,19 +179,10 @@ function App(): JSX.Element {
               <AuthStack.Screen
                 name="EditProfile"
                 component={EditProfileScreen}
-                options={({route}) => ({
+                options={{
                   headerShown: true,
                   headerBackTitle: '',
-                  headerTitle: () => {
-                    const profileAttribute =
-                      route.params.profileAttribute.charAt(0).toUpperCase() +
-                      route.params.profileAttribute.slice(1);
-
-                    return (
-                      <Text style={styles.headerTitle}>{profileAttribute}</Text>
-                    );
-                  },
-                })}
+                }}
               />
               <AuthStack.Screen
                 name="AddWeight"

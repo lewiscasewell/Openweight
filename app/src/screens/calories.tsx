@@ -1,23 +1,105 @@
 import React from 'react';
-import {StyleSheet, Button, ScrollView} from 'react-native';
-import {sync} from '../watermelondb/sync';
+import {StyleSheet, ScrollView, Text, View} from 'react-native';
 
-export const CaloriesScreen = () => {
-  const months = ['2023-01', '2023-02', '2022-12', '2022-11', '2023-10'];
-  const sortedMonths = months.sort((a, b) => {
-    return b.localeCompare(a);
-  });
-  console.log(sortedMonths);
+import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
+
+import withObservables from '@nozbe/with-observables';
+import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
+import {Database, Q} from '@nozbe/watermelondb';
+import Profile from '../watermelondb/model/Profile';
+import {RouteProp, useNavigation} from '@react-navigation/native';
+import {TabStackNavigationProps, TabStackParamList} from '../../App';
+import {PrimaryButton} from '../components/Button';
+import {colors} from '../styles/theme';
+
+type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
+
+type Props = {
+  database: Database;
+  profiles: Profile[];
+  route: CaloriesScreenRouteProp;
+};
+
+const CompleteProfile = ({currentProfile}: {currentProfile: Profile}) => {
+  const navigation = useNavigation<TabStackNavigationProps>();
+  return (
+    <View style={completeProfileStyles.container}>
+      <Text style={completeProfileStyles.title}>
+        Almost there. To work out your daily calorie target you need to complete
+        your profile.
+      </Text>
+      <PrimaryButton
+        title="Complete profile"
+        onPress={() => {
+          navigation.navigate('EditProfile', {id: currentProfile.id});
+        }}
+      />
+    </View>
+  );
+};
+
+const completeProfileStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingVertical: 150,
+  },
+  title: {
+    textAlign: 'center',
+    padding: 16,
+    fontSize: 18,
+    fontWeight: '500',
+    marginBottom: 16,
+    color: colors.grey[300],
+  },
+});
+
+const CaloriesScreen = ({profiles}: Props) => {
+  const currentProfile = profiles?.[0];
+  console.log(currentProfile);
+
+  const isCompleteProfile = Boolean(
+    currentProfile.name &&
+      currentProfile?.gender &&
+      currentProfile?.height &&
+      currentProfile?.heightUnit &&
+      currentProfile?.activityLevel &&
+      currentProfile?.targetWeight &&
+      currentProfile?.targetWeightUnit &&
+      currentProfile?.dobAt &&
+      currentProfile?.calorieSurplus,
+  );
+
+  console.log(isCompleteProfile);
+
   return (
     <ScrollView style={styles.container}>
-      <Button title="sync" onPress={() => sync()} />
+      <Text style={styles.title}>Calories</Text>
+      {isCompleteProfile ? (
+        <Text>Complete profile</Text>
+      ) : (
+        <CompleteProfile currentProfile={currentProfile} />
+      )}
     </ScrollView>
   );
 };
 
+const withModels = withObservables(['profiles'], ({database, route}: Props) => {
+  const {id: supabaseUserId} = route.params;
+
+  return {
+    profiles: database
+      .get<Profile>('profiles')
+      .query(Q.where('supabase_user_id', supabaseUserId))
+      .observe(),
+  };
+});
+
+export default withDatabase(withModels(CaloriesScreen));
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: StaticSafeAreaInsets.safeAreaInsetsTop,
   },
   graph: {
     flex: 1,

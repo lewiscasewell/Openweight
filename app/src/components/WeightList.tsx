@@ -45,10 +45,16 @@ type Props = {
 const dateRanges = ['1Y', '3M', '1M', '2W', '1W'] as const;
 type DateRange = (typeof dateRanges)[number];
 
-const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
-  points,
-  weights,
-}) => {
+const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
+  const points: GraphPoint[] = weights
+    .map((weight, index) => {
+      return {
+        date: new Date(index),
+        value: weight.weight,
+      };
+    })
+    .reverse();
+
   const [isDragging, setIsDragging] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<{
     index: number;
@@ -103,18 +109,28 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
         <>
           <LineGraph
             onGestureStart={() => {
-              setIsDragging(true);
+              if (!isDragging) {
+                setIsDragging(true);
+              }
             }}
             onGestureEnd={() => {
-              setIsDragging(false);
-
-              setCurrentPoint({
-                value: Number(points[points.length - 1].value?.toFixed(1)),
-                index: points.length - 1,
-              });
+              if (isDragging) {
+                setIsDragging(false);
+              }
+              if (currentPoint.index !== 0) {
+                setCurrentPoint({
+                  value: Number(points[points.length - 1].value?.toFixed(1)),
+                  index: 0,
+                });
+              }
             }}
             onPointSelected={point => {
               const index = point.date.getTime();
+
+              if (!isDragging && currentPoint.index !== 0) {
+                setCurrentPoint({value: point.value, index});
+              }
+
               if (isDragging) {
                 setCurrentPoint({value: point.value, index});
               }
@@ -160,7 +176,6 @@ const Header: React.FC<{points: GraphPoint[]; weights: Weight[]}> = ({
 const WeightList = ({weights}: Props) => {
   const [session] = useAtom(sessionAtom);
   const navigation = useNavigation<TabStackNavigationProps>();
-  console.log('weights', weights);
 
   const weightsGroupedByMonth = R.pipe(
     weights,
@@ -174,36 +189,31 @@ const WeightList = ({weights}: Props) => {
   const sectionListWeights = Object.keys(weightsGroupedByMonth).map(weight => {
     return {
       title: weight,
-      data: weightsGroupedByMonth[weight].map(weight => {
+      data: weightsGroupedByMonth[weight].map(sectionWeight => {
         return {
-          weight: weight.weight,
-          unit: weight.unit,
-          dateAt: weight.dateAt,
+          id: sectionWeight.id,
+          weight: sectionWeight.weight,
+          unit: sectionWeight.unit,
+          dateAt: sectionWeight.dateAt,
         };
       }),
     };
   });
 
-  const points: GraphPoint[] = weights
-    .map((weight, index) => {
-      return {
-        date: new Date(index),
-        value: weight.weight,
-      };
-    })
-    .reverse();
-
   return (
     <View>
-      {weights.length > 0 ? (
+      {session && weights.length > 0 ? (
         <SectionList
           sections={sectionListWeights}
           style={styles.weightList}
-          ListHeaderComponent={<Header points={points} weights={weights} />}
+          ListHeaderComponent={<Header weights={weights} />}
           ListFooterComponent={<View style={styles.footer} />}
-          keyExtractor={(item, index) => item.dateAt.toUTCString() + index}
+          keyExtractor={item => item.id}
           renderItem={({item: weight, index}) => {
-            const weightBefore = weights?.[index + 1]?.weight;
+            const indexFromAllWeights = weights.findIndex(
+              w => w.id === weight.id,
+            );
+            const weightBefore = weights[indexFromAllWeights + 1]?.weight;
 
             const diffBetweenWeights = (weight.weight - weightBefore).toFixed(
               1,
@@ -214,9 +224,8 @@ const WeightList = ({weights}: Props) => {
 
             return (
               <Animated.View
-                entering={FadeInDown}
-                exiting={FadeOutUp}
-                layout={Layout.delay(index * 200)}>
+                entering={FadeInDown.delay(index * 200)}
+                exiting={FadeOutUp}>
                 <TouchableOpacity
                   style={styles.weightItemContainer}
                   onPress={() => {
@@ -273,7 +282,7 @@ const WeightList = ({weights}: Props) => {
                 : (sectionWeight - sectionWeightBefore).toFixed(1);
 
             return (
-              <View style={styles.sectionHeader}>
+              <Animated.View entering={FadeIn} style={styles.sectionHeader}>
                 <Text style={styles.sectionHeaderTitle}>
                   {Number(diffBetweenWeights) > 0 ? (
                     <MaterialIcon
@@ -293,7 +302,7 @@ const WeightList = ({weights}: Props) => {
                 <Text style={styles.sectionHeaderTitle}>
                   {diffBetweenWeights} kg
                 </Text>
-              </View>
+              </Animated.View>
             );
           }}
         />
@@ -440,39 +449,6 @@ const withModels = withObservables(
               );
             }),
           ),
-          //   pipe(
-          //     map(weights =>
-          //       weights.reduce((acc, weight) => {
-          //         const month = weight.dateString.split('-')[1];
-          //         const year = weight.dateString.split('-')[2];
-          //         const monthYear = `${year}-${month}`;
-          //         console.log('year', year);
-          //         // @ts-ignore
-          //         if (acc[monthYear]) {
-          //           // @ts-ignore
-          //           acc[monthYear].push(weight);
-          //         } else {
-          //           // @ts-ignore
-          //           acc[monthYear] = [weight];
-          //         }
-          //         console.log('acc', acc);
-          //         return acc;
-          //       }, {}),
-          //     ),
-
-          //     map(weights => {
-          //       const monthYears = Object.keys(weights);
-          //       const sortedMonthYears = monthYears.sort((a, b) =>
-          //         b.localeCompare(a),
-          //       );
-
-          //       return sortedMonthYears.reduce((acc, month) => {
-          //         // @ts-ignore
-          //         acc.push(...weights[month]);
-          //         return acc;
-          //       }, []);
-          //     }),
-          //   ),
         ),
     };
   },

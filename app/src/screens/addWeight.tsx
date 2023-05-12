@@ -2,7 +2,7 @@ import {Database, Q} from '@nozbe/watermelondb';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useAtom} from 'jotai';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {
   View,
   Text,
@@ -24,18 +24,78 @@ import {AuthStackParamList, TabStackNavigationProps} from '../../App';
 import {MaterialIcon} from '../icons/material-icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import {map} from 'rxjs';
+import {Session} from '@supabase/supabase-js';
 dayjs.extend(utc);
 
+type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
 type Props = {
   database: Database;
-  route: any;
+  route: AddWeightScreenRouteProp;
   weights: Weight[];
 };
 
-type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
+async function addWeight({
+  database,
+  weights,
+  session,
+  date,
+  weightInput,
+  navigation,
+}: {
+  database: Database;
+  weights: Weight[];
+  session: Session | null;
+  date: Date;
+  weightInput: string;
+  navigation: TabStackNavigationProps;
+}): Promise<void> {
+  await database.write(async () => {
+    const profile = await database
+      .get<Profile>('profiles')
+      .query(Q.where('supabase_user_id', session?.user.id!))
+      .fetch();
+
+    const weightOnDate = weights.find(
+      weight =>
+        dayjs(weight.dateAt).format('YYYY-MM-DD') ===
+        dayjs(date).format('YYYY-MM-DD'),
+    );
+
+    if (weightOnDate !== undefined && weightInput) {
+      await weightOnDate
+        .update(weightRecord => {
+          weightRecord.weight = parseFloat(weightInput);
+        })
+        .then(() => {
+          console.log('updated');
+        });
+
+      navigation.goBack();
+
+      return;
+    }
+    if (weightInput) {
+      await database.get<Weight>('weights').create(weight => {
+        // @ts-ignore
+        weight.profile.set(profile[0]);
+        weight.weight = parseFloat(weightInput);
+        weight.unit = 'kg';
+        weight.dateAt = date;
+        weight.supabaseUserId = session?.user.id!;
+      });
+    }
+
+    navigation.goBack();
+  });
+}
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
+
+  const [session] = useAtom(sessionAtom);
+  const database = useDatabase();
+  const navigation = useNavigation<TabStackNavigationProps>();
 
   const [weightInput, setWeightInput] = React.useState(
     weights
@@ -47,55 +107,21 @@ const AddWeightScreen = ({weights}: Props) => {
       weights[0]?.weight.toString() ??
       '',
   );
-
-  const [session] = useAtom(sessionAtom);
-  const database = useDatabase();
-  const navigation = useNavigation<TabStackNavigationProps>();
-
   const [date, setDate] = React.useState(
     dayjs(route.params.dateToPass).startOf('day').utc(true).toDate(),
   );
 
-  async function addWeight() {
-    await database.write(async () => {
-      const profile = await database
-        .get<Profile>('profiles')
-        .query(Q.where('supabase_user_id', session?.user.id!))
-        .fetch();
+  const incrementWeight = useCallback(() => {
+    setWeightInput(currentWeightInput =>
+      (parseFloat(currentWeightInput!) + 0.1).toFixed(1),
+    );
+  }, []);
 
-      const weightOnDate = weights.find(
-        weight =>
-          dayjs(weight.dateAt).format('YYYY-MM-DD') ===
-          dayjs(date).format('YYYY-MM-DD'),
-      );
-
-      if (weightOnDate !== undefined && weightInput) {
-        await weightOnDate
-          .update(weightRecord => {
-            weightRecord.weight = parseFloat(weightInput);
-          })
-          .then(() => {
-            console.log('updated');
-          });
-
-        navigation.goBack();
-
-        return;
-      }
-      if (weightInput) {
-        await database.get<Weight>('weights').create(weight => {
-          // @ts-ignore
-          weight.profile.set(profile[0]);
-          weight.weight = parseFloat(weightInput);
-          weight.unit = 'kg';
-          weight.dateAt = date;
-          weight.supabaseUserId = session?.user.id!;
-        });
-      }
-
-      navigation.goBack();
-    });
-  }
+  const decrementWeight = useCallback(() => {
+    setWeightInput(currentWeightInput =>
+      (parseFloat(currentWeightInput!) - 0.1).toFixed(1),
+    );
+  }, []);
 
   return (
     <SafeAreaView style={styles.flex}>
@@ -107,9 +133,7 @@ const AddWeightScreen = ({weights}: Props) => {
           <View style={styles.weightInputContainer}>
             <TouchableOpacity
               onPressIn={() => {
-                setWeightInput(currentWeightInput =>
-                  (parseFloat(currentWeightInput!) - 0.1).toFixed(1),
-                );
+                decrementWeight();
               }}
               activeOpacity={0.7}
               style={{
@@ -134,9 +158,7 @@ const AddWeightScreen = ({weights}: Props) => {
             />
             <TouchableOpacity
               onPressIn={() => {
-                setWeightInput(currentWeightInput =>
-                  (parseFloat(currentWeightInput!) + 0.1).toFixed(1),
-                );
+                incrementWeight();
               }}
               activeOpacity={0.7}
               style={{
@@ -197,7 +219,14 @@ const AddWeightScreen = ({weights}: Props) => {
             style={styles.saveButton}
             activeOpacity={0.7}
             onPress={() => {
-              addWeight();
+              addWeight({
+                database,
+                weights,
+                session,
+                date,
+                weightInput,
+                navigation,
+              });
             }}>
             <Text style={styles.saveButtonText}>SAVE</Text>
           </TouchableOpacity>
@@ -251,13 +280,18 @@ const styles = StyleSheet.create({
 const withModels = withObservables(['route'], ({database, route}: Props) => {
   const {id} = route.params;
 
-  const weights = database
-    .get<Weight>('weights')
-    .query(Q.where('supabase_user_id', id))
-    .observeWithColumns(['weight', 'date_at']);
-
   return {
-    weights: weights,
+    weights: database
+      .get<Weight>('weights')
+      .query(Q.where('supabase_user_id', id))
+      .observeWithColumns(['weight', 'unit', 'supabase_user_id', 'date_at'])
+      .pipe(
+        map(weights =>
+          weights.sort((a, b) => {
+            return new Date(b.dateAt).getTime() - new Date(a.dateAt).getTime();
+          }),
+        ),
+      ),
   };
 });
 
