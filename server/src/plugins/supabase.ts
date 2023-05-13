@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
+import { Config, config } from "../config";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -9,8 +10,7 @@ declare module "fastify" {
 }
 
 const supabasePlugin: FastifyPluginAsync = async (fastify, options) => {
-  const supabaseUrl = fastify.config.SUPABASE_URL;
-  const supabaseKey = fastify.config.SUPABASE_KEY;
+  const { supabaseUrl, supabaseKey } = config.supabase;
 
   fastify.decorate("supabase", createClient(supabaseUrl, supabaseKey, {}));
 };

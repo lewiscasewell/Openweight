@@ -12,7 +12,9 @@ import {
   combineLatestWith,
 } from 'rxjs/operators';
 import {sync, whenUpdatableDataSetChanges} from '.';
+
 const TIME_DELAY_IN_MILLIS = 2000;
+
 export function useSyncDatabase() {
   const [isSyncing, setIsSyncing] = React.useState(false);
   const syncSubscription = React.useRef<Subscription | null>(null);
@@ -22,9 +24,9 @@ export function useSyncDatabase() {
     if (!syncSubscription.current) {
       syncSubscription.current = whenUpdatableDataSetChanges()
         .pipe(
-          map(x => {
-            console.log('Changes', x);
-            return x;
+          map(hasChanges => {
+            console.log('Changes', hasChanges);
+            return hasChanges;
           }),
           combineLatestWith(whenNetworksChanges(), whenAppStateChanges()),
           map(([changes, isInternetReachable, appState]) => {

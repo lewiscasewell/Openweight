@@ -6,6 +6,8 @@ import {supabase} from '../../supabase';
 import Profile from '../../watermelondb/model/Profile';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Config from 'react-native-config';
+import {useAtom} from 'jotai';
+import {appLoadingAtom} from '../../atoms/appLoading.atom';
 
 const baseUrl = Config.REACT_APP_BASE_URL;
 
@@ -13,6 +15,7 @@ export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
   const [hasSentEmail, setHasSentEmail] = useState(false);
+  const [, setIsAppLoading] = useAtom(appLoadingAtom);
   const database = useDatabase();
 
   async function signInWithMagicLink() {
@@ -69,6 +72,7 @@ export const LoginScreen = () => {
       }
 
       if (profile) {
+        setIsAppLoading({isAppLoading: true});
         // delete all profiles from the database
         await database.write(async () => {
           await database.get('profiles').query().destroyAllPermanently();
@@ -100,8 +104,10 @@ export const LoginScreen = () => {
               });
           })
           .then(() => {
-            console.log('done');
+            setIsAppLoading({isAppLoading: false});
           });
+
+        setIsAppLoading({isAppLoading: false});
       }
     }
   }

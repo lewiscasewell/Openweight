@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   SectionList,
@@ -42,11 +42,34 @@ type Props = {
   weights: Weight[];
 };
 
-const dateRanges = ['1Y', '3M', '1M', '2W', '1W'] as const;
+const dateRanges = ['ALL', '1Y', '3M', '1M', '1W'] as const;
 type DateRange = (typeof dateRanges)[number];
 
 const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
+  const [dateRange, setDateRange] = useState<DateRange>('1Y');
+  const [isDragging, setIsDragging] = useState(false);
+
   const points: GraphPoint[] = weights
+    // filter by date range
+    .filter(weight => {
+      const now = new Date();
+      const date = new Date(weight.dateAt);
+      const diff = now.getTime() - date.getTime();
+      const diffDays = diff / (1000 * 3600 * 24);
+
+      switch (dateRange) {
+        case 'ALL':
+          return true;
+        case '1Y':
+          return diffDays <= 365;
+        case '3M':
+          return diffDays <= 90;
+        case '1M':
+          return diffDays <= 30;
+        case '1W':
+          return diffDays <= 7;
+      }
+    })
     .map((weight, index) => {
       return {
         date: new Date(index),
@@ -55,7 +78,6 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
     })
     .reverse();
 
-  const [isDragging, setIsDragging] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<{
     index: number;
     value: number;
@@ -64,7 +86,13 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
     index: points?.length - 1,
   });
 
-  const dateRange = useState<DateRange>('1Y');
+  useEffect(() => {
+    setCurrentPoint({
+      value: points[points.length - 1]?.value,
+      index: 0,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weights]);
 
   const max = Math.max(...points.map(point => point.value));
   const min = Math.min(...points.map(point => point.value));
@@ -126,7 +154,6 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
             }}
             onPointSelected={point => {
               const index = point.date.getTime();
-              console.log('point', point);
 
               if (!isDragging && currentPoint.index !== 0) {
                 setCurrentPoint({value: point.value, index});
@@ -151,17 +178,17 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
               <TouchableOpacity
                 key={range}
                 onPressIn={() => {
-                  dateRange[1](range);
+                  setDateRange(range);
                 }}
                 style={[
                   styles.dateRangeButton,
-                  dateRange[0] === range && styles.dateRangeButtonActive,
+                  dateRange === range && styles.dateRangeButtonActive,
                 ]}>
                 <Text
                   style={[
                     styles.dateRangeButtonText,
 
-                    dateRange[0] === range && styles.dateRangeButtonTextActive,
+                    dateRange === range && styles.dateRangeButtonTextActive,
                   ]}>
                   {range}
                 </Text>

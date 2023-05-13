@@ -157,7 +157,15 @@ const withModels = withObservables(['profiles'], ({database, route}: Props) => {
     profiles: database
       .get<Profile>('profiles')
       .query(Q.where('supabase_user_id', supabaseUserId))
-      .observe(),
+      .observeWithColumns([
+        'calorie_surplus',
+        'dob_at',
+        'activity_level',
+        'target_weight',
+        'target_weight_unit',
+        'height',
+        'height_unit',
+      ]),
     weights: database
       .get<Weight>('weights')
       .query(Q.where('supabase_user_id', supabaseUserId))
@@ -199,7 +207,7 @@ const styles = StyleSheet.create({
   },
   calorieTargetNumber: {
     fontSize: 80,
-    fontWeight: '800',
+    fontWeight: '700',
     color: 'white',
     textAlign: 'center',
   },

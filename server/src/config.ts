@@ -7,10 +7,18 @@ export interface Config {
   readonly port: number;
   readonly database: ConnectionConfig;
   readonly databaseUrl: string;
+  readonly supabase: {
+    readonly supabaseUrl: string;
+    readonly supabaseKey: string;
+  };
 }
 
 export const config: Config = Object.freeze({
   port: parseInt(getEnvVariable("PORT"), 10),
+  supabase: Object.freeze({
+    supabaseUrl: getEnvVariable("SUPABASE_URL"),
+    supabaseKey: getEnvVariable("SUPABASE_KEY"),
+  }),
   databaseUrl: getEnvVariable("DATABASE_URL"),
   database: Object.freeze({
     database: getEnvVariable("DATABASE"),
