@@ -45,6 +45,13 @@ export async function pullChangesHandler(
   console.log("request.user.id", request.user.id);
   console.log("request.query.last_pulled_at", request.query.last_pulled_at);
 
+  const allProfiles = await db
+    .selectFrom("profiles")
+    .selectAll()
+    .where("supabase_user_id", "=", request.user.id)
+    .execute();
+  console.log("allWeights", allProfiles);
+
   // Profiles
   const createdProfiles = await db
     .selectFrom("profiles")

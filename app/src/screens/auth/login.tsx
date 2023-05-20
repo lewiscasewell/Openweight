@@ -79,6 +79,10 @@ export const LoginScreen = () => {
         });
         // TODO: eventually do the same for weights
 
+        await database.write(async () => {
+          await database.get('weights').query().destroyAllPermanently();
+        });
+
         await database
           .write(async () => {
             await database
