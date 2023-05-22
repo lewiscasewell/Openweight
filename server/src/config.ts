@@ -4,7 +4,6 @@ import { ConnectionConfig } from "pg";
 dotenv.config();
 
 export interface Config {
-  readonly port: number;
   readonly database: ConnectionConfig;
   readonly databaseUrl: string;
   readonly supabase: {
@@ -14,7 +13,6 @@ export interface Config {
 }
 
 export const config: Config = Object.freeze({
-  port: parseInt(getEnvVariable("PORT"), 10),
   supabase: Object.freeze({
     supabaseUrl: getEnvVariable("SUPABASE_URL"),
     supabaseKey: getEnvVariable("SUPABASE_KEY"),

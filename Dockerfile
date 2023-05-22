@@ -13,6 +13,8 @@ COPY server .
 
 RUN yarn build
 
+RUN yarn migrate 
+
 FROM softonic/node-prune:latest AS pruner
 WORKDIR /server
 
@@ -27,4 +29,3 @@ COPY --from=pruner /server/ ./
 
 CMD ["yarn", "start"]
 
-RUN yarn migrate
