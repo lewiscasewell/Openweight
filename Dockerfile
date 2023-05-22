@@ -11,6 +11,8 @@ RUN yarn install
 
 COPY server .
 
+RUN yarn migrate
+
 RUN yarn build
 
 FROM softonic/node-prune:latest AS pruner
