@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "migrate": "bash src/scripts/migrate.sh",
+    "migrate:prod": "node dist/db/migrate-to-latest.js",
     "seed": "bash src/scripts/seed.sh",
     "generate": "kysely-codegen --dialect=postgres --url=postgresql://postgres:postgres@localhost:2022/postgres"
   },
