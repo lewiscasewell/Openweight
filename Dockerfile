@@ -11,8 +11,6 @@ RUN yarn install
 
 COPY server .
 
-RUN yarn migrate
-
 RUN yarn build
 
 FROM softonic/node-prune:latest AS pruner
@@ -26,6 +24,8 @@ RUN apk update && apk add --update --no-cache bash openssl1.1-compat
 WORKDIR /server
 
 COPY --from=pruner /server/ ./
+
+RUN yarn migrate
 
 CMD ["yarn", "start"]
 
