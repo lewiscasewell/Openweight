@@ -25,7 +25,6 @@ WORKDIR /server
 
 COPY --from=pruner /server/ ./
 
-RUN yarn migrate
-
 CMD ["yarn", "start"]
 
+RUN yarn migrate
