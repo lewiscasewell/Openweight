@@ -15,9 +15,17 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import {LogBox, StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  LogBox,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  Dimensions,
+} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {LoginScreen} from './src/screens/auth/login';
+import {LoginScreen} from './src/screens/login';
 import {supabase} from './src/supabase';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {database} from './src/watermelondb';
@@ -40,6 +48,7 @@ import {MaterialIcon} from './src/icons/material-icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import EditProfileScreen from './src/screens/editProfile';
+import {appLoadingAtom} from './src/atoms/appLoading.atom';
 
 dayjs.extend(utc);
 
@@ -151,6 +160,8 @@ const Tabs = () => {
 
 function App(): JSX.Element {
   const [userSession, setSession] = useAtom(sessionAtom);
+  const [isAppLoading] = useAtom(appLoadingAtom);
+  console.log('isAppLoading', isAppLoading);
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session}}) => {
@@ -158,6 +169,12 @@ function App(): JSX.Element {
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        database.write(async () => {
+          await database.unsafeResetDatabase();
+        });
+      }
+
       setSession(session);
     });
   }, [setSession]);
@@ -167,6 +184,19 @@ function App(): JSX.Element {
       <DatabaseProvider database={database}>
         <SafeAreaProvider>
           <StatusBar barStyle="light-content" />
+          {isAppLoading.isAppLoading && (
+            <View style={{flex: 1, minHeight: Dimensions.get('screen').height}}>
+              <Text
+                style={{
+                  padding: 100,
+                  color: colors.white,
+                  textAlign: 'center',
+                  fontSize: 30,
+                }}>
+                Loading
+              </Text>
+            </View>
+          )}
           {userSession && (
             <AuthStack.Navigator
               screenOptions={() => {

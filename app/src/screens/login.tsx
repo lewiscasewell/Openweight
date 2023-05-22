@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
-import {PrimaryButton, SecondaryButton} from '../../components/Button';
-import {PrimaryTextInput} from '../../components/TextInput';
-import {supabase} from '../../supabase';
-import Profile from '../../watermelondb/model/Profile';
+import {PrimaryButton, SecondaryButton} from '../components/Button';
+import {PrimaryTextInput} from '../components/TextInput';
+import {supabase} from '../supabase';
+import Profile from '../watermelondb/model/Profile';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Config from 'react-native-config';
+import {useAtom} from 'jotai';
+import {appLoadingAtom} from '../atoms/appLoading.atom';
 
 const baseUrl = Config.REACT_APP_BASE_URL;
 
@@ -13,6 +15,7 @@ export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
   const [hasSentEmail, setHasSentEmail] = useState(false);
+  const [, setIsAppLoading] = useAtom(appLoadingAtom);
   const database = useDatabase();
 
   async function signInWithMagicLink() {
@@ -69,11 +72,16 @@ export const LoginScreen = () => {
       }
 
       if (profile) {
+        setIsAppLoading({isAppLoading: true});
         // delete all profiles from the database
         await database.write(async () => {
           await database.get('profiles').query().destroyAllPermanently();
         });
         // TODO: eventually do the same for weights
+
+        await database.write(async () => {
+          await database.get('weights').query().destroyAllPermanently();
+        });
 
         await database
           .write(async () => {
@@ -100,8 +108,10 @@ export const LoginScreen = () => {
               });
           })
           .then(() => {
-            console.log('done');
+            setIsAppLoading({isAppLoading: false});
           });
+
+        setIsAppLoading({isAppLoading: false});
       }
     }
   }

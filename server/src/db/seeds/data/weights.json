@@ -1,32 +1,156 @@
 [
   {
-    "id": "ijdijd",
-    "created_at": "2023-05-03T16:09:00.807Z",
-    "updated_at": "2023-05-03T17:30:00.807Z",
-    "weight": 80,
-    "date_at": "2023-05-03T16:09:00.807Z",
+    "id": "aabb33ba-5b1e-458f-9c7a-d89ecb6666e5",
+    "created_at": "2023-05-08T20:13:37.368Z",
+    "updated_at": "2023-05-08T20:13:41.797Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 90,
+    "date_at": "2023-04-30T23:00:00.000Z",
     "unit": "kg",
-    "supabase_user_id": "defefr-efefef-efefef",
-    "profile_id": "defefr-efefef-efefef"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
-    "id": "ojdodjkok",
-    "created_at": "2023-05-03T16:09:00.807Z",
-    "updated_at": "2023-05-03T17:09:00.807Z",
-    "weight": 98.3,
-    "date_at": "2021-08-02T00:00:00.000Z",
+    "id": "c079be9f-557e-41bb-aad7-470d10575258",
+    "created_at": "2023-05-08T20:13:56.032Z",
+    "updated_at": "2023-05-08T20:13:56.032Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 90.9,
+    "date_at": "2023-04-11T23:00:00.000Z",
     "unit": "kg",
-    "supabase_user_id": "defefr-efefef-efefef",
-    "profile_id": "defefr-efefef-efefef"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
-    "id": "okkdkokkk",
-    "created_at": "2023-05-03T17:09:00.807Z",
-    "updated_at": "2023-05-03T17:09:00.807Z",
-    "weight": 70,
-    "date_at": "2021-08-03T00:00:00.000Z",
+    "id": "33742e0a-04e9-475a-bbd3-fc8015766eea",
+    "created_at": "2023-05-09T11:32:25.378Z",
+    "updated_at": "2023-05-09T11:32:25.378Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 89.8,
+    "date_at": "2023-04-30T23:00:00.000Z",
     "unit": "kg",
-    "supabase_user_id": "defefr-efefef-efefef",
-    "profile_id": "defefr-efefef-efefef-ddefef"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "9fd5b205-8650-4709-b8c8-230a381e2192",
+    "created_at": "2023-05-08T20:12:46.123Z",
+    "updated_at": "2023-05-09T11:54:49.992Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 81.3,
+    "date_at": "2023-05-07T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "randomId",
+    "created_at": "2023-05-09T12:12:36.000Z",
+    "updated_at": "2023-05-09T12:40:37.559Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 88.4,
+    "date_at": "2023-05-03T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "93ccafbc-11d0-44a8-ac85-fde4ae1dcb74",
+    "created_at": "2023-05-09T16:24:51.720Z",
+    "updated_at": "2023-05-09T16:24:51.720Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 91.8,
+    "date_at": "2023-04-10T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "974d9922-dd82-4671-b2a9-105f4003b259",
+    "created_at": "2023-05-10T09:43:14.971Z",
+    "updated_at": "2023-05-10T09:43:14.971Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 87.5,
+    "date_at": "2023-04-08T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "1aa134e0-c406-49bb-9028-2ec60302b1b6",
+    "created_at": "2023-05-09T16:26:23.110Z",
+    "updated_at": "2023-05-10T09:45:21.097Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 92.6,
+    "date_at": "2023-02-15T00:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "7a0f4efd-3423-4e11-ac0e-e8230f6ea234",
+    "created_at": "2023-05-09T16:26:36.714Z",
+    "updated_at": "2023-05-10T09:45:28.783Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 101.3,
+    "date_at": "2022-12-29T00:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "488fbe3a-c4d5-4fed-be3d-441e7a70acbf",
+    "created_at": "2023-05-09T12:05:06.245Z",
+    "updated_at": "2023-05-10T15:46:07.851Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 88.6,
+    "date_at": "2023-05-08T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "d8d02c23-5f0a-4dd2-bd20-0ee84e16d7c1",
+    "created_at": "2023-05-13T08:46:17.113Z",
+    "updated_at": "2023-05-13T08:46:56.155Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 82.4,
+    "date_at": "2023-05-12T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "91ecae2b-c1de-497a-bbba-981794bd36fd",
+    "created_at": "2023-05-10T08:39:10.883Z",
+    "updated_at": "2023-05-10T21:44:09.592Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 82.4,
+    "date_at": "2023-05-09T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "195724e8-1c16-460e-9874-16b28e029412",
+    "created_at": "2023-05-12T08:23:52.284Z",
+    "updated_at": "2023-05-13T10:09:23.467Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 81.6,
+    "date_at": "2023-05-11T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
+  },
+  {
+    "id": "dd4052bf-b149-42ce-a8e0-327e3e484ed6",
+    "created_at": "2023-05-11T07:14:49.711Z",
+    "updated_at": "2023-05-11T16:57:38.458Z",
+    "supabase_user_id": "ff7b415c-7a3b-4203-b7a1-1c6545af1a2f",
+    "weight": 81.1,
+    "date_at": "2023-05-10T23:00:00.000Z",
+    "unit": "kg",
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   }
 ]

@@ -45,6 +45,13 @@ export async function pullChangesHandler(
   console.log("request.user.id", request.user.id);
   console.log("request.query.last_pulled_at", request.query.last_pulled_at);
 
+  const allProfiles = await db
+    .selectFrom("profiles")
+    .selectAll()
+    .where("supabase_user_id", "=", request.user.id)
+    .execute();
+  console.log("allWeights", allProfiles);
+
   // Profiles
   const createdProfiles = await db
     .selectFrom("profiles")
@@ -65,6 +72,7 @@ export async function pullChangesHandler(
     .selectFrom("weights")
     .selectAll()
     .where("supabase_user_id", "=", request.user.id)
+    .where("isDeleted", "=", false)
     .where("created_at", ">", lastPulledAt)
     .execute();
 
@@ -72,9 +80,22 @@ export async function pullChangesHandler(
     .selectFrom("weights")
     .selectAll()
     .where("supabase_user_id", "=", request.user.id)
+    .where("isDeleted", "=", false)
     .where("updated_at", ">", lastPulledAt)
     .where("created_at", "<=", lastPulledAt)
     .execute();
+
+  const deletedWeights = await db
+    .selectFrom("weights")
+    .selectAll()
+    .where("supabase_user_id", "=", request.user.id)
+    .where("isDeleted", "=", true)
+    .where("updated_at", ">", lastPulledAt)
+    .where("created_at", "<=", lastPulledAt)
+    .execute();
+
+  const allWeights = await db.selectFrom("weights").selectAll().execute();
+  console.log("allWeights", allWeights);
 
   const pullChangesResponse: PullChangeResponse = {
     changes: {
@@ -101,7 +122,7 @@ export async function pullChangesHandler(
           updated_at: dayjs(w.updated_at).valueOf(),
           date_at: dayjs(w.date_at).valueOf(),
         })),
-        deleted: [],
+        deleted: deletedWeights.map((w) => w.id),
       },
     },
     timestamp: new Date().getTime(),
@@ -223,6 +244,17 @@ export async function pushChangesHandler(
     (await Promise.all(updatedDataPromises)).map((weight) => {
       console.log("updated weight", weight);
     });
+  }
+
+  if (changes.weights.deleted.length > 0) {
+    const deletedDataPromises = changes.weights.deleted.map(async (id) => {
+      return db
+        .updateTable("weights")
+        .where("id", "=", id)
+        .set({ isDeleted: true, updated_at: dayjs().toDate() })
+        .execute();
+    });
+    await Promise.all(deletedDataPromises);
   }
 
   return reply.code(200).send({ status: "ok" });
