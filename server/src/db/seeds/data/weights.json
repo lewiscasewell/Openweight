@@ -7,7 +7,8 @@
     "weight": 90,
     "date_at": "2023-04-30T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "c079be9f-557e-41bb-aad7-470d10575258",
@@ -17,7 +18,8 @@
     "weight": 90.9,
     "date_at": "2023-04-11T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "33742e0a-04e9-475a-bbd3-fc8015766eea",
@@ -27,7 +29,8 @@
     "weight": 89.8,
     "date_at": "2023-04-30T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "9fd5b205-8650-4709-b8c8-230a381e2192",
@@ -37,7 +40,8 @@
     "weight": 81.3,
     "date_at": "2023-05-07T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "randomId",
@@ -47,7 +51,8 @@
     "weight": 88.4,
     "date_at": "2023-05-03T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "93ccafbc-11d0-44a8-ac85-fde4ae1dcb74",
@@ -57,7 +62,8 @@
     "weight": 91.8,
     "date_at": "2023-04-10T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "974d9922-dd82-4671-b2a9-105f4003b259",
@@ -67,7 +73,8 @@
     "weight": 87.5,
     "date_at": "2023-04-08T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "1aa134e0-c406-49bb-9028-2ec60302b1b6",
@@ -77,7 +84,8 @@
     "weight": 92.6,
     "date_at": "2023-02-15T00:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "7a0f4efd-3423-4e11-ac0e-e8230f6ea234",
@@ -87,7 +95,8 @@
     "weight": 101.3,
     "date_at": "2022-12-29T00:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "488fbe3a-c4d5-4fed-be3d-441e7a70acbf",
@@ -97,7 +106,8 @@
     "weight": 88.6,
     "date_at": "2023-05-08T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "d8d02c23-5f0a-4dd2-bd20-0ee84e16d7c1",
@@ -107,7 +117,8 @@
     "weight": 82.4,
     "date_at": "2023-05-12T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "91ecae2b-c1de-497a-bbba-981794bd36fd",
@@ -117,7 +128,8 @@
     "weight": 82.4,
     "date_at": "2023-05-09T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "195724e8-1c16-460e-9874-16b28e029412",
@@ -127,7 +139,8 @@
     "weight": 81.6,
     "date_at": "2023-05-11T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   },
   {
     "id": "dd4052bf-b149-42ce-a8e0-327e3e484ed6",
@@ -137,6 +150,7 @@
     "weight": 81.1,
     "date_at": "2023-05-10T23:00:00.000Z",
     "unit": "kg",
-    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1"
+    "profile_id": "71493c2a-fe15-45d1-bd6e-8393eb2a40a1",
+    "isDeleted": false
   }
 ]

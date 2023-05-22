@@ -39,6 +39,7 @@ export interface Weights {
   date_at: Timestamp;
   unit: string;
   profile_id: string;
+  isDeleted: Generated<boolean>;
 }
 
 export interface DB {

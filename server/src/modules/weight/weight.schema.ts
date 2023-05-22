@@ -9,6 +9,7 @@ export const weightSchema = z.object({
   date_at: z.number(),
   unit: z.string(),
   profile_id: z.string(),
+  isDeleted: z.boolean(),
 });
 
 export const weightWatermelonSchema = weightSchema.merge(

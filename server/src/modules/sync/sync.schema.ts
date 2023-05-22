@@ -12,20 +12,12 @@ export const pullChangesSchema = z.object({
     weights: z.object({
       created: z.array(weightSchema),
       updated: z.array(weightSchema),
-      deleted: z.array(
-        z.object({
-          id: z.string(),
-        })
-      ),
+      deleted: z.array(z.string()),
     }),
     profiles: z.object({
       created: z.array(profilePullChangesSchema),
       updated: z.array(profilePullChangesSchema),
-      deleted: z.array(
-        z.object({
-          id: z.string(),
-        })
-      ),
+      deleted: z.array(z.string()),
     }),
   }),
 });
@@ -34,20 +26,12 @@ export const pushChangesSchema = z.object({
   weights: z.object({
     created: z.array(weightWatermelonSchema),
     updated: z.array(weightWatermelonSchema),
-    deleted: z.array(
-      z.object({
-        id: z.string(),
-      })
-    ),
+    deleted: z.array(z.string()),
   }),
   profiles: z.object({
     created: z.array(profilePushChangesSchema),
     updated: z.array(profilePushChangesSchema),
-    deleted: z.array(
-      z.object({
-        id: z.string(),
-      })
-    ),
+    deleted: z.array(z.string()),
   }),
 });
 

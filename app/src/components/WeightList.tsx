@@ -48,6 +48,7 @@ type DateRange = (typeof dateRanges)[number];
 const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
   const [dateRange, setDateRange] = useState<DateRange>('1Y');
   const [isDragging, setIsDragging] = useState(false);
+  console.log(weights);
 
   const points: GraphPoint[] = weights
     // filter by date range

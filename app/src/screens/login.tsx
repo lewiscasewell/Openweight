@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
-import {PrimaryButton, SecondaryButton} from '../../components/Button';
-import {PrimaryTextInput} from '../../components/TextInput';
-import {supabase} from '../../supabase';
-import Profile from '../../watermelondb/model/Profile';
+import {PrimaryButton, SecondaryButton} from '../components/Button';
+import {PrimaryTextInput} from '../components/TextInput';
+import {supabase} from '../supabase';
+import Profile from '../watermelondb/model/Profile';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Config from 'react-native-config';
 import {useAtom} from 'jotai';
-import {appLoadingAtom} from '../../atoms/appLoading.atom';
+import {appLoadingAtom} from '../atoms/appLoading.atom';
 
 const baseUrl = Config.REACT_APP_BASE_URL;
 

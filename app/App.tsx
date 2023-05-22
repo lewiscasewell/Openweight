@@ -25,7 +25,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {LoginScreen} from './src/screens/auth/login';
+import {LoginScreen} from './src/screens/login';
 import {supabase} from './src/supabase';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {database} from './src/watermelondb';
@@ -169,6 +169,12 @@ function App(): JSX.Element {
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        database.write(async () => {
+          await database.unsafeResetDatabase();
+        });
+      }
+
       setSession(session);
     });
   }, [setSession]);

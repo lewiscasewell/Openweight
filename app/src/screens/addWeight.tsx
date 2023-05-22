@@ -90,6 +90,41 @@ async function addWeight({
   });
 }
 
+async function deleteWeight({
+  database,
+  weights,
+  date,
+  navigation,
+}: {
+  database: Database;
+  weights: Weight[];
+  date: Date;
+  navigation: TabStackNavigationProps;
+}): Promise<void> {
+  await database.write(async () => {
+    const weightOnDate = weights.find(
+      weight =>
+        dayjs(weight.dateAt).format('YYYY-MM-DD') ===
+        dayjs(date).format('YYYY-MM-DD'),
+    );
+
+    if (weightOnDate !== undefined) {
+      await weightOnDate
+        .markAsDeleted()
+        .then(() => {
+          console.log('deleted');
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+      navigation.goBack();
+
+      return;
+    }
+  });
+}
+
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
 
@@ -180,6 +215,9 @@ const AddWeightScreen = ({weights}: Props) => {
                 justifyContent: 'space-between',
               }}>
               <TouchableOpacity
+                onPress={() => {
+                  deleteWeight({database, weights, date, navigation});
+                }}
                 style={{
                   backgroundColor: '#1d1d1d',
                   paddingVertical: 6,
