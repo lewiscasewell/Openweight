@@ -48,7 +48,6 @@ type DateRange = (typeof dateRanges)[number];
 const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
   const [dateRange, setDateRange] = useState<DateRange>('1Y');
   const [isDragging, setIsDragging] = useState(false);
-  console.log(weights);
 
   const points: GraphPoint[] = weights
     // filter by date range
@@ -134,70 +133,68 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
         {calcPercentageDifference()}% )
       </Text>
 
-      {points.length > 1 && (
-        <>
-          <LineGraph
-            onGestureStart={() => {
-              if (!isDragging) {
-                setIsDragging(true);
-              }
-            }}
-            onGestureEnd={() => {
-              if (isDragging) {
-                setIsDragging(false);
-              }
-              if (currentPoint.index !== 0) {
-                setCurrentPoint({
-                  value: Number(points[points.length - 1].value?.toFixed(1)),
-                  index: 0,
-                });
-              }
-            }}
-            onPointSelected={point => {
-              const index = point.date.getTime();
+      <>
+        <LineGraph
+          onGestureStart={() => {
+            if (!isDragging) {
+              setIsDragging(true);
+            }
+          }}
+          onGestureEnd={() => {
+            if (isDragging) {
+              setIsDragging(false);
+            }
+            if (currentPoint.index !== 0) {
+              setCurrentPoint({
+                value: Number(points[points.length - 1].value?.toFixed(1)),
+                index: 0,
+              });
+            }
+          }}
+          onPointSelected={point => {
+            const index = point.date.getTime();
 
-              if (!isDragging && currentPoint.index !== 0) {
-                setCurrentPoint({value: point.value, index});
-              }
+            if (!isDragging && currentPoint.index !== 0) {
+              setCurrentPoint({value: point.value, index});
+            }
 
-              if (isDragging) {
-                setCurrentPoint({value: point.value, index});
-              }
-            }}
-            TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
-            BottomAxisLabel={() => (
-              <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
-            )}
-            style={styles.graph}
-            points={points}
-            color={colors.primary}
-            animated={true}
-            enablePanGesture={true}
-          />
-          <View style={styles.dateRangeContainer}>
-            {dateRanges.map(range => (
-              <TouchableOpacity
-                key={range}
-                onPressIn={() => {
-                  setDateRange(range);
-                }}
+            if (isDragging) {
+              setCurrentPoint({value: point.value, index});
+            }
+          }}
+          TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
+          BottomAxisLabel={() => (
+            <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
+          )}
+          style={styles.graph}
+          points={points}
+          color={colors.primary}
+          animated={true}
+          enablePanGesture={true}
+        />
+
+        <View style={styles.dateRangeContainer}>
+          {dateRanges.map(range => (
+            <TouchableOpacity
+              key={range}
+              onPressIn={() => {
+                setDateRange(range);
+              }}
+              style={[
+                styles.dateRangeButton,
+                dateRange === range && styles.dateRangeButtonActive,
+              ]}>
+              <Text
                 style={[
-                  styles.dateRangeButton,
-                  dateRange === range && styles.dateRangeButtonActive,
+                  styles.dateRangeButtonText,
+                  dateRange === range && styles.dateRangeButtonTextActive,
                 ]}>
-                <Text
-                  style={[
-                    styles.dateRangeButtonText,
-
-                    dateRange === range && styles.dateRangeButtonTextActive,
-                  ]}>
-                  {range}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </>
-      )}
+                {range}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </>
     </Animated.View>
   );
 };
