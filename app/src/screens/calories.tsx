@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, ScrollView, Text, View} from 'react-native';
 
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
@@ -11,11 +11,14 @@ import {RouteProp, useNavigation} from '@react-navigation/native';
 import {TabStackNavigationProps, TabStackParamList} from '../../App';
 import {PrimaryButton} from '../components/Button';
 import {colors} from '../styles/theme';
-import Animated from 'react-native-reanimated';
+import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 import Weight from '../watermelondb/model/Weight';
 import {map} from 'rxjs';
 import dayjs from 'dayjs';
 import {Slider} from '@miblanchard/react-native-slider';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {MaterialIcon} from '../icons/material-icons';
 
 type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
 
@@ -64,8 +67,12 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
   const latestWeight = weights?.[0];
 
   const [calorieTarget, setCalorieTarget] = React.useState<number>(
-    currentProfile.calorieSurplus!,
+    currentProfile?.calorieSurplus!,
   );
+  const database = useDatabase();
+  useEffect(() => {
+    setCalorieTarget(currentProfile?.calorieSurplus!);
+  }, [currentProfile.calorieSurplus]);
 
   const isCompleteProfile = Boolean(
     currentProfile.name &&
@@ -84,8 +91,8 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
     if (!currentProfile || !latestWeight) {
       return;
     }
-    const heightInCentimeters = currentProfile.height!;
-    const weightInKilograms = latestWeight.weight;
+    const heightInCentimeters = currentProfile?.height!;
+    const weightInKilograms = latestWeight?.weight;
     const age = dayjs(currentProfile?.dobAt).diff(dayjs(), 'year');
     const activityLevelMulipliers = () => {
       if (currentProfile?.activityLevel === 'sedentary') {
@@ -142,6 +149,37 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
             maximumTrackTintColor={colors.grey[500]}
             thumbTintColor={colors.primary}
           />
+          {currentProfile?.calorieSurplus !== calorieTarget && (
+            <View
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                paddingVertical: 10,
+              }}>
+              <Animated.View entering={FadeIn} exiting={FadeOut}>
+                <TouchableOpacity
+                  onPress={async () => {
+                    await database.write(async () => {
+                      await currentProfile.update(profile => {
+                        profile.calorieSurplus = calorieTarget;
+                      });
+                    });
+                  }}>
+                  <MaterialIcon color={colors.success} name="check" size={30} />
+                </TouchableOpacity>
+              </Animated.View>
+              <Animated.View entering={FadeIn} exiting={FadeOut}>
+                <TouchableOpacity
+                  onPress={() =>
+                    setCalorieTarget(currentProfile.calorieSurplus!)
+                  }>
+                  <MaterialIcon color={colors.error} name="close" size={30} />
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          )}
         </Animated.View>
       ) : (
         <CompleteProfile currentProfile={currentProfile} />

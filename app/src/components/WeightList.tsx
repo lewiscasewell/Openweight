@@ -33,6 +33,7 @@ import Animated, {
   FadeOutUp,
   Layout,
 } from 'react-native-reanimated';
+import {dateRangeAtom, dateRanges} from '../atoms/dateRange.atom';
 
 const {width} = Dimensions.get('screen');
 
@@ -42,15 +43,11 @@ type Props = {
   weights: Weight[];
 };
 
-const dateRanges = ['ALL', '1Y', '3M', '1M', '1W'] as const;
-type DateRange = (typeof dateRanges)[number];
-
 const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
-  const [dateRange, setDateRange] = useState<DateRange>('1Y');
+  const [dateRange, setDateRange] = useAtom(dateRangeAtom);
   const [isDragging, setIsDragging] = useState(false);
 
   const points: GraphPoint[] = weights
-    // filter by date range
     .filter(weight => {
       const now = new Date();
       const date = new Date(weight.dateAt);
@@ -126,52 +123,70 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
             Number(
               (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1),
             ) > 0
-              ? colors.success
-              : colors.error,
+              ? colors.error
+              : colors.success,
         }}>
-        {(points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)}kg ({' '}
-        {calcPercentageDifference()}% )
+        {points.length > 0
+          ? (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)
+          : '0'}
+        kg ({' '}
+        {calcPercentageDifference() === 'NaN'
+          ? '0'
+          : calcPercentageDifference()}
+        % )
       </Text>
 
       <>
-        <LineGraph
-          onGestureStart={() => {
-            if (!isDragging) {
-              setIsDragging(true);
-            }
-          }}
-          onGestureEnd={() => {
-            if (isDragging) {
-              setIsDragging(false);
-            }
-            if (currentPoint.index !== 0) {
-              setCurrentPoint({
-                value: Number(points[points.length - 1].value?.toFixed(1)),
-                index: 0,
-              });
-            }
-          }}
-          onPointSelected={point => {
-            const index = point.date.getTime();
+        {points.length > 0 ? (
+          <LineGraph
+            onGestureStart={() => {
+              if (!isDragging) {
+                setIsDragging(true);
+              }
+            }}
+            onGestureEnd={() => {
+              if (isDragging) {
+                setIsDragging(false);
+              }
+              if (currentPoint.index !== 0) {
+                setCurrentPoint({
+                  value: Number(points[points.length - 1].value?.toFixed(1)),
+                  index: 0,
+                });
+              }
+            }}
+            onPointSelected={point => {
+              const index = point.date.getTime();
 
-            if (!isDragging && currentPoint.index !== 0) {
-              setCurrentPoint({value: point.value, index});
-            }
+              if (!isDragging && currentPoint.index !== 0) {
+                setCurrentPoint({value: point.value, index});
+              }
 
-            if (isDragging) {
-              setCurrentPoint({value: point.value, index});
-            }
-          }}
-          TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
-          BottomAxisLabel={() => (
-            <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
-          )}
-          style={styles.graph}
-          points={points}
-          color={colors.primary}
-          animated={true}
-          enablePanGesture={true}
-        />
+              if (isDragging) {
+                setCurrentPoint({value: point.value, index});
+              }
+            }}
+            TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
+            BottomAxisLabel={() => (
+              <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
+            )}
+            style={styles.graph}
+            points={points}
+            color={colors.primary}
+            animated={true}
+            enablePanGesture={true}
+          />
+        ) : (
+          <View
+            style={{
+              height: 200,
+              paddingVertical: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: 'white', fontSize: 16}}>No data</Text>
+          </View>
+        )}
 
         <View style={styles.dateRangeContainer}>
           {dateRanges.map(range => (
@@ -276,8 +291,8 @@ const WeightList = ({weights}: Props) => {
                         color:
                           diffBetweenWeights !== 'NaN'
                             ? Number(diffBetweenWeights) > 0
-                              ? colors.success
-                              : colors.error
+                              ? colors.error
+                              : colors.success
                             : 'lightgrey',
                       }}>
                       {diffBetweenWeights !== 'NaN' ? diffBetweenWeights : '-'}{' '}

@@ -285,9 +285,10 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                   }}>
                   <TextInput
                     style={[
+                      {color: 'white', fontSize: 18, fontWeight: 'bold'},
                       styles.selectOptionContainer,
                       {flex: 1},
-                      value === 'male' ? {} : {opacity: 0.5},
+                      profile.heightUnit === 'cm' ? {} : {opacity: 0.5},
                     ]}
                     keyboardType="numeric"
                     value={value ?? ''}
@@ -480,9 +481,10 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                   }}>
                   <TextInput
                     style={[
+                      {color: 'white', fontSize: 18, fontWeight: 'bold'},
                       styles.selectOptionContainer,
                       {flex: 1},
-                      value === 'male' ? {} : {opacity: 0.5},
+                      profile.targetWeightUnit === 'kg' ? {} : {opacity: 0.5},
                     ]}
                     onChangeText={text => {
                       setValue('target_weight', text);
