@@ -151,7 +151,7 @@ const Tabs = () => {
             });
           }}
           style={styles.addButton}>
-          <MaterialIcon name="plus" color={colors.grey[900]} size={40} />
+          <MaterialIcon name="plus" color={colors.grey['100']} size={40} />
         </TouchableOpacity>
       )}
     </>
@@ -177,6 +177,7 @@ function App(): JSX.Element {
 
       setSession(session);
     });
+    // setIsAppLoading({isAppLoading: false});
   }, [setSession]);
 
   return (
@@ -185,7 +186,12 @@ function App(): JSX.Element {
         <SafeAreaProvider>
           <StatusBar barStyle="light-content" />
           {isAppLoading.isAppLoading && (
-            <View style={{flex: 1, minHeight: Dimensions.get('screen').height}}>
+            <View
+              style={{
+                flex: 1,
+                minHeight: Dimensions.get('screen').height,
+                backgroundColor: colors.black,
+              }}>
               <Text
                 style={{
                   padding: 100,

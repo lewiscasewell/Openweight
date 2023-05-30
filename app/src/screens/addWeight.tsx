@@ -127,6 +127,7 @@ async function deleteWeight({
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
+  const latestWeight = weights[0]?.weight;
 
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
@@ -140,10 +141,10 @@ const AddWeightScreen = ({weights}: Props) => {
       )
       ?.weight.toString() ??
       weights[0]?.weight.toString() ??
-      '',
+      '70',
   );
   const [date, setDate] = React.useState(
-    dayjs(route.params.dateToPass).startOf('day').utc(true).toDate(),
+    dayjs(route.params.dateToPass).startOf('day').toDate(),
   );
 
   const incrementWeight = useCallback(() => {
@@ -233,19 +234,20 @@ const AddWeightScreen = ({weights}: Props) => {
                 maximumDate={new Date()}
                 onChange={value => {
                   const newDate = dayjs(value.nativeEvent.timestamp!)
-                    .utc(true)
                     .startOf('day')
                     .toDate();
 
                   setDate(newDate);
 
-                  // const getWeight = weights.find(
-                  //   weight => weight.dateString === newDateString,
-                  // );
+                  const getWeight = weights.find(
+                    weight =>
+                      dayjs(weight.dateAt).format('YYYY-MM-DD') ===
+                      dayjs(newDate).format('YYYY-MM-DD'),
+                  );
 
-                  // if (getWeight) {
-                  //   setWeightInput(getWeight.weight.toString());
-                  // }
+                  setWeightInput(
+                    getWeight?.weight?.toString() ?? latestWeight.toString(),
+                  );
                 }}
               />
             </View>

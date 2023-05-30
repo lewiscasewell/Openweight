@@ -67,13 +67,31 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
           return diffDays <= 7;
       }
     })
-    .map((weight, index) => {
-      return {
-        date: new Date(index),
-        value: weight.weight,
-      };
-    })
-    .reverse();
+    .reduce((acc, weight, index, array) => {
+      console.log('array', array);
+      if (array.length === 1) {
+        return [
+          {
+            date: new Date(0),
+            value: 0,
+          },
+          {
+            date: new Date(1),
+            value: weight.weight,
+          },
+        ];
+      }
+
+      return [
+        {
+          date: new Date(index),
+          value: weight.weight,
+        },
+        ...acc,
+      ];
+    }, []);
+
+  console.log('points', points);
 
   const [currentPoint, setCurrentPoint] = useState<{
     index: number;
@@ -353,7 +371,7 @@ const WeightList = ({weights}: Props) => {
           exiting={FadeOut}
           layout={Layout.delay(100)}
           style={styles.noWeightsContainer}>
-          <Text style={styles.noWeightsText}>No weights yet.</Text>
+          <Text style={styles.noWeightsText}>Add your first weight!</Text>
         </Animated.View>
       )}
     </View>

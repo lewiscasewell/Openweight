@@ -381,6 +381,8 @@ PODS:
     - React-Core
   - RNGestureHandler (2.9.0):
     - React-Core
+  - RNReactNativeHapticFeedback (2.0.3):
+    - React-Core
   - RNReanimated (3.1.0):
     - DoubleConversion
     - FBLazyVector
@@ -467,6 +469,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNStaticSafeAreaInsets (from `../node_modules/react-native-static-safe-area-insets`)
@@ -567,6 +570,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNReactNativeHapticFeedback:
+    :path: "../node_modules/react-native-haptic-feedback"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -629,6 +634,7 @@ SPEC CHECKSUMS:
   ReactCommon: 0c43eaeaaee231d7d8dc24fc5a6e4cf2b75bf196
   RNDateTimePicker: e073697ac3e8a378968d68ab0581fef542b8af8a
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
+  RNReactNativeHapticFeedback: afa5bf2794aecbb2dba2525329253da0d66656df
   RNReanimated: b1220a0e5168745283ff5d53bfc7d2144b2cee1b
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNStaticSafeAreaInsets: 055ddbf5e476321720457cdaeec0ff2ba40ec1b8

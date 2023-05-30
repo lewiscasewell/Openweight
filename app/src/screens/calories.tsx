@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, ScrollView, Text, View} from 'react-native';
+import {StyleSheet, ScrollView, Text, View, Dimensions} from 'react-native';
 
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
 
@@ -11,7 +11,7 @@ import {RouteProp, useNavigation} from '@react-navigation/native';
 import {TabStackNavigationProps, TabStackParamList} from '../../App';
 import {PrimaryButton} from '../components/Button';
 import {colors} from '../styles/theme';
-import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
+import Animated, {FadeIn, FadeOut, Layout} from 'react-native-reanimated';
 import Weight from '../watermelondb/model/Weight';
 import {map} from 'rxjs';
 import dayjs from 'dayjs';
@@ -19,6 +19,8 @@ import {Slider} from '@miblanchard/react-native-slider';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {MaterialIcon} from '../icons/material-icons';
+import {Canvas} from '@shopify/react-native-skia';
+import {ProgressCircle} from '../components/ProgressCircle';
 
 type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
 
@@ -29,13 +31,20 @@ type Props = {
   weights: Weight[];
 };
 
-const CompleteProfile = ({currentProfile}: {currentProfile: Profile}) => {
+const CompleteProfile = ({
+  currentProfile,
+  hasWeights,
+}: {
+  currentProfile: Profile;
+  hasWeights: boolean;
+}) => {
   const navigation = useNavigation<TabStackNavigationProps>();
   return (
     <View style={completeProfileStyles.container}>
       <Text style={styles.title}>Calories</Text>
       <Text style={completeProfileStyles.title}>
-        To work out your daily calorie target you need to complete your profile.
+        To calculate your daily calorie target you need to complete your profile
+        {hasWeights ? '.' : ' and have at least one weight recorded.'}
       </Text>
       <PrimaryButton
         title="Complete profile"
@@ -83,9 +92,10 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
       currentProfile?.targetWeight &&
       currentProfile?.targetWeightUnit &&
       currentProfile?.dobAt &&
-      currentProfile?.calorieSurplus &&
-      weights.length > 0,
+      currentProfile?.calorieSurplus !== null,
   );
+
+  const hasWeights = Boolean(weights.length > 0);
 
   const calcCalorieTarget = () => {
     if (!currentProfile || !latestWeight) {
@@ -123,11 +133,21 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
         calorieTarget
       );
     }
+    if (currentProfile?.gender === 'female') {
+      return (
+        (447.593 +
+          9.247 * weightInKilograms +
+          3.098 * heightInCentimeters -
+          4.33 * age) *
+          activityLevelMulipliers() +
+        calorieTarget
+      );
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
-      {isCompleteProfile ? (
+      {isCompleteProfile && hasWeights ? (
         <Animated.View style={styles.graph}>
           <Text style={styles.dailyCalorieTargetTitle}>
             Daily calorie target
@@ -180,9 +200,74 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
               </Animated.View>
             </View>
           )}
+          <Animated.View
+            layout={Layout.duration(200)}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              paddingVertical: 20,
+            }}>
+            <View>
+              <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
+                Current
+              </Text>
+              <Text
+                style={{
+                  color: colors.grey['100'],
+                  textAlign: 'center',
+                  fontSize: 40,
+                }}>
+                {latestWeight?.weight}
+              </Text>
+            </View>
+            <View
+              style={{
+                height: 50,
+                width: 1,
+                backgroundColor: colors.grey['600'],
+              }}
+            />
+            <View>
+              <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
+                Target
+              </Text>
+              <Text
+                style={{
+                  color: colors.grey['100'],
+                  textAlign: 'center',
+                  fontSize: 40,
+                }}>
+                {currentProfile.targetWeight}
+              </Text>
+            </View>
+          </Animated.View>
+          <Animated.View layout={Layout.duration(200)}>
+            <Canvas
+              style={{
+                width: Dimensions.get('screen').width - 28,
+                height: Dimensions.get('screen').width,
+              }}>
+              <ProgressCircle
+                maxValue={currentProfile.targetWeight! / latestWeight?.weight}
+                difference={latestWeight?.weight - currentProfile.targetWeight!}
+                daysLeft={Number(
+                  (
+                    ((currentProfile.targetWeight! - latestWeight?.weight) *
+                      7700) /
+                    currentProfile.calorieSurplus!
+                  ).toFixed(0),
+                )}
+              />
+            </Canvas>
+          </Animated.View>
         </Animated.View>
       ) : (
-        <CompleteProfile currentProfile={currentProfile} />
+        <CompleteProfile
+          currentProfile={currentProfile}
+          hasWeights={hasWeights}
+        />
       )}
     </ScrollView>
   );
@@ -207,7 +292,7 @@ const withModels = withObservables(['profiles'], ({database, route}: Props) => {
     weights: database
       .get<Weight>('weights')
       .query(Q.where('supabase_user_id', supabaseUserId))
-      .observe()
+      .observeWithColumns(['weight', 'date_at'])
       .pipe(
         map(weights =>
           weights.sort((a, b) => b.dateAt.getTime() - a.dateAt.getTime()),

@@ -111,7 +111,7 @@ export const LoginScreen = () => {
             setIsAppLoading({isAppLoading: false});
           });
 
-        setIsAppLoading({isAppLoading: false});
+        // setIsAppLoading({isAppLoading: false});
       }
     }
   }
