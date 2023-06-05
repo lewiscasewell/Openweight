@@ -161,7 +161,6 @@ const Tabs = () => {
 function App(): JSX.Element {
   const [userSession, setSession] = useAtom(sessionAtom);
   const [isAppLoading] = useAtom(appLoadingAtom);
-  console.log('isAppLoading', isAppLoading);
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session}}) => {
@@ -177,7 +176,6 @@ function App(): JSX.Element {
 
       setSession(session);
     });
-    // setIsAppLoading({isAppLoading: false});
   }, [setSession]);
 
   return (
@@ -195,11 +193,11 @@ function App(): JSX.Element {
               <Text
                 style={{
                   padding: 100,
-                  color: colors.white,
+                  color: colors.grey['100'],
                   textAlign: 'center',
-                  fontSize: 30,
+                  fontSize: 22,
                 }}>
-                Loading
+                Loading your profile
               </Text>
             </View>
           )}
@@ -244,7 +242,7 @@ export default App;
 
 const styles = StyleSheet.create({
   addButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors['picton-blue'][400],
     height: 60,
     width: 60,
     position: 'absolute',
@@ -253,6 +251,14 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.7,
+    shadowRadius: 5,
+    elevation: 10,
   },
   headerTitle: {
     fontSize: 20,

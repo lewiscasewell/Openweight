@@ -81,10 +81,10 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
   const database = useDatabase();
   useEffect(() => {
     setCalorieTarget(currentProfile?.calorieSurplus!);
-  }, [currentProfile.calorieSurplus]);
+  }, [currentProfile?.calorieSurplus]);
 
   const isCompleteProfile = Boolean(
-    currentProfile.name &&
+    currentProfile?.name &&
       currentProfile?.gender &&
       currentProfile?.height &&
       currentProfile?.heightUnit &&
@@ -96,6 +96,10 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
   );
 
   const hasWeights = Boolean(weights.length > 0);
+
+  const isBulking = Boolean(
+    currentProfile?.targetWeight! > latestWeight?.weight,
+  );
 
   const calcCalorieTarget = () => {
     if (!currentProfile || !latestWeight) {
@@ -167,7 +171,7 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
             step={100}
             minimumTrackTintColor={colors.grey[700]}
             maximumTrackTintColor={colors.grey[500]}
-            thumbTintColor={colors.primary}
+            thumbTintColor={colors['picton-blue'][400]}
           />
           {currentProfile?.calorieSurplus !== calorieTarget && (
             <View
@@ -187,7 +191,11 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                       });
                     });
                   }}>
-                  <MaterialIcon color={colors.success} name="check" size={30} />
+                  <MaterialIcon
+                    color={colors['water-leaf']['300']}
+                    name="check"
+                    size={30}
+                  />
                 </TouchableOpacity>
               </Animated.View>
               <Animated.View entering={FadeIn} exiting={FadeOut}>
@@ -195,7 +203,7 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                   onPress={() =>
                     setCalorieTarget(currentProfile.calorieSurplus!)
                   }>
-                  <MaterialIcon color={colors.error} name="close" size={30} />
+                  <MaterialIcon color="pink" name="close" size={30} />
                 </TouchableOpacity>
               </Animated.View>
             </View>
@@ -250,13 +258,21 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                 height: Dimensions.get('screen').width,
               }}>
               <ProgressCircle
-                maxValue={currentProfile.targetWeight! / latestWeight?.weight}
-                difference={latestWeight?.weight - currentProfile.targetWeight!}
+                maxValue={
+                  isBulking
+                    ? latestWeight.weight / currentProfile.targetWeight!
+                    : currentProfile.targetWeight! / latestWeight?.weight
+                }
+                difference={
+                  isBulking
+                    ? currentProfile.targetWeight! - latestWeight.weight
+                    : latestWeight?.weight - currentProfile.targetWeight!
+                }
                 daysLeft={Number(
                   (
                     ((currentProfile.targetWeight! - latestWeight?.weight) *
                       7700) /
-                    currentProfile.calorieSurplus!
+                    calorieTarget
                   ).toFixed(0),
                 )}
               />

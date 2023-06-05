@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import {PrimaryButton, SecondaryButton} from '../components/Button';
 import {PrimaryTextInput} from '../components/TextInput';
@@ -8,6 +8,8 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Config from 'react-native-config';
 import {useAtom} from 'jotai';
 import {appLoadingAtom} from '../atoms/appLoading.atom';
+import Weight from '../watermelondb/model/Weight';
+import {sync} from '../watermelondb/sync';
 
 const baseUrl = Config.REACT_APP_BASE_URL;
 
@@ -18,12 +20,18 @@ export const LoginScreen = () => {
   const [, setIsAppLoading] = useAtom(appLoadingAtom);
   const database = useDatabase();
 
+  useEffect(() => {
+    setIsAppLoading({isAppLoading: false});
+  }, [setIsAppLoading]);
+
   async function signInWithMagicLink() {
     const {error} = await supabase.auth.signInWithOtp({
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: 'https://opencoach.app',
+        data: {
+          app: 'weight-tracker',
+        },
       },
     });
 
@@ -35,10 +43,11 @@ export const LoginScreen = () => {
   }
 
   async function signInWithToken() {
+    setIsAppLoading({isAppLoading: true});
     const {data, error} = await supabase.auth.verifyOtp({
       token,
       email,
-      type: 'magiclink',
+      type: 'email',
     });
 
     if (error) {
@@ -53,65 +62,76 @@ export const LoginScreen = () => {
         },
       });
 
+      console.log('response', response);
+
       if (response.status === 404) {
         Alert.alert('Not Authorized');
-        return;
+        setIsAppLoading({isAppLoading: false});
+        return supabase.auth.signOut();
       }
       if (!response.ok) {
         Alert.alert('Something went wrong');
-        return;
+        setIsAppLoading({isAppLoading: false});
+        return supabase.auth.signOut();
       }
 
-      const profile = await response.json();
+      const {profile} = await response.json();
+
+      const Profiles = database.get<Profile>('profiles');
+      const Weights = database.get<Weight>('weights');
 
       console.log('profile', profile);
 
       if (!profile) {
         Alert.alert('Something went wrong');
-        return;
+        setIsAppLoading({isAppLoading: false});
+        return supabase.auth.signOut();
       }
 
       if (profile) {
-        setIsAppLoading({isAppLoading: true});
         // delete all profiles from the database
         await database.write(async () => {
-          await database.get('profiles').query().destroyAllPermanently();
+          await Profiles.query()
+            .destroyAllPermanently()
+            .then(() => console.log('destroyed all profile'));
         });
         // TODO: eventually do the same for weights
-
         await database.write(async () => {
-          await database.get('weights').query().destroyAllPermanently();
+          await Weights.query()
+            .destroyAllPermanently()
+            .then(() => console.log('destroyed all weights'));
         });
 
-        await database
-          .write(async () => {
-            await database
-              .get<Profile>('profiles')
-              .create(newProfile => {
-                newProfile._raw._status = 'synced';
-                newProfile._raw._changed = '';
-                newProfile._raw.id = profile.id;
-                newProfile.name = profile.name;
-                newProfile.supabaseUserId = data.user!.id;
-                newProfile.createdAt = profile.created_at;
-                newProfile.updatedAt = profile.updated_at;
-                newProfile.gender = profile.gender;
-                newProfile.height = profile.height;
-                newProfile.heightUnit = profile.height_unit;
-                newProfile.activityLevel = profile.activity_level;
-                newProfile.targetWeight = profile.target_weight;
-                newProfile.targetWeightUnit = profile.target_weight_unit;
-                newProfile.dobAt = profile.dob_at;
-              })
-              .then(result => {
-                console.log('create', result);
-              });
-          })
+        try {
+          await database.write(async () => {
+            await Profiles.create(newProfile => {
+              newProfile._raw._status = 'synced';
+              newProfile._raw._changed = '';
+              newProfile._raw.id = profile.id;
+              newProfile.name = profile.name;
+              newProfile.supabaseUserId = profile.supabase_user_id;
+              newProfile.createdAt = profile.created_at;
+              newProfile.updatedAt = profile.updated_at;
+              newProfile.gender = profile.gender;
+              newProfile.height = profile.height;
+              newProfile.heightUnit = profile.height_unit;
+              newProfile.activityLevel = profile.activity_level;
+              newProfile.targetWeight = profile.target_weight;
+              newProfile.targetWeightUnit = profile.target_weight_unit;
+              newProfile.dobAt = profile.dob_at;
+            });
+          });
+        } catch (e) {
+          console.log('error creating profile', e);
+        }
+        sync()
           .then(() => {
             setIsAppLoading({isAppLoading: false});
+          })
+          .catch(e => {
+            setIsAppLoading({isAppLoading: false});
+            console.log('error syncing', e);
           });
-
-        // setIsAppLoading({isAppLoading: false});
       }
     }
   }
@@ -135,6 +155,13 @@ export const LoginScreen = () => {
               // disabled={loading}
               onPress={() => {
                 signInWithToken();
+              }}
+            />
+
+            <PrimaryButton
+              title="Re-enter email"
+              onPress={() => {
+                setHasSentEmail(false);
               }}
             />
           </View>
@@ -173,6 +200,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
     alignSelf: 'stretch',
+    gap: 10,
   },
   mt20: {
     marginTop: 20,

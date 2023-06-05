@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
+  Pressable,
   SectionList,
   StyleSheet,
   Text,
@@ -47,6 +48,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
   const [dateRange, setDateRange] = useAtom(dateRangeAtom);
   const [isDragging, setIsDragging] = useState(false);
 
+  // @ts-ignore
   const points: GraphPoint[] = weights
     .filter(weight => {
       const now = new Date();
@@ -67,8 +69,8 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
           return diffDays <= 7;
       }
     })
+    // @ts-ignore
     .reduce((acc, weight, index, array) => {
-      console.log('array', array);
       if (array.length === 1) {
         return [
           {
@@ -91,8 +93,6 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
       ];
     }, []);
 
-  console.log('points', points);
-
   const [currentPoint, setCurrentPoint] = useState<{
     index: number;
     value: number;
@@ -107,7 +107,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
       index: 0,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weights]);
+  }, [weights, dateRange]);
 
   const max = Math.max(...points.map(point => point.value));
   const min = Math.min(...points.map(point => point.value));
@@ -132,7 +132,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
       style={styles.headerContainer}>
       <Text style={{color: 'white', fontSize: 16}}>{displayDate}</Text>
       <Text style={{color: 'white', fontSize: 50, fontWeight: '700'}}>
-        {currentPoint.value}kg
+        {currentPoint.value ?? weights?.[0]?.weight}kg
       </Text>
       <Text
         style={{
@@ -141,14 +141,15 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
             Number(
               (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1),
             ) > 0
-              ? colors.error
-              : colors.success,
+              ? colors['water-leaf']['300']
+              : colors['picton-blue']['300'],
         }}>
         {points.length > 0
           ? (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)
           : '0'}
         kg ({' '}
-        {calcPercentageDifference() === 'NaN'
+        {calcPercentageDifference() === 'NaN' ||
+        calcPercentageDifference() === 'Infinity'
           ? '0'
           : calcPercentageDifference()}
         % )
@@ -190,7 +191,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
             )}
             style={styles.graph}
             points={points}
-            color={colors.primary}
+            color={colors['picton-blue']['400']}
             animated={true}
             enablePanGesture={true}
           />
@@ -202,13 +203,15 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{color: 'white', fontSize: 16}}>No data</Text>
+            <Text style={{color: 'white', fontSize: 16}}>
+              No data for selected period
+            </Text>
           </View>
         )}
 
         <View style={styles.dateRangeContainer}>
           {dateRanges.map(range => (
-            <TouchableOpacity
+            <Pressable
               key={range}
               onPressIn={() => {
                 setDateRange(range);
@@ -224,7 +227,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
                 ]}>
                 {range}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
       </>
@@ -309,8 +312,8 @@ const WeightList = ({weights}: Props) => {
                         color:
                           diffBetweenWeights !== 'NaN'
                             ? Number(diffBetweenWeights) > 0
-                              ? colors.error
-                              : colors.success
+                              ? colors['water-leaf']['300']
+                              : colors['picton-blue']['300']
                             : 'lightgrey',
                       }}>
                       {diffBetweenWeights !== 'NaN' ? diffBetweenWeights : '-'}{' '}

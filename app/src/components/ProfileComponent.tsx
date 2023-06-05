@@ -21,7 +21,7 @@ type Props = {
 const ProfileComponent = ({profiles}: Props) => {
   const currentProfile = profiles?.[0];
   const navigation = useNavigation<TabStackNavigationProps>();
-
+  console.log('currentProfile', currentProfile);
   if (!currentProfile) {
     return (
       <SecondaryButton

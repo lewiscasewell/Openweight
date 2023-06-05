@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
@@ -29,6 +30,8 @@ import {Controller, useForm} from 'react-hook-form';
 import {PrimaryTextInput} from '../components/TextInput';
 import {TextInput} from 'react-native';
 import {Slider} from '@miblanchard/react-native-slider';
+import {MaterialIcon} from '../icons/material-icons';
+import {set} from 'remeda';
 
 type EditProfileScreenRouteProp = RouteProp<AuthStackParamList, 'EditProfile'>;
 
@@ -44,8 +47,20 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
     null,
   );
 
-  const {handleSubmit, setValue, control} = useForm<{
-    gender?: string | undefined;
+  const defaultValues = {
+    name: profile.name ?? '',
+    gender: profile.gender ?? undefined,
+    dob_at: profile.dobAt ?? undefined,
+    height: profile.height === null ? '' : String(profile.height),
+    activity_level: profile.activityLevel ?? undefined,
+    calorie_surplus:
+      profile.calorieSurplus === null ? 0 : profile.calorieSurplus,
+    target_weight:
+      profile.targetWeight === null ? '' : String(profile.targetWeight),
+  };
+
+  const {handleSubmit, setValue, control, formState} = useForm<{
+    gender: string | undefined;
     dob_at: Date | undefined;
     name: string;
     height: string | undefined;
@@ -53,20 +68,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
     calorie_surplus: number;
     target_weight: string | undefined;
   }>({
-    defaultValues: {
-      name: profile.name ?? '',
-      gender: profile.gender ?? undefined,
-      dob_at: profile.dobAt ?? undefined,
-      height: profile.height === null ? '' : String(profile.height),
-      activity_level: profile.activityLevel ?? undefined,
-      calorie_surplus:
-        profile.calorieSurplus === null ? 0 : profile.calorieSurplus,
-      target_weight:
-        profile.targetWeight === null ? '' : String(profile.targetWeight),
-    },
+    defaultValues,
   });
-
-  console.log('profile', profile);
 
   const database = useDatabase();
 
@@ -123,8 +126,53 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
       ),
+      headerLeft: () => (
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            if (!formState.isDirty) {
+              return navigation.goBack();
+            }
+
+            Alert.alert(
+              'Save changes?',
+              'You have unsaved changes. Are you sure you want to discard them and leave this screen?',
+              [
+                {
+                  text: 'Save profile',
+                  onPress: () => {
+                    handleSubmit(data => {
+                      saveProfile({
+                        gender: data.gender,
+                        dob_at: data.dob_at,
+                        name: data.name,
+                        height: data.height,
+                        height_unit: 'cm',
+                        activity_level: data.activity_level,
+                        calorie_surplus: data.calorie_surplus,
+                        target_weight: data.target_weight,
+                      });
+                    })();
+                  },
+                },
+                {
+                  text: 'Discard',
+                  style: 'destructive',
+                  onPress: () => navigation.goBack(),
+                },
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                  onPress: () => {},
+                },
+              ],
+            );
+          }}>
+          <MaterialIcon name="chevron-left" color="white" size={30} />
+        </TouchableOpacity>
+      ),
     });
-  }, [navigation, saveProfile, handleSubmit]);
+  }, [navigation, saveProfile, handleSubmit, formState.isDirty]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{flexGrow: 1}}>
@@ -137,7 +185,9 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
               label="Name"
               value={value}
               onChangeText={text => {
-                setValue('name', text);
+                setValue('name', text, {
+                  shouldDirty: true,
+                });
               }}
               placeholder="Enter your name"
             />
@@ -180,7 +230,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       value === 'male' ? {} : {opacity: 0.5},
                     ]}
                     onPress={() => {
-                      setValue('gender', 'male');
+                      setValue('gender', 'male', {shouldDirty: true});
+                      setIsEditing(null);
                     }}>
                     <Text style={styles.selectOptionText}>Male</Text>
                   </TouchableOpacity>
@@ -190,7 +241,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       value === 'female' ? {} : {opacity: 0.5},
                     ]}
                     onPress={() => {
-                      setValue('gender', 'female');
+                      setValue('gender', 'female', {shouldDirty: true});
+                      setIsEditing(null);
                     }}>
                     <Text style={styles.selectOptionText}>Female</Text>
                   </TouchableOpacity>
@@ -241,7 +293,9 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     themeVariant="dark"
                     mode="date"
                     onChange={(event, date) => {
-                      setValue('dob_at', dayjs(date).startOf('day').toDate());
+                      setValue('dob_at', dayjs(date).startOf('day').toDate(), {
+                        shouldDirty: true,
+                      });
                     }}
                   />
                 </View>
@@ -268,7 +322,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
               <View>
                 <Text style={styles.optionText}>Height</Text>
                 <Text style={styles.optionValue}>
-                  {value !== '' ? value : 'Not provided'}
+                  {value !== '' ? `${value} cm` : 'Not provided'}
                 </Text>
               </View>
               <Text style={styles.editButtonText}>
@@ -293,7 +347,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     keyboardType="numeric"
                     value={value ?? ''}
                     onChangeText={text => {
-                      setValue('height', text);
+                      setValue('height', text, {shouldDirty: true});
                     }}
                   />
                   <Text
@@ -347,7 +401,10 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       value === 'sedentary' ? {} : {opacity: 0.5},
                     ]}
                     onPress={() => {
-                      setValue('activity_level', 'sedentary');
+                      setValue('activity_level', 'sedentary', {
+                        shouldDirty: true,
+                      });
+                      setIsEditing(null);
                     }}>
                     <Text style={styles.selectOptionText}>Sedentary</Text>
                   </TouchableOpacity>
@@ -357,7 +414,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       value === 'light' ? {} : {opacity: 0.5},
                     ]}
                     onPress={() => {
-                      setValue('activity_level', 'light');
+                      setValue('activity_level', 'light', {shouldDirty: true});
+                      setIsEditing(null);
                     }}>
                     <Text style={styles.selectOptionText}>Light</Text>
                   </TouchableOpacity>
@@ -367,7 +425,10 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       value === 'moderate' ? {} : {opacity: 0.5},
                     ]}
                     onPress={() => {
-                      setValue('activity_level', 'moderate');
+                      setValue('activity_level', 'moderate', {
+                        shouldDirty: true,
+                      });
+                      setIsEditing(null);
                     }}>
                     <Text style={styles.selectOptionText}>Moderate</Text>
                   </TouchableOpacity>
@@ -377,7 +438,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       value === 'active' ? {} : {opacity: 0.5},
                     ]}
                     onPress={() => {
-                      setValue('activity_level', 'active');
+                      setValue('activity_level', 'active', {shouldDirty: true});
+                      setIsEditing(null);
                     }}>
                     <Text style={styles.selectOptionText}>Active</Text>
                   </TouchableOpacity>
@@ -387,7 +449,10 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       value === 'very_active' ? {} : {opacity: 0.5},
                     ]}
                     onPress={() => {
-                      setValue('activity_level', 'very_active');
+                      setValue('activity_level', 'very_active', {
+                        shouldDirty: true,
+                      });
+                      setIsEditing(null);
                     }}>
                     <Text style={styles.selectOptionText}>Very Active</Text>
                   </TouchableOpacity>
@@ -433,11 +498,13 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     minimumValue={-1000}
                     maximumValue={1000}
                     step={100}
-                    minimumTrackTintColor={colors.primary}
-                    thumbTintColor={colors.primary}
+                    minimumTrackTintColor={colors['picton-blue']['400']}
+                    thumbTintColor={colors['picton-blue']['400']}
                     containerStyle={{flex: 1, height: 40}}
                     onValueChange={value => {
-                      setValue('calorie_surplus', value[0]);
+                      setValue('calorie_surplus', value[0], {
+                        shouldDirty: true,
+                      });
                     }}
                   />
                 </View>
@@ -487,7 +554,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       profile.targetWeightUnit === 'kg' ? {} : {opacity: 0.5},
                     ]}
                     onChangeText={text => {
-                      setValue('target_weight', text);
+                      setValue('target_weight', text, {shouldDirty: true});
                     }}
                     value={value}
                     keyboardType="numeric"
@@ -503,7 +570,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
 
       <View
         style={{
-          height: Dimensions.get('window').height / 3,
+          height: Dimensions.get('window').height / 2,
         }}
       />
     </ScrollView>

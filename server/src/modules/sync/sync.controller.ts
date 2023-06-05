@@ -94,9 +94,6 @@ export async function pullChangesHandler(
     .where("created_at", "<=", lastPulledAt)
     .execute();
 
-  const allWeights = await db.selectFrom("weights").selectAll().execute();
-  console.log("allWeights", allWeights);
-
   const pullChangesResponse: PullChangeResponse = {
     changes: {
       profiles: {

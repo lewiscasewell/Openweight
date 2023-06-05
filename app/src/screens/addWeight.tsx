@@ -139,8 +139,8 @@ const AddWeightScreen = ({weights}: Props) => {
         weight =>
           dayjs(weight.dateAt).format('YYYY-MM-DD') === route.params.dateToPass,
       )
-      ?.weight.toString() ??
-      weights[0]?.weight.toString() ??
+      ?.weight?.toString() ??
+      weights[0]?.weight?.toString() ??
       '70',
   );
   const [date, setDate] = React.useState(
@@ -246,7 +246,7 @@ const AddWeightScreen = ({weights}: Props) => {
                   );
 
                   setWeightInput(
-                    getWeight?.weight?.toString() ?? latestWeight.toString(),
+                    getWeight?.weight?.toString() ?? latestWeight?.toString(),
                   );
                 }}
               />

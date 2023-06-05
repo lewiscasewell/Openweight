@@ -20,6 +20,7 @@ import {
 } from '@shopify/react-native-skia';
 
 import React from 'react';
+import {colors as themeColors} from '../styles/theme';
 
 const r1 = 120;
 const path = Skia.Path.Make();
@@ -34,7 +35,10 @@ interface ProgressCircleProps {
   daysLeft: number;
 }
 
-const colors = ['#2FB8FF', '#9EECD9'];
+const colors = [
+  themeColors['picton-blue']['400'],
+  themeColors['water-leaf'][200],
+];
 
 export const ProgressCircle = ({
   maxValue,
@@ -99,20 +103,34 @@ export const ProgressCircle = ({
         text="from target weight"
         color="white"
       />
-      <Text
-        x={c.x - font.getTextWidth(`${daysLeft.toFixed(0)} days`) / 2}
-        y={c.y + font.getSize() / 2 + 20}
-        font={font}
-        text={`${daysLeft.toFixed(0)} days`}
-        color="white"
-      />
-      <Text
-        x={c.x - font2.getTextWidth('to reach target') / 2}
-        y={c.y + font2.getSize() / 2 + 55}
-        font={font2}
-        text="to reach target"
-        color="white"
-      />
+      {daysLeft <= 0 || daysLeft === Infinity ? (
+        <>
+          <Text
+            x={c.x - font2.getTextWidth('Adjust your calories') / 2}
+            y={c.y + font2.getSize() / 2 + 55}
+            font={font2}
+            text="Adjust your calories"
+            color="pink"
+          />
+        </>
+      ) : (
+        <>
+          <Text
+            x={c.x - font.getTextWidth(`${daysLeft.toFixed(0)} days`) / 2}
+            y={c.y + font.getSize() / 2 + 20}
+            font={font}
+            text={`${daysLeft.toFixed(0)} days`}
+            color="white"
+          />
+          <Text
+            x={c.x - font2.getTextWidth('to reach target') / 2}
+            y={c.y + font2.getSize() / 2 + 55}
+            font={font2}
+            text="to reach target"
+            color="white"
+          />
+        </>
+      )}
 
       <Group>
         <SweepGradient c={vec(12 + r1, 12 + r1)} colors={colors} />
