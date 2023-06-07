@@ -12,6 +12,8 @@ import {
   combineLatestWith,
 } from 'rxjs/operators';
 import {sync, whenUpdatableDataSetChanges} from '.';
+import {useAtom} from 'jotai';
+import {appLoadingAtom} from '../../atoms/appLoading.atom';
 
 const TIME_DELAY_IN_MILLIS = 2000;
 
@@ -19,6 +21,7 @@ export function useSyncDatabase() {
   const [isSyncing, setIsSyncing] = React.useState(false);
   const syncSubscription = React.useRef<Subscription | null>(null);
   const [errorMessage, setErrorMessage] = React.useState<string>();
+  const [, setIsAppLoading] = useAtom(appLoadingAtom);
 
   React.useEffect(() => {
     if (!syncSubscription.current) {
@@ -55,7 +58,7 @@ export function useSyncDatabase() {
         .subscribe();
     }
     return () => syncSubscription.current?.unsubscribe();
-  }, []);
+  }, [setIsAppLoading]);
 
   return {isSyncing, error: errorMessage};
 }

@@ -2,7 +2,7 @@ import {Database, Q} from '@nozbe/watermelondb';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useAtom} from 'jotai';
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -26,6 +26,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {map} from 'rxjs';
 import {Session} from '@supabase/supabase-js';
+import {hapticFeedback} from '../utils/hapticFeedback';
 dayjs.extend(utc);
 
 type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
@@ -63,13 +64,9 @@ async function addWeight({
     );
 
     if (weightOnDate !== undefined && weightInput) {
-      await weightOnDate
-        .update(weightRecord => {
-          weightRecord.weight = parseFloat(weightInput);
-        })
-        .then(() => {
-          console.log('updated');
-        });
+      await weightOnDate.update(weightRecord => {
+        weightRecord.weight = parseFloat(weightInput);
+      });
 
       navigation.goBack();
 
@@ -127,10 +124,15 @@ async function deleteWeight({
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
+  const latestWeight = weights[0]?.weight;
 
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
   const navigation = useNavigation<TabStackNavigationProps>();
+  const [isTouched, setIsTouched] = useState(false);
+  const [weightInputInterval, setWeightInputInterval] = useState(
+    setInterval(() => {}, 100),
+  );
 
   const [weightInput, setWeightInput] = React.useState(
     weights
@@ -138,25 +140,44 @@ const AddWeightScreen = ({weights}: Props) => {
         weight =>
           dayjs(weight.dateAt).format('YYYY-MM-DD') === route.params.dateToPass,
       )
-      ?.weight.toString() ??
-      weights[0]?.weight.toString() ??
-      '',
+      ?.weight?.toString() ??
+      weights[0]?.weight?.toString() ??
+      '70',
   );
   const [date, setDate] = React.useState(
-    dayjs(route.params.dateToPass).startOf('day').utc(true).toDate(),
+    dayjs(route.params.dateToPass).startOf('day').toDate(),
   );
 
   const incrementWeight = useCallback(() => {
+    hapticFeedback('impactLight');
+    setIsTouched(true);
+    if (!weightInput) {
+      setWeightInput('70.0');
+    }
+
+    if (parseFloat(weightInput!) >= 1000) {
+      return;
+    }
+
     setWeightInput(currentWeightInput =>
       (parseFloat(currentWeightInput!) + 0.1).toFixed(1),
     );
-  }, []);
+  }, [weightInput]);
 
   const decrementWeight = useCallback(() => {
+    hapticFeedback('impactLight');
+    setIsTouched(true);
+    if (!weightInput) {
+      setWeightInput('70.0');
+    }
+    if (parseFloat(weightInput!) <= 0) {
+      return;
+    }
+
     setWeightInput(currentWeightInput =>
       (parseFloat(currentWeightInput!) - 0.1).toFixed(1),
     );
-  }, []);
+  }, [weightInput]);
 
   return (
     <SafeAreaView style={styles.flex}>
@@ -170,6 +191,18 @@ const AddWeightScreen = ({weights}: Props) => {
               onPressIn={() => {
                 decrementWeight();
               }}
+              onLongPress={() => {
+                const interval = setInterval(() => {
+                  decrementWeight();
+                }, 100);
+
+                setWeightInputInterval(interval);
+
+                return () => clearInterval(interval);
+              }}
+              onPressOut={() => {
+                clearInterval(weightInputInterval);
+              }}
               activeOpacity={0.7}
               style={{
                 width: 60,
@@ -182,7 +215,7 @@ const AddWeightScreen = ({weights}: Props) => {
               <MaterialIcon name="minus" color="white" size={30} />
             </TouchableOpacity>
             <TextInput
-              style={styles.weightInput}
+              style={[styles.weightInput, isTouched && styles.touchedInput]}
               keyboardType="numeric"
               placeholder="70.0"
               maxLength={5}
@@ -194,6 +227,18 @@ const AddWeightScreen = ({weights}: Props) => {
             <TouchableOpacity
               onPressIn={() => {
                 incrementWeight();
+              }}
+              onLongPress={() => {
+                const interval = setInterval(() => {
+                  incrementWeight();
+                }, 100);
+
+                setWeightInputInterval(interval);
+
+                return () => clearInterval(interval);
+              }}
+              onPressOut={() => {
+                clearInterval(weightInputInterval);
               }}
               activeOpacity={0.7}
               style={{
@@ -232,20 +277,22 @@ const AddWeightScreen = ({weights}: Props) => {
                 value={date}
                 maximumDate={new Date()}
                 onChange={value => {
+                  hapticFeedback('impactLight');
                   const newDate = dayjs(value.nativeEvent.timestamp!)
-                    .utc(true)
                     .startOf('day')
                     .toDate();
 
                   setDate(newDate);
 
-                  // const getWeight = weights.find(
-                  //   weight => weight.dateString === newDateString,
-                  // );
+                  const getWeight = weights.find(
+                    weight =>
+                      dayjs(weight.dateAt).format('YYYY-MM-DD') ===
+                      dayjs(newDate).format('YYYY-MM-DD'),
+                  );
 
-                  // if (getWeight) {
-                  //   setWeightInput(getWeight.weight.toString());
-                  // }
+                  setWeightInput(
+                    getWeight?.weight?.toString() ?? latestWeight?.toString(),
+                  );
                 }}
               />
             </View>
@@ -298,9 +345,12 @@ const styles = StyleSheet.create({
     height: 200,
     width: 250,
     fontSize: 100,
-    color: 'white',
+    color: colors.grey[700],
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  touchedInput: {
+    color: 'white',
   },
   saveButton: {
     backgroundColor: '#1d1d1d',

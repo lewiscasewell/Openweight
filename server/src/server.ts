@@ -41,8 +41,6 @@ const buildServer = () => {
         const token = request.headers.authorization.split(" ")[1];
         const { data, error } = await server.supabase.auth.getUser(token);
 
-        console.log("data", data);
-
         if (error) throw new Error(error.message);
 
         request.user = data.user;

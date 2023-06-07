@@ -14,7 +14,6 @@ export async function sync() {
       console.log('pullChanges...');
 
       const urlParams = `last_pulled_at=${lastPulledAt}`;
-      console.log('data.session?.access_token', data.session?.access_token);
 
       const response = await fetch(`${baseUrl}/api/sync/?${urlParams}`, {
         headers: {
@@ -23,13 +22,10 @@ export async function sync() {
       });
 
       if (!response.ok) {
-        console.log('hwew');
         throw new Error(`HTTPs error! status: ${response.status}`);
       }
 
       const {changes, timestamp} = await response.json();
-
-      console.log('client changes', changes.profiles.updated);
 
       return {changes, timestamp};
     },

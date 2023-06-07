@@ -8,7 +8,6 @@ export async function fetchProfileHandler(
   reply: FastifyReply
 ) {
   const { user } = request;
-  console.log("user in the server", user);
 
   const profile = await db
     .selectFrom("profiles")
@@ -16,35 +15,39 @@ export async function fetchProfileHandler(
     .where("supabase_user_id", "=", user.id)
     .executeTakeFirst();
 
-  console.log("profile in the server", profile);
-
   // TODO: while loop that checks if a profile exists with randomId, if it does, create a new randomId
   let randomId = Math.floor(Math.random() * 1000000000);
 
   if (!profile) {
     // random number to create a random username
-    const newProfile = await db
-      .insertInto("profiles")
-      .values({
-        supabase_user_id: user.id,
-        created_at: new Date(),
-        updated_at: new Date(),
-        name: `user${randomId}`,
-        id: uuidV4(),
-        calorie_surplus: 0,
-      })
-      .execute();
+    const newProfile = {
+      supabase_user_id: user.id,
+      created_at: new Date(),
+      updated_at: new Date(),
+      name: `user${randomId}`,
+      id: uuidV4(),
+      calorie_surplus: 0,
+      dob_at: null,
+      gender: null,
+      height: null,
+      height_unit: "cm",
+      target_weight: null,
+      target_weight_unit: "kg",
+      default_weight_unit: "kg",
+      activity_level: null,
+    };
 
-    console.log("profile in the server after creation", newProfile);
+    await db.insertInto("profiles").values(newProfile).execute();
 
-    return reply.code(201).send(newProfile);
+    return reply.code(201).send({ profile: newProfile });
   }
 
   return reply.code(201).send({
-    ...profile,
-    dob_at: dayjs(profile.dob_at).valueOf(),
-    created_at: dayjs(profile.created_at).valueOf(),
-    updated_at: dayjs(profile.updated_at).valueOf(),
-    calorie_surplus: 0,
+    profile: {
+      ...profile,
+      dob_at: dayjs(profile.dob_at).valueOf(),
+      created_at: dayjs(profile.created_at).valueOf(),
+      updated_at: dayjs(profile.updated_at).valueOf(),
+    },
   });
 }

@@ -49,10 +49,15 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import EditProfileScreen from './src/screens/editProfile';
 import {appLoadingAtom} from './src/atoms/appLoading.atom';
+import {UpdateEmailAddressScreen} from './src/screens/updateEmailAddress';
+import Animated, {FadeInDown, Layout} from 'react-native-reanimated';
 
 dayjs.extend(utc);
 
-LogBox.ignoreLogs(['useSharedValueEffect()']);
+LogBox.ignoreLogs([
+  'useSharedValueEffect()',
+  'Overriding previous layout animation',
+]);
 
 // database.write(async () => {
 //   await database.unsafeResetDatabase();
@@ -79,6 +84,7 @@ export type AuthStackParamList = {
   EditProfile: {
     id: string;
   };
+  UpdateEmailAddress: undefined;
 };
 
 export type NoAuthStackParamList = {
@@ -142,17 +148,21 @@ const Tabs = () => {
         />
       </TabStack.Navigator>
       {session && (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            navigation.navigate('AddWeight', {
-              dateToPass: dayjs().format('YYYY-MM-DD'),
-              id: session.user.id,
-            });
-          }}
-          style={styles.addButton}>
-          <MaterialIcon name="plus" color={colors.grey[900]} size={40} />
-        </TouchableOpacity>
+        <Animated.View
+          entering={FadeInDown}
+          layout={Layout.duration(200).delay(200).springify()}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate('AddWeight', {
+                dateToPass: dayjs().format('YYYY-MM-DD'),
+                id: session.user.id,
+              });
+            }}
+            style={styles.addButton}>
+            <MaterialIcon name="plus" color={colors.grey['100']} size={40} />
+          </TouchableOpacity>
+        </Animated.View>
       )}
     </>
   );
@@ -161,7 +171,6 @@ const Tabs = () => {
 function App(): JSX.Element {
   const [userSession, setSession] = useAtom(sessionAtom);
   const [isAppLoading] = useAtom(appLoadingAtom);
-  console.log('isAppLoading', isAppLoading);
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session}}) => {
@@ -185,15 +194,20 @@ function App(): JSX.Element {
         <SafeAreaProvider>
           <StatusBar barStyle="light-content" />
           {isAppLoading.isAppLoading && (
-            <View style={{flex: 1, minHeight: Dimensions.get('screen').height}}>
+            <View
+              style={{
+                flex: 1,
+                minHeight: Dimensions.get('screen').height,
+                backgroundColor: colors.black,
+              }}>
               <Text
                 style={{
                   padding: 100,
-                  color: colors.white,
+                  color: colors.grey['100'],
                   textAlign: 'center',
-                  fontSize: 30,
+                  fontSize: 22,
                 }}>
-                Loading
+                Loading your profile
               </Text>
             </View>
           )}
@@ -210,7 +224,13 @@ function App(): JSX.Element {
                 component={EditProfileScreen}
                 options={{
                   headerShown: true,
-                  headerBackTitle: '',
+                }}
+              />
+              <AuthStack.Screen
+                name="UpdateEmailAddress"
+                component={UpdateEmailAddressScreen}
+                options={{
+                  headerShown: true,
                 }}
               />
               <AuthStack.Screen
@@ -225,7 +245,11 @@ function App(): JSX.Element {
 
           {!userSession && (
             <NoAuthStack.Navigator>
-              <NoAuthStack.Screen name="Login" component={LoginScreen} />
+              <NoAuthStack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{headerShown: false}}
+              />
             </NoAuthStack.Navigator>
           )}
         </SafeAreaProvider>
@@ -238,7 +262,7 @@ export default App;
 
 const styles = StyleSheet.create({
   addButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors['picton-blue'][400],
     height: 60,
     width: 60,
     position: 'absolute',
@@ -247,6 +271,14 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.7,
+    shadowRadius: 5,
+    elevation: 10,
   },
   headerTitle: {
     fontSize: 20,

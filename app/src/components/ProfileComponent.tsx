@@ -47,7 +47,11 @@ const ProfileComponent = ({profiles}: Props) => {
             }}>
             <Text style={styles.optionText}>Profile information</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.optionContainer}>
+          <TouchableHighlight
+            style={styles.optionContainer}
+            onPress={() => {
+              navigation.navigate('UpdateEmailAddress');
+            }}>
             <Text style={styles.optionText}>Change email address</Text>
           </TouchableHighlight>
         </View>

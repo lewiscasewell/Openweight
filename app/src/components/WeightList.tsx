@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
+  Pressable,
   SectionList,
   StyleSheet,
   Text,
@@ -33,6 +34,8 @@ import Animated, {
   FadeOutUp,
   Layout,
 } from 'react-native-reanimated';
+import {dateRangeAtom, dateRanges} from '../atoms/dateRange.atom';
+import {hapticFeedback} from '../utils/hapticFeedback';
 
 const {width} = Dimensions.get('screen');
 
@@ -42,15 +45,12 @@ type Props = {
   weights: Weight[];
 };
 
-const dateRanges = ['ALL', '1Y', '3M', '1M', '1W'] as const;
-type DateRange = (typeof dateRanges)[number];
-
 const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
-  const [dateRange, setDateRange] = useState<DateRange>('1Y');
+  const [dateRange, setDateRange] = useAtom(dateRangeAtom);
   const [isDragging, setIsDragging] = useState(false);
 
+  // @ts-ignore
   const points: GraphPoint[] = weights
-    // filter by date range
     .filter(weight => {
       const now = new Date();
       const date = new Date(weight.dateAt);
@@ -70,13 +70,29 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
           return diffDays <= 7;
       }
     })
-    .map((weight, index) => {
-      return {
-        date: new Date(index),
-        value: weight.weight,
-      };
-    })
-    .reverse();
+    // @ts-ignore
+    .reduce((acc, weight, index, array) => {
+      if (array.length === 1) {
+        return [
+          {
+            date: new Date(0),
+            value: 0,
+          },
+          {
+            date: new Date(1),
+            value: weight.weight,
+          },
+        ];
+      }
+
+      return [
+        {
+          date: new Date(index),
+          value: weight.weight,
+        },
+        ...acc,
+      ];
+    }, []);
 
   const [currentPoint, setCurrentPoint] = useState<{
     index: number;
@@ -92,7 +108,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
       index: 0,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weights]);
+  }, [weights, dateRange]);
 
   const max = Math.max(...points.map(point => point.value));
   const min = Math.min(...points.map(point => point.value));
@@ -117,7 +133,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
       style={styles.headerContainer}>
       <Text style={{color: 'white', fontSize: 16}}>{displayDate}</Text>
       <Text style={{color: 'white', fontSize: 50, fontWeight: '700'}}>
-        {currentPoint.value}kg
+        {currentPoint.value ?? weights?.[0]?.weight}kg
       </Text>
       <Text
         style={{
@@ -126,56 +142,79 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
             Number(
               (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1),
             ) > 0
-              ? colors.success
-              : colors.error,
+              ? colors['water-leaf']['300']
+              : colors['picton-blue']['300'],
         }}>
-        {(points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)}kg ({' '}
-        {calcPercentageDifference()}% )
+        {points.length > 0
+          ? (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)
+          : '0'}
+        kg ({' '}
+        {calcPercentageDifference() === 'NaN'
+          ? '0'
+          : calcPercentageDifference() === 'Infinity'
+          ? '-'
+          : calcPercentageDifference()}
+        % )
       </Text>
 
       <>
-        <LineGraph
-          onGestureStart={() => {
-            if (!isDragging) {
-              setIsDragging(true);
-            }
-          }}
-          onGestureEnd={() => {
-            if (isDragging) {
-              setIsDragging(false);
-            }
-            if (currentPoint.index !== 0) {
-              setCurrentPoint({
-                value: Number(points[points.length - 1].value?.toFixed(1)),
-                index: 0,
-              });
-            }
-          }}
-          onPointSelected={point => {
-            const index = point.date.getTime();
+        {points.length > 0 ? (
+          <LineGraph
+            onGestureStart={() => {
+              if (!isDragging) {
+                setIsDragging(true);
+              }
+            }}
+            onGestureEnd={() => {
+              if (isDragging) {
+                setIsDragging(false);
+              }
+              if (currentPoint.index !== 0) {
+                setCurrentPoint({
+                  value: Number(points[points.length - 1].value?.toFixed(1)),
+                  index: 0,
+                });
+              }
+            }}
+            onPointSelected={point => {
+              hapticFeedback('impactLight');
+              const index = point.date.getTime();
 
-            if (!isDragging && currentPoint.index !== 0) {
-              setCurrentPoint({value: point.value, index});
-            }
+              if (!isDragging && currentPoint.index !== 0) {
+                setCurrentPoint({value: point.value, index});
+              }
 
-            if (isDragging) {
-              setCurrentPoint({value: point.value, index});
-            }
-          }}
-          TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
-          BottomAxisLabel={() => (
-            <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
-          )}
-          style={styles.graph}
-          points={points}
-          color={colors.primary}
-          animated={true}
-          enablePanGesture={true}
-        />
+              if (isDragging) {
+                setCurrentPoint({value: point.value, index});
+              }
+            }}
+            TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
+            BottomAxisLabel={() => (
+              <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
+            )}
+            style={styles.graph}
+            points={points}
+            color={colors['picton-blue']['400']}
+            animated={true}
+            enablePanGesture={true}
+          />
+        ) : (
+          <View
+            style={{
+              height: 200,
+              paddingVertical: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: 'white', fontSize: 16}}>
+              No data for selected period
+            </Text>
+          </View>
+        )}
 
         <View style={styles.dateRangeContainer}>
           {dateRanges.map(range => (
-            <TouchableOpacity
+            <Pressable
               key={range}
               onPressIn={() => {
                 setDateRange(range);
@@ -191,7 +230,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
                 ]}>
                 {range}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
       </>
@@ -276,8 +315,8 @@ const WeightList = ({weights}: Props) => {
                         color:
                           diffBetweenWeights !== 'NaN'
                             ? Number(diffBetweenWeights) > 0
-                              ? colors.success
-                              : colors.error
+                              ? colors['water-leaf']['300']
+                              : colors['picton-blue']['300']
                             : 'lightgrey',
                       }}>
                       {diffBetweenWeights !== 'NaN' ? diffBetweenWeights : '-'}{' '}
@@ -338,7 +377,7 @@ const WeightList = ({weights}: Props) => {
           exiting={FadeOut}
           layout={Layout.delay(100)}
           style={styles.noWeightsContainer}>
-          <Text style={styles.noWeightsText}>No weights yet.</Text>
+          <Text style={styles.noWeightsText}>Add your first weight!</Text>
         </Animated.View>
       )}
     </View>
@@ -453,7 +492,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   moveRight: {
-    left: width - 60,
+    left: width - 80,
   },
 });
 

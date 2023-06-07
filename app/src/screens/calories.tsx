@@ -1,5 +1,12 @@
-import React from 'react';
-import {StyleSheet, ScrollView, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  Dimensions,
+  TouchableHighlight,
+} from 'react-native';
 
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
 
@@ -11,11 +18,16 @@ import {RouteProp, useNavigation} from '@react-navigation/native';
 import {TabStackNavigationProps, TabStackParamList} from '../../App';
 import {PrimaryButton} from '../components/Button';
 import {colors} from '../styles/theme';
-import Animated from 'react-native-reanimated';
+import Animated, {FadeIn, FadeOut, Layout} from 'react-native-reanimated';
 import Weight from '../watermelondb/model/Weight';
 import {map} from 'rxjs';
 import dayjs from 'dayjs';
 import {Slider} from '@miblanchard/react-native-slider';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {MaterialIcon} from '../icons/material-icons';
+import {Canvas} from '@shopify/react-native-skia';
+import {ProgressCircle} from '../components/ProgressCircle';
 
 type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
 
@@ -26,13 +38,20 @@ type Props = {
   weights: Weight[];
 };
 
-const CompleteProfile = ({currentProfile}: {currentProfile: Profile}) => {
+const CompleteProfile = ({
+  currentProfile,
+  hasWeights,
+}: {
+  currentProfile: Profile;
+  hasWeights: boolean;
+}) => {
   const navigation = useNavigation<TabStackNavigationProps>();
   return (
     <View style={completeProfileStyles.container}>
       <Text style={styles.title}>Calories</Text>
       <Text style={completeProfileStyles.title}>
-        To work out your daily calorie target you need to complete your profile.
+        To calculate your daily calorie target you need to complete your profile
+        {hasWeights ? '.' : ' and have at least one weight recorded.'}
       </Text>
       <PrimaryButton
         title="Complete profile"
@@ -62,13 +81,18 @@ const completeProfileStyles = StyleSheet.create({
 const CaloriesScreen = ({profiles, weights}: Props) => {
   const currentProfile = profiles?.[0];
   const latestWeight = weights?.[0];
+  const navigation = useNavigation<TabStackNavigationProps>();
 
   const [calorieTarget, setCalorieTarget] = React.useState<number>(
-    currentProfile.calorieSurplus!,
+    currentProfile?.calorieSurplus!,
   );
+  const database = useDatabase();
+  useEffect(() => {
+    setCalorieTarget(currentProfile?.calorieSurplus!);
+  }, [currentProfile?.calorieSurplus]);
 
   const isCompleteProfile = Boolean(
-    currentProfile.name &&
+    currentProfile?.name &&
       currentProfile?.gender &&
       currentProfile?.height &&
       currentProfile?.heightUnit &&
@@ -76,16 +100,21 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
       currentProfile?.targetWeight &&
       currentProfile?.targetWeightUnit &&
       currentProfile?.dobAt &&
-      currentProfile?.calorieSurplus &&
-      weights.length > 0,
+      currentProfile?.calorieSurplus !== null,
+  );
+
+  const hasWeights = Boolean(weights.length > 0);
+
+  const isBulking = Boolean(
+    currentProfile?.targetWeight! > latestWeight?.weight,
   );
 
   const calcCalorieTarget = () => {
     if (!currentProfile || !latestWeight) {
       return;
     }
-    const heightInCentimeters = currentProfile.height!;
-    const weightInKilograms = latestWeight.weight;
+    const heightInCentimeters = currentProfile?.height!;
+    const weightInKilograms = latestWeight?.weight;
     const age = dayjs(currentProfile?.dobAt).diff(dayjs(), 'year');
     const activityLevelMulipliers = () => {
       if (currentProfile?.activityLevel === 'sedentary') {
@@ -116,11 +145,21 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
         calorieTarget
       );
     }
+    if (currentProfile?.gender === 'female') {
+      return (
+        (447.593 +
+          9.247 * weightInKilograms +
+          3.098 * heightInCentimeters -
+          4.33 * age) *
+          activityLevelMulipliers() +
+        calorieTarget
+      );
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
-      {isCompleteProfile ? (
+      {isCompleteProfile && hasWeights ? (
         <Animated.View style={styles.graph}>
           <Text style={styles.dailyCalorieTargetTitle}>
             Daily calorie target
@@ -140,11 +179,138 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
             step={100}
             minimumTrackTintColor={colors.grey[700]}
             maximumTrackTintColor={colors.grey[500]}
-            thumbTintColor={colors.primary}
+            thumbTintColor={colors['picton-blue'][400]}
           />
+          {currentProfile?.calorieSurplus !== calorieTarget && (
+            <View
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                paddingVertical: 10,
+              }}>
+              <Animated.View entering={FadeIn} exiting={FadeOut}>
+                <TouchableOpacity
+                  onPress={async () => {
+                    await database.write(async () => {
+                      await currentProfile.update(profile => {
+                        profile.calorieSurplus = calorieTarget;
+                      });
+                    });
+                  }}>
+                  <MaterialIcon
+                    color={colors['water-leaf']['300']}
+                    name="check"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              </Animated.View>
+              <Animated.View entering={FadeIn} exiting={FadeOut}>
+                <TouchableOpacity
+                  onPress={() =>
+                    setCalorieTarget(currentProfile.calorieSurplus!)
+                  }>
+                  <MaterialIcon color="pink" name="close" size={30} />
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          )}
+          <Animated.View
+            layout={Layout.duration(200)}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              paddingVertical: 20,
+            }}>
+            <TouchableHighlight
+              onPress={() => {
+                navigation.navigate('AddWeight', {
+                  dateToPass: dayjs().format('YYYY-MM-DD'),
+                  id: currentProfile.supabaseUserId,
+                });
+              }}>
+              <>
+                <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
+                  Current
+                </Text>
+                <Text
+                  style={{
+                    color: colors.grey['100'],
+                    textAlign: 'center',
+                    fontSize: 40,
+                  }}>
+                  {latestWeight?.weight}
+                  <Text style={{fontSize: 20}}>
+                    {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
+                  </Text>
+                </Text>
+              </>
+            </TouchableHighlight>
+            <View
+              style={{
+                height: 50,
+                width: 1,
+                backgroundColor: colors.grey['600'],
+              }}
+            />
+            <TouchableHighlight
+              onPress={() => {
+                navigation.navigate('EditProfile', {id: currentProfile.id});
+              }}>
+              <>
+                <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
+                  Target
+                </Text>
+                <Text
+                  style={{
+                    color: colors.grey['100'],
+                    textAlign: 'center',
+                    fontSize: 40,
+                  }}>
+                  {currentProfile.targetWeight}
+                  <Text style={{fontSize: 20}}>
+                    {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
+                  </Text>
+                </Text>
+              </>
+            </TouchableHighlight>
+          </Animated.View>
+          <Animated.View layout={Layout.duration(200)}>
+            <Canvas
+              style={{
+                width: Dimensions.get('screen').width - 28,
+                height: Dimensions.get('screen').width,
+              }}>
+              <ProgressCircle
+                maxValue={
+                  isBulking
+                    ? latestWeight.weight / currentProfile.targetWeight!
+                    : currentProfile.targetWeight! / latestWeight?.weight
+                }
+                difference={
+                  isBulking
+                    ? currentProfile.targetWeight! - latestWeight.weight
+                    : latestWeight?.weight - currentProfile.targetWeight!
+                }
+                daysLeft={Number(
+                  (
+                    ((currentProfile.targetWeight! - latestWeight?.weight) *
+                      7700) /
+                    calorieTarget
+                  ).toFixed(0),
+                )}
+              />
+            </Canvas>
+          </Animated.View>
         </Animated.View>
       ) : (
-        <CompleteProfile currentProfile={currentProfile} />
+        <CompleteProfile
+          currentProfile={currentProfile}
+          hasWeights={hasWeights}
+        />
       )}
     </ScrollView>
   );
@@ -169,7 +335,7 @@ const withModels = withObservables(['profiles'], ({database, route}: Props) => {
     weights: database
       .get<Weight>('weights')
       .query(Q.where('supabase_user_id', supabaseUserId))
-      .observe()
+      .observeWithColumns(['weight', 'date_at'])
       .pipe(
         map(weights =>
           weights.sort((a, b) => b.dateAt.getTime() - a.dateAt.getTime()),
