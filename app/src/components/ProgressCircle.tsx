@@ -73,22 +73,7 @@ export const ProgressCircle = ({
           <BoxShadow dx={-18} dy={-18} blur={65} color="#485057" />
         </Box>
       </Group>
-      {/* <Box box={fromCircle(37 + r2, 37 + r2, r2)} color="#32363B">
-        <BoxShadow
-          dx={-25}
-          dy={-25}
-          blur={60}
-          color="rgba(59, 68, 81, 0.5)"
-          inner
-        />
-        <BoxShadow
-          dx={25}
-          dy={25}
-          blur={80}
-          color="rgba(0, 0, 0, 0.55)"
-          inner
-        />
-      </Box> */}
+
       <Text
         x={c.x - font.getTextWidth(`${difference.toFixed(1)}kg`) / 2}
         y={c.y + font.getSize() / 2 - 60}

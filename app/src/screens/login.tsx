@@ -10,6 +10,7 @@ import {useAtom} from 'jotai';
 import {appLoadingAtom} from '../atoms/appLoading.atom';
 import Weight from '../watermelondb/model/Weight';
 import {sync} from '../watermelondb/sync';
+import Animated, {FadeInDown, FadeOutUp, Layout} from 'react-native-reanimated';
 
 const baseUrl = Config.REACT_APP_BASE_URL;
 
@@ -18,6 +19,7 @@ export const LoginScreen = () => {
   const [token, setToken] = useState('');
   const [hasSentEmail, setHasSentEmail] = useState(false);
   const [, setIsAppLoading] = useAtom(appLoadingAtom);
+  const [loginLoading, setLoginLoading] = useState(false);
   const database = useDatabase();
 
   useEffect(() => {
@@ -25,6 +27,7 @@ export const LoginScreen = () => {
   }, [setIsAppLoading]);
 
   async function signInWithMagicLink() {
+    setLoginLoading(true);
     const {error} = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -37,8 +40,10 @@ export const LoginScreen = () => {
 
     if (error) {
       Alert.alert(error.message);
+      setLoginLoading(false);
     } else {
       setHasSentEmail(true);
+      setLoginLoading(false);
     }
   }
 
@@ -62,8 +67,6 @@ export const LoginScreen = () => {
         },
       });
 
-      console.log('response', response);
-
       if (response.status === 404) {
         Alert.alert('Not Authorized');
         setIsAppLoading({isAppLoading: false});
@@ -79,8 +82,6 @@ export const LoginScreen = () => {
 
       const Profiles = database.get<Profile>('profiles');
       const Weights = database.get<Weight>('weights');
-
-      console.log('profile', profile);
 
       if (!profile) {
         Alert.alert('Something went wrong');
@@ -140,16 +141,24 @@ export const LoginScreen = () => {
     <View style={styles.container}>
       {hasSentEmail ? (
         <>
-          <View style={styles.verticallySpaced}>
+          <Animated.View
+            style={styles.verticallySpaced}
+            entering={FadeInDown}
+            layout={Layout.springify().duration(200)}>
             <PrimaryTextInput
               onChangeText={text => setToken(text)}
               value={token}
               label="Your 6 digit code"
               placeholder="123456"
               keyboardType="numeric"
+              maxLength={6}
             />
-          </View>
-          <View style={styles.verticallySpaced}>
+          </Animated.View>
+          <Animated.View
+            style={styles.verticallySpaced}
+            entering={FadeInDown.delay(200)}
+            exiting={FadeOutUp.delay(200)}
+            layout={Layout.springify().duration(200).delay(200)}>
             <SecondaryButton
               title="Login"
               // disabled={loading}
@@ -157,18 +166,26 @@ export const LoginScreen = () => {
                 signInWithToken();
               }}
             />
-
+          </Animated.View>
+          <Animated.View
+            style={styles.verticallySpaced}
+            entering={FadeInDown.delay(400)}
+            exiting={FadeOutUp.delay(400)}
+            layout={Layout.springify().duration(200).delay(400)}>
             <PrimaryButton
               title="Re-enter email"
               onPress={() => {
                 setHasSentEmail(false);
               }}
             />
-          </View>
+          </Animated.View>
         </>
       ) : (
         <>
-          <View style={[styles.verticallySpaced, styles.mt20]}>
+          <Animated.View
+            style={[styles.verticallySpaced, styles.mt20]}
+            entering={FadeInDown}
+            layout={Layout.springify().duration(200)}>
             <PrimaryTextInput
               onChangeText={text => setEmail(text)}
               value={email}
@@ -177,14 +194,18 @@ export const LoginScreen = () => {
               textContentType="emailAddress"
               label="Email"
             />
-          </View>
-
-          <View style={[styles.verticallySpaced, styles.mt20]}>
+          </Animated.View>
+          <Animated.View
+            style={[styles.verticallySpaced, styles.mt20]}
+            entering={FadeInDown.delay(200)}
+            exiting={FadeOutUp.delay(200)}
+            layout={Layout.springify().duration(200).delay(200)}>
             <PrimaryButton
               title="Login with email"
+              loading={loginLoading}
               onPress={() => signInWithMagicLink()}
             />
-          </View>
+          </Animated.View>
         </>
       )}
     </View>
@@ -193,7 +214,7 @@ export const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    marginTop: 120,
     padding: 12,
   },
   verticallySpaced: {

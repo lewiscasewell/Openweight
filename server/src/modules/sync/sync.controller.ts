@@ -30,8 +30,6 @@ const getSafeLastPulledAt = (
   if (!lastPulledAt || lastPulledAt === "null") {
     return new Date(0);
   }
-
-  console.log("lastPulledAt in date", new Date(parseInt(lastPulledAt)));
   return new Date(parseInt(lastPulledAt));
 };
 
@@ -40,17 +38,6 @@ export async function pullChangesHandler(
   reply: FastifyReply
 ) {
   const lastPulledAt = getSafeLastPulledAt(request);
-
-  console.log("lastpulledat utc string", lastPulledAt.toUTCString());
-  console.log("request.user.id", request.user.id);
-  console.log("request.query.last_pulled_at", request.query.last_pulled_at);
-
-  const allProfiles = await db
-    .selectFrom("profiles")
-    .selectAll()
-    .where("supabase_user_id", "=", request.user.id)
-    .execute();
-  console.log("allWeights", allProfiles);
 
   // Profiles
   const createdProfiles = await db
@@ -125,11 +112,6 @@ export async function pullChangesHandler(
     timestamp: new Date().getTime(),
   };
 
-  console.log(
-    "pull changes response",
-    pullChangesResponse.changes.profiles.updated
-  );
-
   return reply.code(200).send(pullChangesResponse);
 }
 
@@ -147,9 +129,6 @@ export async function pushChangesHandler(
   }
 
   const lastPulledAt = getSafeLastPulledAt(request);
-  console.log(lastPulledAt, request.query.last_pulled_at);
-  console.log("changes", changes);
-  console.log(changes.profiles.updated?.[0]);
 
   if (changes.profiles.created.length > 0) {
     const createdProfileData = changes.profiles.created.map((profile) => ({
@@ -238,9 +217,7 @@ export async function pushChangesHandler(
         .where("id", "=", weight.id)
         .execute();
     });
-    (await Promise.all(updatedDataPromises)).map((weight) => {
-      console.log("updated weight", weight);
-    });
+    await Promise.all(updatedDataPromises);
   }
 
   if (changes.weights.deleted.length > 0) {

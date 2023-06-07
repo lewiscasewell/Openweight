@@ -15,7 +15,6 @@ const adapter = new SQLiteAdapter({
   // onSetUpError: error => console.error(error),
   // onSetUpSuccess: () => console.log("Database set up successfully"),
   // onVersionChanged: ({ from, to }) => console.log(`Database version changed from ${from} to ${to}`),
-  // For production:
   dbName: 'watermelondb',
 });
 

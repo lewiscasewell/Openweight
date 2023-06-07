@@ -49,10 +49,15 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import EditProfileScreen from './src/screens/editProfile';
 import {appLoadingAtom} from './src/atoms/appLoading.atom';
+import {UpdateEmailAddressScreen} from './src/screens/updateEmailAddress';
+import Animated, {FadeInDown, Layout} from 'react-native-reanimated';
 
 dayjs.extend(utc);
 
-LogBox.ignoreLogs(['useSharedValueEffect()']);
+LogBox.ignoreLogs([
+  'useSharedValueEffect()',
+  'Overriding previous layout animation',
+]);
 
 // database.write(async () => {
 //   await database.unsafeResetDatabase();
@@ -79,6 +84,7 @@ export type AuthStackParamList = {
   EditProfile: {
     id: string;
   };
+  UpdateEmailAddress: undefined;
 };
 
 export type NoAuthStackParamList = {
@@ -142,17 +148,21 @@ const Tabs = () => {
         />
       </TabStack.Navigator>
       {session && (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            navigation.navigate('AddWeight', {
-              dateToPass: dayjs().format('YYYY-MM-DD'),
-              id: session.user.id,
-            });
-          }}
-          style={styles.addButton}>
-          <MaterialIcon name="plus" color={colors.grey['100']} size={40} />
-        </TouchableOpacity>
+        <Animated.View
+          entering={FadeInDown}
+          layout={Layout.duration(200).delay(200).springify()}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate('AddWeight', {
+                dateToPass: dayjs().format('YYYY-MM-DD'),
+                id: session.user.id,
+              });
+            }}
+            style={styles.addButton}>
+            <MaterialIcon name="plus" color={colors.grey['100']} size={40} />
+          </TouchableOpacity>
+        </Animated.View>
       )}
     </>
   );
@@ -214,7 +224,13 @@ function App(): JSX.Element {
                 component={EditProfileScreen}
                 options={{
                   headerShown: true,
-                  headerBackTitle: '',
+                }}
+              />
+              <AuthStack.Screen
+                name="UpdateEmailAddress"
+                component={UpdateEmailAddressScreen}
+                options={{
+                  headerShown: true,
                 }}
               />
               <AuthStack.Screen
@@ -229,7 +245,11 @@ function App(): JSX.Element {
 
           {!userSession && (
             <NoAuthStack.Navigator>
-              <NoAuthStack.Screen name="Login" component={LoginScreen} />
+              <NoAuthStack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{headerShown: false}}
+              />
             </NoAuthStack.Navigator>
           )}
         </SafeAreaProvider>

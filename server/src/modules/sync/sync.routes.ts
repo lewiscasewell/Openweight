@@ -7,17 +7,17 @@ async function syncRoutes(server: FastifyInstance) {
     "/",
     {
       preValidation: [server.authenticate],
-      // schema: {
-      //   querystring: {
-      //     type: "object",
-      //     properties: {
-      //       last_pulled_at: { type: "string" },
-      //     },
-      //   },
-      //   response: {
-      //     200: $ref("pullChangesSchema"),
-      //   },
-      // },
+      schema: {
+        querystring: {
+          type: "object",
+          properties: {
+            last_pulled_at: { type: "string" },
+          },
+        },
+        response: {
+          200: $ref("pullChangesSchema"),
+        },
+      },
     },
     pullChangesHandler
   );
@@ -26,15 +26,15 @@ async function syncRoutes(server: FastifyInstance) {
     "/",
     {
       preValidation: [server.authenticate],
-      // schema: {
-      //   querystring: {
-      //     type: "object",
-      //     properties: {
-      //       last_pulled_at: { type: "string" },
-      //     },
-      //   },
-      //   body: $ref("pushChangesSchema"),
-      // },
+      schema: {
+        querystring: {
+          type: "object",
+          properties: {
+            last_pulled_at: { type: "string" },
+          },
+        },
+        body: $ref("pushChangesSchema"),
+      },
     },
     pushChangesHandler
   );

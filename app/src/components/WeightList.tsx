@@ -35,6 +35,7 @@ import Animated, {
   Layout,
 } from 'react-native-reanimated';
 import {dateRangeAtom, dateRanges} from '../atoms/dateRange.atom';
+import {hapticFeedback} from '../utils/hapticFeedback';
 
 const {width} = Dimensions.get('screen');
 
@@ -148,9 +149,10 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
           ? (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)
           : '0'}
         kg ({' '}
-        {calcPercentageDifference() === 'NaN' ||
-        calcPercentageDifference() === 'Infinity'
+        {calcPercentageDifference() === 'NaN'
           ? '0'
+          : calcPercentageDifference() === 'Infinity'
+          ? '-'
           : calcPercentageDifference()}
         % )
       </Text>
@@ -175,6 +177,7 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
               }
             }}
             onPointSelected={point => {
+              hapticFeedback('impactLight');
               const index = point.date.getTime();
 
               if (!isDragging && currentPoint.index !== 0) {
@@ -489,7 +492,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   moveRight: {
-    left: width - 60,
+    left: width - 80,
   },
 });
 

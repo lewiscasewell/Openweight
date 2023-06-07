@@ -1,5 +1,12 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, ScrollView, Text, View, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  Dimensions,
+  TouchableHighlight,
+} from 'react-native';
 
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
 
@@ -74,6 +81,7 @@ const completeProfileStyles = StyleSheet.create({
 const CaloriesScreen = ({profiles, weights}: Props) => {
   const currentProfile = profiles?.[0];
   const latestWeight = weights?.[0];
+  const navigation = useNavigation<TabStackNavigationProps>();
 
   const [calorieTarget, setCalorieTarget] = React.useState<number>(
     currentProfile?.calorieSurplus!,
@@ -217,19 +225,30 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
               alignItems: 'center',
               paddingVertical: 20,
             }}>
-            <View>
-              <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
-                Current
-              </Text>
-              <Text
-                style={{
-                  color: colors.grey['100'],
-                  textAlign: 'center',
-                  fontSize: 40,
-                }}>
-                {latestWeight?.weight}
-              </Text>
-            </View>
+            <TouchableHighlight
+              onPress={() => {
+                navigation.navigate('AddWeight', {
+                  dateToPass: dayjs().format('YYYY-MM-DD'),
+                  id: currentProfile.supabaseUserId,
+                });
+              }}>
+              <>
+                <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
+                  Current
+                </Text>
+                <Text
+                  style={{
+                    color: colors.grey['100'],
+                    textAlign: 'center',
+                    fontSize: 40,
+                  }}>
+                  {latestWeight?.weight}
+                  <Text style={{fontSize: 20}}>
+                    {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
+                  </Text>
+                </Text>
+              </>
+            </TouchableHighlight>
             <View
               style={{
                 height: 50,
@@ -237,19 +256,27 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                 backgroundColor: colors.grey['600'],
               }}
             />
-            <View>
-              <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
-                Target
-              </Text>
-              <Text
-                style={{
-                  color: colors.grey['100'],
-                  textAlign: 'center',
-                  fontSize: 40,
-                }}>
-                {currentProfile.targetWeight}
-              </Text>
-            </View>
+            <TouchableHighlight
+              onPress={() => {
+                navigation.navigate('EditProfile', {id: currentProfile.id});
+              }}>
+              <>
+                <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
+                  Target
+                </Text>
+                <Text
+                  style={{
+                    color: colors.grey['100'],
+                    textAlign: 'center',
+                    fontSize: 40,
+                  }}>
+                  {currentProfile.targetWeight}
+                  <Text style={{fontSize: 20}}>
+                    {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
+                  </Text>
+                </Text>
+              </>
+            </TouchableHighlight>
           </Animated.View>
           <Animated.View layout={Layout.duration(200)}>
             <Canvas

@@ -5,16 +5,23 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 interface ButtonProps {
   title: string;
   onPress: () => void;
+  loading?: boolean;
 }
 
-export const PrimaryButton: React.FC<ButtonProps> = ({title, onPress}) => {
+export const PrimaryButton: React.FC<ButtonProps> = ({
+  title,
+  onPress,
+  loading,
+}) => {
   return (
     <View>
       <TouchableOpacity
         activeOpacity={0.7}
         style={styles.primaryButtonContainer}
         onPress={onPress}>
-        <Text style={styles.primaryButtonText}>{title}</Text>
+        <Text style={styles.primaryButtonText}>
+          {loading ? 'Loading...' : title}
+        </Text>
       </TouchableOpacity>
     </View>
   );

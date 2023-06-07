@@ -31,7 +31,6 @@ import {PrimaryTextInput} from '../components/TextInput';
 import {TextInput} from 'react-native';
 import {Slider} from '@miblanchard/react-native-slider';
 import {MaterialIcon} from '../icons/material-icons';
-import {set} from 'remeda';
 
 type EditProfileScreenRouteProp = RouteProp<AuthStackParamList, 'EditProfile'>;
 
@@ -106,7 +105,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Edit Profile',
+      headerTitle: '',
       headerRight: () => (
         <TouchableOpacity
           onPress={() => {
@@ -176,6 +175,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{flexGrow: 1}}>
+      <Text style={styles.sectionTitle}>Edit profile</Text>
       <Controller
         name="name"
         control={control}
@@ -553,14 +553,23 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       {flex: 1},
                       profile.targetWeightUnit === 'kg' ? {} : {opacity: 0.5},
                     ]}
+                    keyboardType="numeric"
+                    placeholder="Enter your target weight"
+                    placeholderTextColor="lightgrey"
+                    value={value ?? ''}
                     onChangeText={text => {
                       setValue('target_weight', text, {shouldDirty: true});
                     }}
-                    value={value}
-                    keyboardType="numeric"
-                    placeholder="Enter your target weight"
-                    placeholderTextColor={colors.grey['400']}
                   />
+                  <Text
+                    style={{
+                      color: colors.white,
+                      paddingHorizontal: 10,
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                    }}>
+                    KG
+                  </Text>
                 </View>
               </Animated.View>
             )}
@@ -582,6 +591,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StaticSafeAreaInsets.safeAreaInsetsTop,
     paddingHorizontal: 14,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.white,
+    marginBottom: 14,
   },
   saveButtonText: {
     color: 'white',
