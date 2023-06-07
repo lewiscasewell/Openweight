@@ -21,7 +21,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'app' do
+target 'Openweight' do
   config = use_native_modules!
 
   # Flags change depending on the env values.
@@ -54,7 +54,7 @@ target 'app' do
 
   pod 'react-native-config/Extension', :path => '../node_modules/react-native-config'
 
-  target 'appTests' do
+  target 'OpenweightTests' do
     inherit! :complete
     # Pods for testing
   end
