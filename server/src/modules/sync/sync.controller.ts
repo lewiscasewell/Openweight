@@ -151,7 +151,7 @@ export async function pushChangesHandler(
       default_weight_unit: profile.default_weight_unit,
       dob_at:
         typeof profile.dob_at === "number"
-          ? dayjs(profile.dob_at).toDate()
+          ? dayjs(profile.dob_at).endOf("day").toDate()
           : null,
       gender: profile.gender,
       height: profile.height,
@@ -178,7 +178,7 @@ export async function pushChangesHandler(
             default_weight_unit: profile.default_weight_unit,
             dob_at:
               typeof profile.dob_at === "number"
-                ? dayjs(profile.dob_at).toDate()
+                ? dayjs(profile.dob_at).endOf("day").toDate()
                 : null,
             gender: profile.gender,
             height: profile.height,
