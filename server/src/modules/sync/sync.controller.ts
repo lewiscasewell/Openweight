@@ -128,6 +128,17 @@ export async function pushChangesHandler(
     });
   }
 
+  console.log(
+    "changes",
+    changes.weights.created.map((w) => ({
+      weight: w.weight,
+      dateAt: w.date_at,
+      createdAt: w.created_at,
+      updatedAt: w.updated_at,
+      dateAtAsDate: dayjs(w.date_at).endOf("day").toDate(),
+    }))
+  );
+
   const lastPulledAt = getSafeLastPulledAt(request);
 
   if (changes.profiles.created.length > 0) {
@@ -193,7 +204,7 @@ export async function pushChangesHandler(
       supabase_user_id: weight.supabase_user_id,
       weight: weight.weight,
       unit: weight.unit,
-      date_at: dayjs(weight.date_at).toDate(),
+      date_at: dayjs(weight.date_at).endOf("day").toDate(),
       profile_id: weight.profile_id,
     }));
 
@@ -211,7 +222,7 @@ export async function pushChangesHandler(
           supabase_user_id: weight.supabase_user_id,
           weight: weight.weight,
           unit: weight.unit,
-          date_at: dayjs(weight.date_at).toDate(),
+          date_at: dayjs(weight.date_at).endOf("day").toDate(),
           profile_id: weight.profile_id,
         })
         .where("id", "=", weight.id)
