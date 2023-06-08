@@ -124,6 +124,7 @@ export const LoginScreen = () => {
           });
         } catch (e) {
           console.log('error creating profile', e);
+          setIsAppLoading({isAppLoading: false});
         }
         sync()
           .then(() => {

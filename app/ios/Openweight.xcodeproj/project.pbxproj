@@ -31,7 +31,7 @@
 		00E356EE1AD99517003FC87E /* OpenweightTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenweightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* OpenweightTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenweightTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Openweight.Openweight */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Openweight.Openweight; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Openweight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Openweight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Openweight/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Openweight/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Openweight/Images.xcassets; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Openweight.Openweight */,
+				13B07F961A680F5B00A75B9A /* Openweight.app */,
 				00E356EE1AD99517003FC87E /* OpenweightTests.xctest */,
 			);
 			name = Products;
@@ -173,6 +173,7 @@
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
 			name = OpenweightTests;
+			productName = OpenweightTests;
 			productReference = 00E356EE1AD99517003FC87E /* OpenweightTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -195,7 +196,7 @@
 			);
 			name = Openweight;
 			productName = Openweight;
-			productReference = 13B07F961A680F5B00A75B9A /* Openweight.Openweight */;
+			productReference = 13B07F961A680F5B00A75B9A /* Openweight.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -256,7 +257,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -266,13 +267,13 @@
 			name = "Bundle React Native code and images";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
 		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -497,7 +498,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Openweight/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Openweight;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.Openweight-category.healthcare-fitness";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -516,7 +517,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Openweight-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -531,7 +532,7 @@
 				DEVELOPMENT_TEAM = KBZSY5H6TS;
 				INFOPLIST_FILE = Openweight/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Openweight;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.Openweight-category.healthcare-fitness";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -549,7 +550,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Openweight-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
