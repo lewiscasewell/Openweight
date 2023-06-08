@@ -43,7 +43,8 @@ yarn-error.log
 # local env files
 .env
 .env*.local
-
+app/.env
+app/.env.production
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
