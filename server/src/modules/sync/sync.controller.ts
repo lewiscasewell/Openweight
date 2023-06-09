@@ -154,7 +154,7 @@ export async function pushChangesHandler(
           ? dayjs(profile.dob_at).endOf("day").toDate()
           : null,
       gender: profile.gender,
-      height: profile.height,
+      height: Number(profile.height),
       height_unit: profile.height_unit,
       supabase_user_id: profile.supabase_user_id,
       target_weight: profile.target_weight,
@@ -181,7 +181,7 @@ export async function pushChangesHandler(
                 ? dayjs(profile.dob_at).endOf("day").toDate()
                 : null,
             gender: profile.gender,
-            height: profile.height,
+            height: Number(profile.height),
             height_unit: profile.height_unit,
             supabase_user_id: profile.supabase_user_id,
             target_weight: profile.target_weight,
