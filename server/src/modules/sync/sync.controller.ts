@@ -129,6 +129,13 @@ export async function pushChangesHandler(
   }
 
   console.log(
+    "height:",
+    changes?.profiles?.updated[0]?.height,
+    ". Has type:",
+    typeof changes?.profiles?.updated[0]?.height
+  );
+
+  console.log(
     "changes",
     changes.weights.created.map((w) => ({
       weight: w.weight,
