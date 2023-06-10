@@ -40,12 +40,12 @@ export async function pullChangesHandler(
   const lastPulledAt = getSafeLastPulledAt(request);
 
   // Profiles
-  const createdProfiles = await db
-    .selectFrom("profiles")
-    .selectAll()
-    .where("supabase_user_id", "=", request.user.id)
-    .where("created_at", ">", lastPulledAt)
-    .execute();
+  // const createdProfiles = await db
+  //   .selectFrom("profiles")
+  //   .selectAll()
+  //   .where("supabase_user_id", "=", request.user.id)
+  //   .where("created_at", ">", lastPulledAt)
+  //   .execute();
 
   const updatedProfiles = await db
     .selectFrom("profiles")
@@ -128,26 +128,6 @@ export async function pushChangesHandler(
     });
   }
 
-  console.log(
-    "height:",
-    changes?.profiles?.updated[0]?.height,
-    ". Has type:",
-    typeof changes?.profiles?.updated[0]?.height
-  );
-
-  console.log(
-    "changes",
-    changes.weights.created.map((w) => ({
-      weight: w.weight,
-      dateAt: w.date_at,
-      createdAt: w.created_at,
-      updatedAt: w.updated_at,
-      dateAtAsDate: dayjs(w.date_at).endOf("day").toDate(),
-    }))
-  );
-
-  const lastPulledAt = getSafeLastPulledAt(request);
-
   if (changes.profiles.created.length > 0) {
     const createdProfileData = changes.profiles.created.map((profile) => ({
       id: profile.id,
@@ -158,10 +138,10 @@ export async function pushChangesHandler(
       default_weight_unit: profile.default_weight_unit,
       dob_at:
         typeof profile.dob_at === "number"
-          ? dayjs(profile.dob_at).endOf("day").toDate()
+          ? dayjs(profile.dob_at).toDate()
           : null,
       gender: profile.gender,
-      height: Number(profile.height),
+      height: profile.height,
       height_unit: profile.height_unit,
       supabase_user_id: profile.supabase_user_id,
       target_weight: profile.target_weight,
@@ -188,7 +168,7 @@ export async function pushChangesHandler(
                 ? dayjs(profile.dob_at).endOf("day").toDate()
                 : null,
             gender: profile.gender,
-            height: Number(profile.height),
+            height: profile.height,
             height_unit: profile.height_unit,
             supabase_user_id: profile.supabase_user_id,
             target_weight: profile.target_weight,
@@ -211,7 +191,7 @@ export async function pushChangesHandler(
       supabase_user_id: weight.supabase_user_id,
       weight: weight.weight,
       unit: weight.unit,
-      date_at: dayjs(weight.date_at).endOf("day").toDate(),
+      date_at: dayjs(weight.date_at).toDate(),
       profile_id: weight.profile_id,
     }));
 
@@ -229,7 +209,7 @@ export async function pushChangesHandler(
           supabase_user_id: weight.supabase_user_id,
           weight: weight.weight,
           unit: weight.unit,
-          date_at: dayjs(weight.date_at).endOf("day").toDate(),
+          date_at: dayjs(weight.date_at).toDate(),
           profile_id: weight.profile_id,
         })
         .where("id", "=", weight.id)
