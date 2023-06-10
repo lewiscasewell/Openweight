@@ -53,6 +53,7 @@ export function useSyncDatabase() {
             console.log('Syncronization error', error, caught);
             setIsSyncing(false);
             setErrorMessage('Could not sync to database!');
+            setIsAppLoading({isAppLoading: false});
           }),
         )
         .subscribe();

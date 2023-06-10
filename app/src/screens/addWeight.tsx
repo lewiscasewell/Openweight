@@ -140,9 +140,7 @@ const AddWeightScreen = ({weights}: Props) => {
         weight =>
           dayjs(weight.dateAt).format('YYYY-MM-DD') === route.params.dateToPass,
       )
-      ?.weight?.toString() ??
-      weights[0]?.weight?.toString() ??
-      '70',
+      ?.weight?.toString() ?? '',
   );
   const [date, setDate] = React.useState(
     dayjs(route.params.dateToPass).startOf('day').toDate(),
@@ -152,7 +150,11 @@ const AddWeightScreen = ({weights}: Props) => {
     hapticFeedback('impactLight');
     setIsTouched(true);
     if (!weightInput) {
-      setWeightInput('70.0');
+      if (latestWeight) {
+        setWeightInput(latestWeight.toString());
+      } else {
+        setWeightInput('70.0');
+      }
     }
 
     if (parseFloat(weightInput!) >= 1000) {
@@ -162,13 +164,17 @@ const AddWeightScreen = ({weights}: Props) => {
     setWeightInput(currentWeightInput =>
       (parseFloat(currentWeightInput!) + 0.1).toFixed(1),
     );
-  }, [weightInput]);
+  }, [weightInput, latestWeight]);
 
   const decrementWeight = useCallback(() => {
     hapticFeedback('impactLight');
     setIsTouched(true);
     if (!weightInput) {
-      setWeightInput('70.0');
+      if (latestWeight) {
+        setWeightInput(latestWeight.toString());
+      } else {
+        setWeightInput('70.0');
+      }
     }
     if (parseFloat(weightInput!) <= 0) {
       return;
@@ -177,7 +183,7 @@ const AddWeightScreen = ({weights}: Props) => {
     setWeightInput(currentWeightInput =>
       (parseFloat(currentWeightInput!) - 0.1).toFixed(1),
     );
-  }, [weightInput]);
+  }, [weightInput, latestWeight]);
 
   return (
     <SafeAreaView style={styles.flex}>
@@ -217,7 +223,7 @@ const AddWeightScreen = ({weights}: Props) => {
             <TextInput
               style={[styles.weightInput, isTouched && styles.touchedInput]}
               keyboardType="numeric"
-              placeholder="70.0"
+              placeholder={latestWeight?.toString() ?? '70.0'}
               maxLength={5}
               value={weightInput}
               onChangeText={text => {
