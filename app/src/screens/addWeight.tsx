@@ -129,7 +129,7 @@ const AddWeightScreen = ({weights}: Props) => {
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
   const navigation = useNavigation<TabStackNavigationProps>();
-  const [isTouched, setIsTouched] = useState(false);
+
   const [weightInputInterval, setWeightInputInterval] = useState(
     setInterval(() => {}, 100),
   );
@@ -148,7 +148,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
   const incrementWeight = useCallback(() => {
     hapticFeedback('impactLight');
-    setIsTouched(true);
+
     if (!weightInput) {
       if (latestWeight) {
         setWeightInput(latestWeight.toString());
@@ -168,7 +168,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
   const decrementWeight = useCallback(() => {
     hapticFeedback('impactLight');
-    setIsTouched(true);
+
     if (!weightInput) {
       if (latestWeight) {
         setWeightInput(latestWeight.toString());
@@ -221,18 +221,17 @@ const AddWeightScreen = ({weights}: Props) => {
               <MaterialIcon name="minus" color="white" size={30} />
             </TouchableOpacity>
             <TextInput
-              style={[styles.weightInput, isTouched && styles.touchedInput]}
+              style={[styles.weightInput]}
               keyboardType="numeric"
               placeholder={latestWeight?.toString() ?? '70.0'}
               maxLength={5}
               value={weightInput}
               onChangeText={text => {
-                setIsTouched(true);
                 setWeightInput(text);
               }}
             />
             <TouchableOpacity
-              onPressIn={() => {
+              onPress={() => {
                 incrementWeight();
               }}
               onLongPress={() => {
@@ -297,9 +296,12 @@ const AddWeightScreen = ({weights}: Props) => {
                       dayjs(newDate).format('YYYY-MM-DD'),
                   );
 
-                  setWeightInput(
-                    getWeight?.weight?.toString() ?? latestWeight?.toString(),
-                  );
+                  if (
+                    dayjs(date).format('YYYY-MM-DD') !==
+                    dayjs(newDate).format('YYYY-MM-DD')
+                  ) {
+                    setWeightInput(getWeight?.weight?.toString() ?? '');
+                  }
                 }}
               />
             </View>
@@ -352,12 +354,9 @@ const styles = StyleSheet.create({
     height: 200,
     width: 250,
     fontSize: 100,
-    color: colors.grey[700],
+    color: colors.white,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  touchedInput: {
-    color: 'white',
   },
   saveButton: {
     backgroundColor: '#1d1d1d',
