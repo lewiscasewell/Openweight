@@ -221,6 +221,7 @@ const AddWeightScreen = ({weights}: Props) => {
               maxLength={5}
               value={weightInput}
               onChangeText={text => {
+                setIsTouched(true);
                 setWeightInput(text);
               }}
             />
