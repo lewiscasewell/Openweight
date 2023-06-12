@@ -1,5 +1,8 @@
-import { FastifyInstance, FastifyPluginCallback } from "fastify";
-import { fetchProfileHandler } from "./profile.controller";
+import { FastifyInstance } from "fastify";
+import {
+  deleteProfileHandler,
+  fetchProfileHandler,
+} from "./profile.controller";
 // import { $ref } from "./sync.schema";
 
 async function profileRoutes(server: FastifyInstance) {
@@ -18,6 +21,13 @@ async function profileRoutes(server: FastifyInstance) {
       // },
     },
     fetchProfileHandler
+  );
+  server.delete(
+    "/:id",
+    {
+      preValidation: [server.authenticate],
+    },
+    deleteProfileHandler
   );
 }
 

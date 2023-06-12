@@ -1,7 +1,14 @@
 import React from 'react';
 import Profile from '../watermelondb/model/Profile';
 
-import {StyleSheet, Text, View, ScrollView, Pressable} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Pressable,
+  Alert,
+} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
@@ -11,6 +18,9 @@ import {useNavigation} from '@react-navigation/native';
 import {colors} from '../styles/theme';
 import {SecondaryButton} from './Button';
 import {TouchableHighlight} from 'react-native-gesture-handler';
+import Config from 'react-native-config';
+import {sessionAtom} from '../atoms/session.atom';
+import {useAtom} from 'jotai';
 
 type Props = {
   database: Database;
@@ -18,8 +28,11 @@ type Props = {
   profiles: Profile[];
 };
 
+const baseUrl = Config.REACT_APP_BASE_URL;
+
 const ProfileComponent = ({profiles}: Props) => {
   const currentProfile = profiles?.[0];
+  const [session] = useAtom(sessionAtom);
   const navigation = useNavigation<TabStackNavigationProps>();
 
   if (!currentProfile) {
@@ -53,6 +66,46 @@ const ProfileComponent = ({profiles}: Props) => {
               navigation.navigate('UpdateEmailAddress');
             }}>
             <Text style={styles.optionText}>Change email address</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.optionContainer}
+            onPress={() => {
+              Alert.alert(
+                'Are you sure?',
+                'Deleting your account cannot be undone.',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => {},
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Delete',
+                    onPress: async () => {
+                      const response = await fetch(
+                        `${baseUrl}/api/profiles/${currentProfile.id}`,
+                        {
+                          method: 'DELETE',
+                          headers: {
+                            Authorization: `Bearer ${session?.access_token}`,
+                          },
+                        },
+                      );
+
+                      if (response.status === 200) {
+                        return await supabase.auth.signOut();
+                      }
+
+                      Alert.alert(
+                        'We were not able to delete your account this time. Please try again later.',
+                      );
+                    },
+                    style: 'destructive',
+                  },
+                ],
+              );
+            }}>
+            <Text style={styles.optionText}>Delete account</Text>
           </TouchableHighlight>
         </View>
         <Pressable
