@@ -318,7 +318,10 @@ const AddWeightScreen = ({weights}: Props) => {
                 weights,
                 session,
                 date,
-                weightInput,
+                weightInput:
+                  weightInput === ''
+                    ? latestWeight?.toString() ?? '70'
+                    : weightInput,
                 navigation,
               });
             }}>
