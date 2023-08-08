@@ -57,6 +57,7 @@ export const LoginScreen = () => {
 
     if (error) {
       Alert.alert(error.message);
+      setIsAppLoading({isAppLoading: false});
     }
 
     if (data.session?.access_token) {
@@ -149,7 +150,7 @@ export const LoginScreen = () => {
             <PrimaryTextInput
               onChangeText={text => setToken(text)}
               value={token}
-              label="Your 6 digit code"
+              label="Please enter your 6 digit code sent to your email"
               placeholder="123456"
               keyboardType="numeric"
               maxLength={6}
@@ -162,9 +163,10 @@ export const LoginScreen = () => {
             layout={Layout.springify().duration(200).delay(200)}>
             <SecondaryButton
               title="Login"
-              // disabled={loading}
               onPress={() => {
-                signInWithToken();
+                if (token.length === 6) {
+                  signInWithToken();
+                }
               }}
             />
           </Animated.View>
