@@ -150,7 +150,7 @@ export const LoginScreen = () => {
             <PrimaryTextInput
               onChangeText={text => setToken(text)}
               value={token}
-              label="Your 6 digit code"
+              label="Please enter your 6 digit code sent to your email"
               placeholder="123456"
               keyboardType="numeric"
               maxLength={6}
