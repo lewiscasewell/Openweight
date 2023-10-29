@@ -1,18 +1,66 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
-import {PrimaryButton, SecondaryButton} from '../components/Button';
-import {PrimaryTextInput} from '../components/TextInput';
-import {supabase} from '../supabase';
-import Profile from '../watermelondb/model/Profile';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {supabase} from '../../supabase';
+import Profile from '../../watermelondb/model/Profile';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Config from 'react-native-config';
-import {useAtom} from 'jotai';
-import {appStateAtom} from '../atoms/appLoading.atom';
-import Weight from '../watermelondb/model/Weight';
-import {sync} from '../watermelondb/sync';
-import Animated, {FadeInDown, FadeOutUp, Layout} from 'react-native-reanimated';
+import {useAtom, useAtomValue} from 'jotai';
+import {appStateAtom} from '../../atoms/appLoading.atom';
+import Weight from '../../watermelondb/model/Weight';
+import {sync} from '../../watermelondb/sync';
+import Animated, {FadeInUp} from 'react-native-reanimated';
+import {colors} from '../../styles/theme';
+import {loginFlowAtom} from '../../atoms/login-flow-state.atom';
+import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
+import {Dimensions} from 'react-native';
+import EmailScreen from './EmailScreen';
+import VerifyOTP from './VerifyOtp';
 
+const {width} = Dimensions.get('window');
 const baseUrl = Config.REACT_APP_BASE_URL;
+
+const LandingScreen = () => {
+  const [, setLoginFlowState] = useAtom(loginFlowAtom);
+
+  const handleContinueWithEmail = () => {
+    setLoginFlowState(prev => ({...prev, status: 'email-entry'}));
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Animated.Text
+          entering={FadeInUp.duration(300).delay(100).springify()}
+          style={styles.logo}>
+          Openweight.
+        </Animated.Text>
+        <Animated.Text
+          entering={FadeInUp.duration(300).delay(200).springify()}
+          style={styles.slogan}>
+          Track your weight, by Opencoach.
+        </Animated.Text>
+      </View>
+      <View style={styles.touchablesContainer}>
+        <Animated.View entering={FadeInUp.duration(300).delay(300).springify()}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.touchable}
+            onPress={handleContinueWithEmail}>
+            <Text style={styles.touchableText}>Continue with email</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
+    </View>
+  );
+};
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -21,7 +69,7 @@ export const LoginScreen = () => {
   const [, setIsAppLoading] = useAtom(appStateAtom);
   const [loginLoading, setLoginLoading] = useState(false);
   const database = useDatabase();
-
+  const loginFlowState = useAtomValue(loginFlowAtom);
   useEffect(() => {
     setIsAppLoading({isAppLoading: false});
   }, [setIsAppLoading]);
@@ -140,8 +188,10 @@ export const LoginScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      {hasSentEmail ? (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      {/* {hasSentEmail ? (
         <>
           <Animated.View
             style={styles.verticallySpaced}
@@ -204,29 +254,58 @@ export const LoginScreen = () => {
             exiting={FadeOutUp.delay(200)}
             layout={Layout.springify().duration(200).delay(200)}>
             <PrimaryButton
-              title="Login with email"
+              title="Send code"
               loading={loginLoading}
               onPress={() => signInWithMagicLink()}
             />
           </Animated.View>
         </>
-      )}
-    </View>
+      )} */}
+      {loginFlowState.status === 'landing' && <LandingScreen />}
+      {loginFlowState.status === 'email-entry' && <EmailScreen />}
+      {loginFlowState.status === 'otp-verification' && <VerifyOTP />}
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 120,
-    padding: 12,
+    flex: 1,
+    alignItems: 'center',
+    marginTop: StaticSafeAreaInsets.safeAreaInsetsTop,
+    marginBottom: StaticSafeAreaInsets.safeAreaInsetsBottom,
   },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
+  logo: {
+    fontSize: 40,
+    color: colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  logoContainer: {
+    flex: 1,
+    paddingTop: 120,
+  },
+  slogan: {
+    fontSize: 20,
+    color: colors.grey[400],
+    textAlign: 'center',
+  },
+  touchablesContainer: {
+    padding: 20,
+    display: 'flex',
+    flexDirection: 'column',
     gap: 10,
+    width,
   },
-  mt20: {
-    marginTop: 20,
+  touchable: {
+    backgroundColor: colors['picton-blue'][600],
+    padding: 14,
+    borderRadius: 12,
+  },
+  touchableText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

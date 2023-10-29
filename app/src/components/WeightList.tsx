@@ -303,7 +303,7 @@ const WeightList = ({weights}: Props) => {
 
             return (
               <Animated.View
-                entering={FadeInDown.delay(index * 200)}
+                entering={FadeInDown.delay(index * 30)}
                 exiting={FadeOutUp}>
                 <TouchableOpacity
                   style={styles.weightItemContainer}
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
   },
   calendarDateDay: {
     color: 'white',
-    fontWeight: '800',
+    fontWeight: '900',
     fontSize: 24,
   },
   calendarDateMonth: {

@@ -17,9 +17,7 @@ const AddWeightButton = () => {
   const session = useAtomValue(sessionAtom);
 
   return (
-    <Animated.View
-      entering={FadeInDown}
-      layout={Layout.duration(200).delay(200).springify()}>
+    <Animated.View>
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => {
@@ -46,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: colors.black,
+    shadowColor: colors.black[950],
     shadowOffset: {
       width: 0,
       height: 5,

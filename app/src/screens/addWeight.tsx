@@ -16,7 +16,6 @@ import {sessionAtom} from '../atoms/session.atom';
 import Profile from '../watermelondb/model/Profile';
 import Weight from '../watermelondb/model/Weight';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {colors} from '../styles/theme';
@@ -27,6 +26,7 @@ import utc from 'dayjs/plugin/utc';
 import {map} from 'rxjs';
 import {Session} from '@supabase/supabase-js';
 import {hapticFeedback} from '../utils/hapticFeedback';
+
 dayjs.extend(utc);
 
 type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
@@ -125,7 +125,6 @@ async function deleteWeight({
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
   const latestWeight = weights[0]?.weight;
-
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
   const navigation = useNavigation<TabStackNavigationProps>();

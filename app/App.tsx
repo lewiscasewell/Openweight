@@ -6,13 +6,13 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {supabase} from './src/supabase';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {database} from './src/watermelondb';
-import {useAtom} from 'jotai';
+import {useAtom, useAtomValue} from 'jotai';
 import {sessionAtom} from './src/atoms/session.atom';
 import {theme} from './src/styles/theme';
-import {appStateAtom} from './src/atoms/appLoading.atom';
 import LoadingScreen from './src/screens/loadingScreen';
 import AuthedStack from './src/stacks/AuthedStack';
 import NoAuthedStack from './src/stacks/NoAuthedStack';
+import {loginFlowAtom} from './src/atoms/login-flow-state.atom';
 
 LogBox.ignoreLogs([
   'useSharedValueEffect()',
@@ -21,7 +21,7 @@ LogBox.ignoreLogs([
 
 function App(): JSX.Element {
   const [userSession, setSession] = useAtom(sessionAtom);
-  const [isAppLoading] = useAtom(appStateAtom);
+  const loginFlowState = useAtomValue(loginFlowAtom);
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session}}) => {
@@ -44,7 +44,7 @@ function App(): JSX.Element {
       <DatabaseProvider database={database}>
         <SafeAreaProvider>
           <StatusBar barStyle="light-content" />
-          {isAppLoading.isAppLoading && <LoadingScreen />}
+          {loginFlowState.isFetchingProfileData && <LoadingScreen />}
           {userSession && <AuthedStack />}
           {!userSession && <NoAuthedStack />}
         </SafeAreaProvider>
