@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-import {useAtom} from 'jotai';
+import {useAtom, useAtomValue} from 'jotai';
 import {sessionAtom} from '../atoms/session.atom';
 
 import {Database, Q} from '@nozbe/watermelondb';
@@ -24,7 +24,6 @@ import {map} from 'rxjs';
 
 import {colors} from '../styles/theme';
 import {GraphPoint, LineGraph} from 'react-native-graph';
-import {TabStackNavigationProps} from '../../App';
 import {MaterialIcon} from '../icons/material-icons';
 import dayjs from 'dayjs';
 import Animated, {
@@ -43,6 +42,7 @@ import AppleHealthKit, {
 } from 'react-native-health';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Profile from '../watermelondb/model/Profile';
+import {TabStackNavigationProps} from '../stacks/types';
 const {width} = Dimensions.get('screen');
 
 type Props = {
@@ -252,7 +252,7 @@ const permissions: HealthKitPermissions = {
 };
 
 const WeightList = ({weights}: Props) => {
-  const [session] = useAtom(sessionAtom);
+  const session = useAtomValue(sessionAtom);
   const navigation = useNavigation<TabStackNavigationProps>();
   const database = useDatabase();
 

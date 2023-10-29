@@ -1,4 +1,4 @@
-import {useAtom} from 'jotai';
+import {useAtomValue} from 'jotai';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import SafeAreaInsets from 'react-native-static-safe-area-insets';
@@ -7,7 +7,7 @@ import {sessionAtom} from '../atoms/session.atom';
 import WeightList from '../components/WeightList';
 
 export const HomeScreen = () => {
-  const [session] = useAtom(sessionAtom);
+  const session = useAtomValue(sessionAtom);
 
   return (
     <View style={styles.container}>

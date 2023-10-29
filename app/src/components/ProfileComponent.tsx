@@ -13,7 +13,6 @@ import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
 import {supabase} from '../supabase';
-import {TabStackNavigationProps} from '../../App';
 import {useNavigation} from '@react-navigation/native';
 import {colors} from '../styles/theme';
 import {SecondaryButton} from './Button';
@@ -28,6 +27,7 @@ import AppleHealthKit, {
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Weight from '../watermelondb/model/Weight';
 import dayjs from 'dayjs';
+import {TabStackNavigationProps} from '../stacks/types';
 
 const permissions = {
   permissions: {

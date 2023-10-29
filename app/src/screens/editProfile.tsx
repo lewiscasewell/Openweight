@@ -12,7 +12,6 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
 import {colors} from '../styles/theme';
-import {AuthStackParamList, ProfileAttribute} from '../../App';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import Profile from '../watermelondb/model/Profile';
@@ -31,9 +30,17 @@ import {PrimaryTextInput} from '../components/TextInput';
 import {TextInput} from 'react-native';
 import {Slider} from '@miblanchard/react-native-slider';
 import {MaterialIcon} from '../icons/material-icons';
+import {AuthStackParamList} from '../stacks/types';
 
 type EditProfileScreenRouteProp = RouteProp<AuthStackParamList, 'EditProfile'>;
-
+export type ProfileAttribute =
+  | 'height'
+  | 'name'
+  | 'gender'
+  | 'age'
+  | 'activityLevel'
+  | 'targetWeight'
+  | 'targetCalories';
 type Props = {
   database: Database;
   profile: Profile;

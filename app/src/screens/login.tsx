@@ -7,7 +7,7 @@ import Profile from '../watermelondb/model/Profile';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Config from 'react-native-config';
 import {useAtom} from 'jotai';
-import {appLoadingAtom} from '../atoms/appLoading.atom';
+import {appStateAtom} from '../atoms/appLoading.atom';
 import Weight from '../watermelondb/model/Weight';
 import {sync} from '../watermelondb/sync';
 import Animated, {FadeInDown, FadeOutUp, Layout} from 'react-native-reanimated';
@@ -18,7 +18,7 @@ export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
   const [hasSentEmail, setHasSentEmail] = useState(false);
-  const [, setIsAppLoading] = useAtom(appLoadingAtom);
+  const [, setIsAppLoading] = useAtom(appStateAtom);
   const [loginLoading, setLoginLoading] = useState(false);
   const database = useDatabase();
 

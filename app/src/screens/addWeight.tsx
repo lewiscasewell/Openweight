@@ -20,7 +20,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {colors} from '../styles/theme';
-import {AuthStackParamList, TabStackNavigationProps} from '../../App';
+import {AuthStackParamList, TabStackNavigationProps} from '../stacks/types';
 import {MaterialIcon} from '../icons/material-icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';

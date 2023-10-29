@@ -6,6 +6,19 @@ import {supabase} from '../supabase';
 import {PrimaryButton} from '../components/Button';
 import {MaterialIcon} from '../icons/material-icons';
 
+const GoBack = () => {
+  const navigation = useNavigation();
+
+  return (
+    <TouchableOpacity
+      activeOpacity={0.6}
+      onPress={() => {
+        navigation.goBack();
+      }}>
+      <MaterialIcon name="chevron-left" color="white" size={30} />
+    </TouchableOpacity>
+  );
+};
 export const UpdateEmailAddressScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
@@ -14,15 +27,8 @@ export const UpdateEmailAddressScreen = () => {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: '',
-      headerLeft: () => (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() => {
-            navigation.goBack();
-          }}>
-          <MaterialIcon name="chevron-left" color="white" size={30} />
-        </TouchableOpacity>
-      ),
+      // eslint-disable-next-line react/no-unstable-nested-components
+      headerLeft: () => <GoBack />,
     });
   }, [navigation]);
 

@@ -1,7 +1,7 @@
 import {atomWithMMKV} from '.';
 
-export const appLoadingAtom = atomWithMMKV<{
+export const appStateAtom = atomWithMMKV<{
   isAppLoading: boolean;
-}>('isAppLoading', {
+}>('appState', {
   isAppLoading: false,
 });
