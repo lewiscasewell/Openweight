@@ -101,9 +101,7 @@ const WeightList = ({weights}: Props) => {
             const monthString = dayjs(weight.dateAt).format('MMM');
 
             return (
-              <Animated.View
-                entering={FadeInDown.delay(index * 30)}
-                exiting={FadeOutUp}>
+              <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
                 <TouchableOpacity
                   style={styles.weightItemContainer}
                   onPress={() => {
@@ -160,7 +158,7 @@ const WeightList = ({weights}: Props) => {
                 : (sectionWeight - sectionWeightBefore).toFixed(1);
 
             return (
-              <Animated.View entering={FadeIn} style={styles.sectionHeader}>
+              <Animated.View entering={FadeInDown} style={styles.sectionHeader}>
                 <Text style={styles.sectionHeaderTitle}>
                   {Number(diffBetweenWeights) > 0 ? (
                     <MaterialIcon

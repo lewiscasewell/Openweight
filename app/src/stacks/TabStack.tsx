@@ -10,6 +10,10 @@ import CaloriesScreen from '../screens/calories';
 import {ProfileScreen} from '../screens/profile';
 import AddWeightButton from '../components/AddWeightButton';
 import {StyleSheet} from 'react-native';
+import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
+import LinearGradient from 'react-native-linear-gradient';
+import {colors} from '../styles/theme';
+import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
 const TabStack = createBottomTabNavigator<TabStackParamList>();
 
 const renderWeightsIcon = ({
@@ -23,6 +27,31 @@ const renderWeightsIcon = ({
 }) => {
   return <MaterialIcon name={name} color={color} size={size} />;
 };
+
+const TabGradient = () => {
+  return (
+    <Animated.View
+      style={tabGradientStyles.container}
+      entering={FadeIn}
+      exiting={FadeOut}>
+      <LinearGradient
+        colors={['transparent', colors.black[950]]}
+        style={tabGradientStyles.height50}
+      />
+    </Animated.View>
+  );
+};
+
+const tabGradientStyles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: StaticSafeAreaInsets.safeAreaInsetsBottom + 44,
+    width: '100%',
+  },
+  height50: {
+    height: 50,
+  },
+});
 
 const Tabs = () => {
   const {isSyncing, error} = useSyncDatabase();
@@ -66,6 +95,7 @@ const Tabs = () => {
           }}
         />
       </TabStack.Navigator>
+      <TabGradient />
       <AddWeightButton />
     </>
   );

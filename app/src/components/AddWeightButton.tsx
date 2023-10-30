@@ -35,7 +35,7 @@ const AddWeightButton = () => {
 
 const styles = StyleSheet.create({
   addButton: {
-    backgroundColor: colors['picton-blue'][400],
+    backgroundColor: colors['picton-blue'][700],
     height: 60,
     width: 60,
     position: 'absolute',

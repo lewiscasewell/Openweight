@@ -19,6 +19,7 @@ export const PrimaryTextInput: React.FC<PrimaryTextInputProps> = ({
         placeholderTextColor={colors.grey[500]}
         autoCorrect={false}
         autoCapitalize={'none'}
+        keyboardAppearance="dark"
       />
     </View>
   );

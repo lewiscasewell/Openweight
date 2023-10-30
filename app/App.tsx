@@ -1,7 +1,7 @@
 import 'react-native-get-random-values';
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
-import {LogBox, StatusBar} from 'react-native';
+import {LogBox, StatusBar, StyleSheet} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {supabase} from './src/supabase';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
@@ -18,6 +18,14 @@ LogBox.ignoreLogs([
   'useSharedValueEffect()',
   'Overriding previous layout animation',
 ]);
+
+declare module 'react-native-config' {
+  export interface NativeConfig {
+    REACT_APP_SUPABASE_URL?: string;
+    REACT_APP_SUPABASE_KEY?: string;
+    REACT_APP_BASE_URL?: string;
+  }
+}
 
 function App(): JSX.Element {
   const [userSession, setSession] = useAtom(sessionAtom);

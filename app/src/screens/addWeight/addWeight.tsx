@@ -10,117 +10,31 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
-import Text from '../components/Text';
+import Text from '../../components/Text';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {sessionAtom} from '../atoms/session.atom';
-import Profile from '../watermelondb/model/Profile';
-import Weight from '../watermelondb/model/Weight';
+import {sessionAtom} from '../../atoms/session.atom';
+import Weight from '../../watermelondb/model/Weight';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
-import {colors} from '../styles/theme';
-import {AuthStackParamList, TabStackNavigationProps} from '../stacks/types';
-import {MaterialIcon} from '../icons/material-icons';
+import {colors} from '../../styles/theme';
+import {AuthStackParamList, TabStackNavigationProps} from '../../stacks/types';
+import {MaterialIcon} from '../../icons/material-icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {map} from 'rxjs';
-import {Session} from '@supabase/supabase-js';
-import {hapticFeedback} from '../utils/hapticFeedback';
+import {hapticFeedback} from '../../utils/hapticFeedback';
+import {addWeight, deleteWeight} from './util';
 
 dayjs.extend(utc);
 
 type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
+
 type Props = {
   database: Database;
   route: AddWeightScreenRouteProp;
   weights: Weight[];
 };
-
-async function addWeight({
-  database,
-  weights,
-  session,
-  date,
-  weightInput,
-  navigation,
-}: {
-  database: Database;
-  weights: Weight[];
-  session: Session | null;
-  date: Date;
-  weightInput: string;
-  navigation: TabStackNavigationProps;
-}): Promise<void> {
-  await database.write(async () => {
-    const profile = await database
-      .get<Profile>('profiles')
-      .query(Q.where('supabase_user_id', session?.user.id!))
-      .fetch();
-
-    const weightOnDate = weights.find(
-      weight =>
-        dayjs(weight.dateAt).format('YYYY-MM-DD') ===
-        dayjs(date).format('YYYY-MM-DD'),
-    );
-
-    if (weightOnDate !== undefined && weightInput) {
-      await weightOnDate.update(weightRecord => {
-        weightRecord.weight = parseFloat(weightInput);
-      });
-
-      navigation.goBack();
-
-      return;
-    }
-    if (weightInput) {
-      await database.get<Weight>('weights').create(weight => {
-        // @ts-ignore
-        weight.profile.set(profile[0]);
-        weight.weight = parseFloat(weightInput);
-        weight.unit = 'kg';
-        weight.dateAt = date;
-        weight.supabaseUserId = session?.user.id!;
-      });
-    }
-
-    navigation.goBack();
-  });
-}
-
-async function deleteWeight({
-  database,
-  weights,
-  date,
-  navigation,
-}: {
-  database: Database;
-  weights: Weight[];
-  date: Date;
-  navigation: TabStackNavigationProps;
-}): Promise<void> {
-  await database.write(async () => {
-    const weightOnDate = weights.find(
-      weight =>
-        dayjs(weight.dateAt).format('YYYY-MM-DD') ===
-        dayjs(date).format('YYYY-MM-DD'),
-    );
-
-    if (weightOnDate !== undefined) {
-      await weightOnDate
-        .markAsDeleted()
-        .then(() => {
-          console.log('deleted');
-        })
-        .catch(error => {
-          console.log(error);
-        });
-
-      navigation.goBack();
-
-      return;
-    }
-  });
-}
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
@@ -220,6 +134,7 @@ const AddWeightScreen = ({weights}: Props) => {
               <MaterialIcon name="minus" color="white" size={30} />
             </TouchableOpacity>
             <TextInput
+              keyboardAppearance="dark"
               style={[styles.weightInput]}
               keyboardType="numeric"
               placeholder={latestWeight?.toString() ?? '70.0'}
