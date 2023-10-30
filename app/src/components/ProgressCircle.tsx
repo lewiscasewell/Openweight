@@ -56,6 +56,7 @@ export const ProgressCircle = ({
       }),
     [maxValue],
   );
+
   if (font === null || font2 === null) {
     return null;
   }
@@ -88,7 +89,15 @@ export const ProgressCircle = ({
         text="from target weight"
         color="white"
       />
-      {daysLeft <= 0 || daysLeft === Infinity ? (
+      {daysLeft === 0 || isNaN(daysLeft) ? (
+        <Text
+          x={c.x - font2.getTextWidth('Target reached!') / 2}
+          y={c.y + font2.getSize() / 2 + 55}
+          font={font2}
+          text="Target reached!"
+          color="white"
+        />
+      ) : daysLeft <= 0 || daysLeft === Infinity ? (
         <>
           <Text
             x={c.x - font2.getTextWidth('Adjust your calories') / 2}
@@ -123,7 +132,8 @@ export const ProgressCircle = ({
           path={path}
           style="stroke"
           strokeWidth={15}
-          end={progress.current}
+          start={0}
+          end={progress.current.current === 0 ? 1 : progress.current}
           strokeCap="round"
         />
         <Circle cx={12 + 2 * r1} cy={12 + r1} r={15 / 2} color={colors[0]} />

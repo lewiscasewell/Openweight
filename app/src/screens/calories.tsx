@@ -284,25 +284,29 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                 width: Dimensions.get('screen').width - 28,
                 height: Dimensions.get('screen').width,
               }}>
-              <ProgressCircle
-                maxValue={
-                  isBulking
-                    ? latestWeight.weight / currentProfile.targetWeight!
-                    : currentProfile.targetWeight! / latestWeight?.weight
-                }
-                difference={
-                  isBulking
-                    ? currentProfile.targetWeight! - latestWeight.weight
-                    : latestWeight?.weight - currentProfile.targetWeight!
-                }
-                daysLeft={Number(
-                  (
-                    ((currentProfile.targetWeight! - latestWeight?.weight) *
-                      7700) /
-                    calorieTarget
-                  ).toFixed(0),
-                )}
-              />
+              {
+                <ProgressCircle
+                  maxValue={
+                    isBulking
+                      ? latestWeight.weight / currentProfile.targetWeight!
+                      : currentProfile.targetWeight! / latestWeight?.weight
+                  }
+                  difference={
+                    isBulking
+                      ? currentProfile.targetWeight! - latestWeight.weight
+                      : latestWeight?.weight - currentProfile.targetWeight!
+                  }
+                  daysLeft={Number(
+                    (
+                      (Number(
+                        currentProfile.targetWeight! - latestWeight?.weight,
+                      ) *
+                        7700) /
+                      calorieTarget
+                    ).toFixed(0),
+                  )}
+                />
+              }
             </Canvas>
           </Animated.View>
         </Animated.View>
