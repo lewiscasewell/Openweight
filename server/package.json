@@ -4,10 +4,12 @@
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "tsnd --respawn --transpile-only --exit-child src/app.ts",
+    "dev": "NODE_ENV=development tsnd --respawn --transpile-only --exit-child src/app.ts",
     "build": "tsc",
-    "start": "node dist/app.js",
-    "migrate": "bash src/scripts/migrate.sh",
+    "start": "NODE_ENV=development node dist/app.js",
+    "start:prod": "NODE_ENV=production node dist/app.js",
+    "migrate": "NODE_ENV=development bash src/scripts/migrate.sh",
+    "migrate:prod": "NODE_ENV=production bash src/scripts/migrate.sh",
     "seed": "bash src/scripts/seed.sh",
     "generate": "kysely-codegen --dialect=postgres --url=postgresql://postgres:postgres@localhost:2022/postgres"
   },

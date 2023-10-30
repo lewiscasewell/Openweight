@@ -25,5 +25,5 @@ WORKDIR /server
 
 COPY --from=pruner /server/ ./
 
-CMD ["yarn", "start"]
+CMD ["yarn", "start:prod"]
 
