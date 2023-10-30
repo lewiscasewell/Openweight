@@ -1,7 +1,6 @@
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect} from 'react';
 import {
-  Text,
   StyleSheet,
   Pressable,
   View,
@@ -9,6 +8,7 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
+import Text from '../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
 import {colors} from '../styles/theme';

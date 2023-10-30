@@ -2,14 +2,12 @@ import React, {useEffect} from 'react';
 import {
   StyleSheet,
   ScrollView,
-  Text,
   View,
   Dimensions,
   TouchableHighlight,
 } from 'react-native';
-
+import Text from '../components/Text';
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
-
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {Database, Q} from '@nozbe/watermelondb';

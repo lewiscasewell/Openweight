@@ -4,4 +4,5 @@ module.exports = {
       sourceDir: './ios',
     },
   },
+  assets: ['./assets/fonts'],
 };

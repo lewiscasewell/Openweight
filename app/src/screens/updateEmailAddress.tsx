@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Alert, TouchableOpacity} from 'react-native';
+import Text from '../components/Text';
 import {PrimaryTextInput} from '../components/TextInput';
 import {supabase} from '../supabase';
 import {PrimaryButton} from '../components/Button';

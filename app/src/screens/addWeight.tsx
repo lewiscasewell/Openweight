@@ -5,12 +5,12 @@ import {useAtom} from 'jotai';
 import React, {useCallback, useState} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
+import Text from '../components/Text';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {sessionAtom} from '../atoms/session.atom';
 import Profile from '../watermelondb/model/Profile';
@@ -213,7 +213,7 @@ const AddWeightScreen = ({weights}: Props) => {
                 width: 60,
                 height: 60,
                 borderRadius: 30,
-                backgroundColor: colors.grey[900],
+                backgroundColor: colors.black[900],
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
@@ -250,7 +250,7 @@ const AddWeightScreen = ({weights}: Props) => {
                 width: 60,
                 height: 60,
                 borderRadius: 30,
-                backgroundColor: colors.grey[900],
+                backgroundColor: colors.black[900],
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
@@ -269,7 +269,7 @@ const AddWeightScreen = ({weights}: Props) => {
                   deleteWeight({database, weights, date, navigation});
                 }}
                 style={{
-                  backgroundColor: '#1d1d1d',
+                  backgroundColor: colors.black[900],
                   paddingVertical: 6,
                   paddingHorizontal: 12,
                   borderRadius: 10,
@@ -279,6 +279,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
               <RNDateTimePicker
                 themeVariant="dark"
+                accentColor={colors['picton-blue'][500]}
                 value={date}
                 maximumDate={new Date()}
                 onChange={value => {
@@ -309,7 +310,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
         <View>
           <TouchableOpacity
-            style={styles.saveButton}
+            style={styles.touchable}
             activeOpacity={0.7}
             onPress={() => {
               addWeight({
@@ -324,7 +325,7 @@ const AddWeightScreen = ({weights}: Props) => {
                 navigation,
               });
             }}>
-            <Text style={styles.saveButtonText}>SAVE</Text>
+            <Text style={styles.touchableText}>Save</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -339,9 +340,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-  },
-  title: {
-    color: 'white',
   },
   contentContainer: {
     flex: 1,
@@ -359,6 +357,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'CabinetGrotesk-Medium',
   },
   saveButton: {
     backgroundColor: '#1d1d1d',
@@ -370,6 +369,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  touchable: {
+    backgroundColor: colors['picton-blue'][600],
+    padding: 14,
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    fontFamily: 'CabinetGrotesk-Medium',
+  },
+  touchableText: {
+    color: colors.white,
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

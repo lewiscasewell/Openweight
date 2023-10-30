@@ -9,6 +9,7 @@ import {MaterialIcon} from '../icons/material-icons';
 import CaloriesScreen from '../screens/calories';
 import {ProfileScreen} from '../screens/profile';
 import AddWeightButton from '../components/AddWeightButton';
+import {StyleSheet} from 'react-native';
 const TabStack = createBottomTabNavigator<TabStackParamList>();
 
 const renderWeightsIcon = ({
@@ -42,6 +43,7 @@ const Tabs = () => {
           options={{
             tabBarIcon: ({color, size}) =>
               renderWeightsIcon({color, size, name: 'scale-bathroom'}),
+            tabBarLabelStyle: styles.tabBarLabelStyle,
           }}
         />
         <TabStack.Screen
@@ -51,6 +53,7 @@ const Tabs = () => {
           options={{
             tabBarIcon: ({color, size}) =>
               renderWeightsIcon({color, size, name: 'fire-circle'}),
+            tabBarLabelStyle: styles.tabBarLabelStyle,
           }}
         />
         <TabStack.Screen
@@ -59,6 +62,7 @@ const Tabs = () => {
           options={{
             tabBarIcon: ({color, size}) =>
               renderWeightsIcon({color, size, name: 'account-circle'}),
+            tabBarLabelStyle: styles.tabBarLabelStyle,
           }}
         />
       </TabStack.Navigator>
@@ -66,5 +70,12 @@ const Tabs = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBarLabelStyle: {
+    fontFamily: 'CabinetGrotesk-Medium',
+    fontSize: 12,
+  },
+});
 
 export default Tabs;

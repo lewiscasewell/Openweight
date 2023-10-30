@@ -45,8 +45,14 @@ export const ProgressCircle = ({
   difference,
   daysLeft,
 }: ProgressCircleProps) => {
-  const font = useFont(require('./CabinetGrotesk-Medium.otf'), 40);
-  const font2 = useFont(require('./CabinetGrotesk-Medium.otf'), 16);
+  const font = useFont(
+    require('../../assets/fonts/CabinetGrotesk-Medium.otf'),
+    40,
+  );
+  const font2 = useFont(
+    require('../../assets/fonts/CabinetGrotesk-Medium.otf'),
+    16,
+  );
   const v = useValue(0);
   const progress = useComputedValue(
     () =>
