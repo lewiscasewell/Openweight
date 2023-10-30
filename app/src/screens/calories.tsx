@@ -2,14 +2,12 @@ import React, {useEffect} from 'react';
 import {
   StyleSheet,
   ScrollView,
-  Text,
   View,
   Dimensions,
   TouchableHighlight,
 } from 'react-native';
-
+import Text from '../components/Text';
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
-
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {Database, Q} from '@nozbe/watermelondb';
@@ -182,14 +180,7 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
             thumbTintColor={colors['picton-blue'][400]}
           />
           {currentProfile?.calorieSurplus !== calorieTarget && (
-            <View
-              style={{
-                width: '100%',
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                paddingVertical: 10,
-              }}>
+            <View style={styles.confirmCalorieTargetContainer}>
               <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <TouchableOpacity
                   onPress={async () => {
@@ -385,5 +376,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.grey[500],
     textAlign: 'center',
+  },
+  confirmCalorieTargetContainer: {
+    width: '100%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingVertical: 10,
   },
 });

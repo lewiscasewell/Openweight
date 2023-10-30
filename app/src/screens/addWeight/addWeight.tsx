@@ -5,122 +5,36 @@ import {useAtom} from 'jotai';
 import React, {useCallback, useState} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
+import Text from '../../components/Text';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {sessionAtom} from '../atoms/session.atom';
-import Profile from '../watermelondb/model/Profile';
-import Weight from '../watermelondb/model/Weight';
+import {sessionAtom} from '../../atoms/session.atom';
+import Weight from '../../watermelondb/model/Weight';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
-import {colors} from '../styles/theme';
-import {AuthStackParamList, TabStackNavigationProps} from '../stacks/types';
-import {MaterialIcon} from '../icons/material-icons';
+import {colors} from '../../styles/theme';
+import {AuthStackParamList, TabStackNavigationProps} from '../../stacks/types';
+import {MaterialIcon} from '../../icons/material-icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {map} from 'rxjs';
-import {Session} from '@supabase/supabase-js';
-import {hapticFeedback} from '../utils/hapticFeedback';
+import {hapticFeedback} from '../../utils/hapticFeedback';
+import {addWeight, deleteWeight} from './util';
 
 dayjs.extend(utc);
 
 type AddWeightScreenRouteProp = RouteProp<AuthStackParamList, 'AddWeight'>;
+
 type Props = {
   database: Database;
   route: AddWeightScreenRouteProp;
   weights: Weight[];
 };
-
-async function addWeight({
-  database,
-  weights,
-  session,
-  date,
-  weightInput,
-  navigation,
-}: {
-  database: Database;
-  weights: Weight[];
-  session: Session | null;
-  date: Date;
-  weightInput: string;
-  navigation: TabStackNavigationProps;
-}): Promise<void> {
-  await database.write(async () => {
-    const profile = await database
-      .get<Profile>('profiles')
-      .query(Q.where('supabase_user_id', session?.user.id!))
-      .fetch();
-
-    const weightOnDate = weights.find(
-      weight =>
-        dayjs(weight.dateAt).format('YYYY-MM-DD') ===
-        dayjs(date).format('YYYY-MM-DD'),
-    );
-
-    if (weightOnDate !== undefined && weightInput) {
-      await weightOnDate.update(weightRecord => {
-        weightRecord.weight = parseFloat(weightInput);
-      });
-
-      navigation.goBack();
-
-      return;
-    }
-    if (weightInput) {
-      await database.get<Weight>('weights').create(weight => {
-        // @ts-ignore
-        weight.profile.set(profile[0]);
-        weight.weight = parseFloat(weightInput);
-        weight.unit = 'kg';
-        weight.dateAt = date;
-        weight.supabaseUserId = session?.user.id!;
-      });
-    }
-
-    navigation.goBack();
-  });
-}
-
-async function deleteWeight({
-  database,
-  weights,
-  date,
-  navigation,
-}: {
-  database: Database;
-  weights: Weight[];
-  date: Date;
-  navigation: TabStackNavigationProps;
-}): Promise<void> {
-  await database.write(async () => {
-    const weightOnDate = weights.find(
-      weight =>
-        dayjs(weight.dateAt).format('YYYY-MM-DD') ===
-        dayjs(date).format('YYYY-MM-DD'),
-    );
-
-    if (weightOnDate !== undefined) {
-      await weightOnDate
-        .markAsDeleted()
-        .then(() => {
-          console.log('deleted');
-        })
-        .catch(error => {
-          console.log(error);
-        });
-
-      navigation.goBack();
-
-      return;
-    }
-  });
-}
 
 const AddWeightScreen = ({weights}: Props) => {
   const route = useRoute<AddWeightScreenRouteProp>();
@@ -213,13 +127,14 @@ const AddWeightScreen = ({weights}: Props) => {
                 width: 60,
                 height: 60,
                 borderRadius: 30,
-                backgroundColor: colors.grey[900],
+                backgroundColor: colors.black[900],
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
               <MaterialIcon name="minus" color="white" size={30} />
             </TouchableOpacity>
             <TextInput
+              keyboardAppearance="dark"
               style={[styles.weightInput]}
               keyboardType="numeric"
               placeholder={latestWeight?.toString() ?? '70.0'}
@@ -250,7 +165,7 @@ const AddWeightScreen = ({weights}: Props) => {
                 width: 60,
                 height: 60,
                 borderRadius: 30,
-                backgroundColor: colors.grey[900],
+                backgroundColor: colors.black[900],
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
@@ -269,7 +184,7 @@ const AddWeightScreen = ({weights}: Props) => {
                   deleteWeight({database, weights, date, navigation});
                 }}
                 style={{
-                  backgroundColor: '#1d1d1d',
+                  backgroundColor: colors.black[900],
                   paddingVertical: 6,
                   paddingHorizontal: 12,
                   borderRadius: 10,
@@ -279,6 +194,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
               <RNDateTimePicker
                 themeVariant="dark"
+                accentColor={colors['picton-blue'][500]}
                 value={date}
                 maximumDate={new Date()}
                 onChange={value => {
@@ -309,7 +225,7 @@ const AddWeightScreen = ({weights}: Props) => {
 
         <View>
           <TouchableOpacity
-            style={styles.saveButton}
+            style={styles.touchable}
             activeOpacity={0.7}
             onPress={() => {
               addWeight({
@@ -324,7 +240,7 @@ const AddWeightScreen = ({weights}: Props) => {
                 navigation,
               });
             }}>
-            <Text style={styles.saveButtonText}>SAVE</Text>
+            <Text style={styles.touchableText}>Save</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -339,9 +255,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-  },
-  title: {
-    color: 'white',
   },
   contentContainer: {
     flex: 1,
@@ -359,6 +272,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'CabinetGrotesk-Medium',
   },
   saveButton: {
     backgroundColor: '#1d1d1d',
@@ -370,6 +284,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  touchable: {
+    backgroundColor: colors['picton-blue'][600],
+    padding: 14,
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    fontFamily: 'CabinetGrotesk-Medium',
+  },
+  touchableText: {
+    color: colors.white,
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

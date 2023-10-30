@@ -1,11 +1,6 @@
 import React, {useEffect} from 'react';
-import {
-  Dimensions,
-  Text,
-  View,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
+import {Dimensions, View, ActivityIndicator, StyleSheet} from 'react-native';
+import Text from '../components/Text';
 import {colors} from '../styles/theme';
 import {useAtom} from 'jotai';
 import {loginFlowAtom} from '../atoms/login-flow-state.atom';

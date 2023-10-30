@@ -1,41 +1,32 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Alert,
   Dimensions,
-  Pressable,
   SectionList,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Text from '../Text';
 import {useNavigation} from '@react-navigation/native';
-
-import {useAtom, useAtomValue} from 'jotai';
+import {useAtomValue} from 'jotai';
 import {sessionAtom} from '../../atoms/session.atom';
-
 import {Database, Q} from '@nozbe/watermelondb';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import Weight from '../../watermelondb/model/Weight';
-
 import * as R from 'remeda';
 import {map} from 'rxjs';
-
 import {colors} from '../../styles/theme';
-import {GraphPoint, LineGraph} from 'react-native-graph';
 import {MaterialIcon} from '../../icons/material-icons';
 import dayjs from 'dayjs';
 import Animated, {
   FadeIn,
   FadeInDown,
-  FadeInUp,
   FadeOut,
   FadeOutUp,
   Layout,
 } from 'react-native-reanimated';
-import {dateRangeAtom, dateRanges} from '../../atoms/dateRange.atom';
-import {hapticFeedback} from '../../utils/hapticFeedback';
 import AppleHealthKit, {
   HealthKitPermissions,
   HealthValue,
@@ -43,207 +34,13 @@ import AppleHealthKit, {
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Profile from '../../watermelondb/model/Profile';
 import {TabStackNavigationProps} from '../../stacks/types';
+import ListHeader from './ListHeader';
 const {width} = Dimensions.get('screen');
 
 type Props = {
   database: Database;
   supabaseId: string;
   weights: Weight[];
-};
-
-const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
-  const [dateRange, setDateRange] = useAtom(dateRangeAtom);
-  const [isDragging, setIsDragging] = useState(false);
-
-  // @ts-ignore
-  const points: GraphPoint[] = weights
-    .filter(weight => {
-      const now = new Date();
-      const date = new Date(weight.dateAt);
-      const diff = now.getTime() - date.getTime();
-      const diffDays = diff / (1000 * 3600 * 24);
-
-      switch (dateRange) {
-        case 'ALL':
-          return true;
-        case '1Y':
-          return diffDays <= 365;
-        case '3M':
-          return diffDays <= 90;
-        case '1M':
-          return diffDays <= 30;
-        case '1W':
-          return diffDays <= 7;
-      }
-    })
-    // @ts-ignore
-    .reduce((acc, weight, index, array) => {
-      if (array.length === 1) {
-        return [
-          {
-            date: new Date(0),
-            value: 0,
-          },
-          {
-            date: new Date(1),
-            value: weight.weight,
-          },
-        ];
-      }
-
-      return [
-        {
-          date: new Date(index),
-          value: weight.weight,
-        },
-        ...acc,
-      ];
-    }, []);
-
-  const [currentPoint, setCurrentPoint] = useState<{
-    index: number;
-    value: number;
-  }>({
-    value: points[points.length - 1]?.value,
-    index: points?.length - 1,
-  });
-
-  useEffect(() => {
-    setCurrentPoint({
-      value: points[points.length - 1]?.value,
-      index: 0,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [weights, dateRange]);
-
-  const max = Math.max(...points.map(point => point.value));
-  const min = Math.min(...points.map(point => point.value));
-
-  const splitDate = weights?.[currentPoint.index]?.dateAt;
-
-  const displayDate = dayjs(splitDate).format('MMM DD, YYYY');
-
-  const calcPercentageDifference = () => {
-    const currentWeight = points[points.length - 1]?.value;
-    const firstWeight = points[0]?.value;
-    const difference = currentWeight - firstWeight;
-    const percentageDifference = ((difference / firstWeight) * 100).toFixed(1);
-
-    return percentageDifference;
-  };
-
-  console.log(points.length);
-
-  return (
-    <Animated.View
-      entering={FadeInUp}
-      layout={Layout.delay(200)}
-      style={styles.headerContainer}>
-      <Text style={{color: 'white', fontSize: 16}}>{displayDate}</Text>
-      <Text style={{color: 'white', fontSize: 50, fontWeight: '700'}}>
-        {currentPoint.value ?? weights?.[0]?.weight}kg
-      </Text>
-      <Text
-        style={{
-          fontWeight: '700',
-          color:
-            Number(
-              (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1),
-            ) > 0
-              ? colors['water-leaf']['300']
-              : colors['picton-blue']['300'],
-        }}>
-        {points.length > 0
-          ? (points[points.length - 1]?.value - points[0]?.value)?.toFixed(1)
-          : '0'}
-        kg ({' '}
-        {calcPercentageDifference() === 'NaN'
-          ? '0'
-          : calcPercentageDifference() === 'Infinity'
-          ? '-'
-          : calcPercentageDifference()}
-        % )
-      </Text>
-
-      <>
-        {points.length > 0 ? (
-          <LineGraph
-            onGestureStart={() => {
-              if (!isDragging) {
-                setIsDragging(true);
-              }
-            }}
-            onGestureEnd={() => {
-              if (isDragging) {
-                setIsDragging(false);
-              }
-              if (currentPoint.index !== 0) {
-                setCurrentPoint({
-                  value: Number(points[points.length - 1].value?.toFixed(1)),
-                  index: 0,
-                });
-              }
-            }}
-            onPointSelected={point => {
-              hapticFeedback('impactLight');
-              const index = point.date.getTime();
-
-              if (!isDragging && currentPoint.index !== 0) {
-                setCurrentPoint({value: point.value, index});
-              }
-
-              if (isDragging) {
-                setCurrentPoint({value: point.value, index});
-              }
-            }}
-            TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
-            BottomAxisLabel={() => (
-              <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
-            )}
-            style={styles.graph}
-            points={points}
-            color={colors['picton-blue']['400']}
-            animated={true}
-            enablePanGesture={true}
-          />
-        ) : (
-          <View
-            style={{
-              height: 200,
-              paddingVertical: 20,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text style={{color: 'white', fontSize: 16}}>
-              No data for selected period
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.dateRangeContainer}>
-          {dateRanges.map(range => (
-            <Pressable
-              key={range}
-              onPressIn={() => {
-                setDateRange(range);
-              }}
-              style={[
-                styles.dateRangeButton,
-                dateRange === range && styles.dateRangeButtonActive,
-              ]}>
-              <Text
-                style={[
-                  styles.dateRangeButtonText,
-                  dateRange === range && styles.dateRangeButtonTextActive,
-                ]}>
-                {range}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </>
-    </Animated.View>
-  );
 };
 
 const permissions: HealthKitPermissions = {
@@ -287,7 +84,7 @@ const WeightList = ({weights}: Props) => {
         <SectionList
           sections={sectionListWeights}
           style={styles.weightList}
-          ListHeaderComponent={<Header weights={weights} />}
+          ListHeaderComponent={<ListHeader weights={weights} />}
           ListFooterComponent={<View style={styles.footer} />}
           keyExtractor={item => item.id}
           renderItem={({item: weight, index}) => {
@@ -304,9 +101,7 @@ const WeightList = ({weights}: Props) => {
             const monthString = dayjs(weight.dateAt).format('MMM');
 
             return (
-              <Animated.View
-                entering={FadeInDown.delay(index * 30)}
-                exiting={FadeOutUp}>
+              <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
                 <TouchableOpacity
                   style={styles.weightItemContainer}
                   onPress={() => {
@@ -363,7 +158,7 @@ const WeightList = ({weights}: Props) => {
                 : (sectionWeight - sectionWeightBefore).toFixed(1);
 
             return (
-              <Animated.View entering={FadeIn} style={styles.sectionHeader}>
+              <Animated.View entering={FadeInDown} style={styles.sectionHeader}>
                 <Text style={styles.sectionHeaderTitle}>
                   {Number(diffBetweenWeights) > 0 ? (
                     <MaterialIcon

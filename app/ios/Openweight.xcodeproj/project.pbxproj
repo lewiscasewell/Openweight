@@ -8,13 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* OpenweightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* OpenweightTests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-Openweight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Openweight.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-Openweight-OpenweightTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-Openweight-OpenweightTests.a */; };
+		4B6EB7A0C9702274C77464DF /* libPods-OpenweightCommonPods-Openweight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B62F3466ADE19373B329A2 /* libPods-OpenweightCommonPods-Openweight.a */; };
+		4BB54E27858C8B2F446633E1 /* libPods-OpenweightCommonPods-OpenweightTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 848727AE0488314958C23D17 /* libPods-OpenweightCommonPods-OpenweightTests.a */; };
+		5D1D7A2877778CEDBA78B873 /* libPods-OpenweightCommonPods-OpenweightStg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11958A39160ACBC1CC3A0B63 /* libPods-OpenweightCommonPods-OpenweightStg.a */; };
 		812F37AB29DCC5EA00E88605 /* wmelon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F37AA29DCC5EA00E88605 /* wmelon.swift */; };
+		813D71072AF059C500210064 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
+		813D71082AF059C500210064 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		813D71092AF059C500210064 /* wmelon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F37AA29DCC5EA00E88605 /* wmelon.swift */; };
+		813D710D2AF059C500210064 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		813D710E2AF059C500210064 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		813D710F2AF059C500210064 /* CabinetGrotesk-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F8D235CC21424CBA89A502CD /* CabinetGrotesk-Medium.otf */; };
+		813D711C2AF059D400210064 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
+		813D711D2AF059D400210064 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		813D711E2AF059D400210064 /* wmelon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F37AA29DCC5EA00E88605 /* wmelon.swift */; };
+		813D71222AF059D400210064 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		813D71232AF059D400210064 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		813D71242AF059D400210064 /* CabinetGrotesk-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F8D235CC21424CBA89A502CD /* CabinetGrotesk-Medium.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8EA1963330F7B17A90A8AFD9 /* libPods-OpenweightCommonPods-OpenweightDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 860E1AF7E6C2BB46CACC0799 /* libPods-OpenweightCommonPods-OpenweightDev.a */; };
+		9383C00302CB469EBFDE7324 /* CabinetGrotesk-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F8D235CC21424CBA89A502CD /* CabinetGrotesk-Medium.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,23 +46,38 @@
 		00E356EE1AD99517003FC87E /* OpenweightTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenweightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* OpenweightTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenweightTests.m; sourceTree = "<group>"; };
+		0F91A80527FC4212CFB6ABAD /* Pods-OpenweightCommonPods-OpenweightDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-OpenweightDev.release.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev.release.xcconfig"; sourceTree = "<group>"; };
+		11958A39160ACBC1CC3A0B63 /* libPods-OpenweightCommonPods-OpenweightStg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OpenweightCommonPods-OpenweightStg.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* Openweight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Openweight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Openweight/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Openweight/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Openweight/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Openweight/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Openweight/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-Openweight-OpenweightTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Openweight-OpenweightTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		18B62F3466ADE19373B329A2 /* libPods-OpenweightCommonPods-Openweight.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OpenweightCommonPods-Openweight.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C81C1B668415B7E8B4BE439 /* Pods-OpenweightCommonPods-OpenweightDev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-OpenweightDev.debug.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev.debug.xcconfig"; sourceTree = "<group>"; };
+		2F14D0C5F0BE7589E28626EC /* Pods-OpenweightCommonPods-Openweight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-Openweight.debug.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight.debug.xcconfig"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-Openweight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openweight.debug.xcconfig"; path = "Target Support Files/Pods-Openweight/Pods-Openweight.debug.xcconfig"; sourceTree = "<group>"; };
+		4368767A657D9ED5262BFBB1 /* Pods-OpenweightCommonPods-OpenweightTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-OpenweightTests.debug.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Openweight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openweight.release.xcconfig"; path = "Target Support Files/Pods-Openweight/Pods-Openweight.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-Openweight-OpenweightTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openweight-OpenweightTests.debug.xcconfig"; path = "Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-Openweight.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Openweight.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		812F37A929DCC5E900E88605 /* Openweight-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Openweight-Bridging-Header.h"; sourceTree = "<group>"; };
 		812F37AA29DCC5EA00E88605 /* wmelon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = wmelon.swift; sourceTree = "<group>"; };
+		813D71162AF059C500210064 /* OpenweightDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenweightDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		813D71172AF059C500210064 /* Openweight dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Openweight dev-Info.plist"; path = "/Users/lewiscasewell/src/openweight/app/ios/Openweight dev-Info.plist"; sourceTree = "<absolute>"; };
+		813D712B2AF059D400210064 /* OpenweightStg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenweightStg.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		813D712C2AF059D400210064 /* Openweight stg-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Openweight stg-Info.plist"; path = "/Users/lewiscasewell/src/openweight/app/ios/Openweight stg-Info.plist"; sourceTree = "<absolute>"; };
 		81827F102A8178FC00DC161F /* Openweight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Openweight.entitlements; path = Openweight/Openweight.entitlements; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Openweight/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		848727AE0488314958C23D17 /* libPods-OpenweightCommonPods-OpenweightTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OpenweightCommonPods-OpenweightTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		860E1AF7E6C2BB46CACC0799 /* libPods-OpenweightCommonPods-OpenweightDev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OpenweightCommonPods-OpenweightDev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Openweight-OpenweightTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Openweight-OpenweightTests.release.xcconfig"; path = "Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests.release.xcconfig"; sourceTree = "<group>"; };
+		9FC1A9B1254A1A0E82F4BA07 /* Pods-OpenweightCommonPods-Openweight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-Openweight.release.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight.release.xcconfig"; sourceTree = "<group>"; };
+		B4ADB21F370EC3E6F5CD9A9F /* Pods-OpenweightCommonPods-OpenweightTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-OpenweightTests.release.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests.release.xcconfig"; sourceTree = "<group>"; };
+		C7874E9BC6F1BA05CB18649D /* Pods-OpenweightCommonPods-OpenweightStg.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-OpenweightStg.release.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F0334B63BD48B924FBA041AF /* Pods-OpenweightCommonPods-OpenweightStg.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenweightCommonPods-OpenweightStg.debug.xcconfig"; path = "Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg.debug.xcconfig"; sourceTree = "<group>"; };
+		F8D235CC21424CBA89A502CD /* CabinetGrotesk-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CabinetGrotesk-Medium.otf"; path = "../assets/fonts/CabinetGrotesk-Medium.otf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-Openweight-OpenweightTests.a in Frameworks */,
+				4BB54E27858C8B2F446633E1 /* libPods-OpenweightCommonPods-OpenweightTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,7 +93,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-Openweight.a in Frameworks */,
+				4B6EB7A0C9702274C77464DF /* libPods-OpenweightCommonPods-Openweight.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813D710A2AF059C500210064 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EA1963330F7B17A90A8AFD9 /* libPods-OpenweightCommonPods-OpenweightDev.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813D711F2AF059D400210064 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D1D7A2877778CEDBA78B873 /* libPods-OpenweightCommonPods-OpenweightStg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,8 +151,10 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-Openweight.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-Openweight-OpenweightTests.a */,
+				18B62F3466ADE19373B329A2 /* libPods-OpenweightCommonPods-Openweight.a */,
+				860E1AF7E6C2BB46CACC0799 /* libPods-OpenweightCommonPods-OpenweightDev.a */,
+				11958A39160ACBC1CC3A0B63 /* libPods-OpenweightCommonPods-OpenweightStg.a */,
+				848727AE0488314958C23D17 /* libPods-OpenweightCommonPods-OpenweightTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -129,6 +177,9 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				812F37A929DCC5E900E88605 /* Openweight-Bridging-Header.h */,
+				84378697C78E46408DDE056A /* Resources */,
+				813D71172AF059C500210064 /* Openweight dev-Info.plist */,
+				813D712C2AF059D400210064 /* Openweight stg-Info.plist */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -140,8 +191,18 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* Openweight.app */,
 				00E356EE1AD99517003FC87E /* OpenweightTests.xctest */,
+				813D71162AF059C500210064 /* OpenweightDev.app */,
+				813D712B2AF059D400210064 /* OpenweightStg.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		84378697C78E46408DDE056A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F8D235CC21424CBA89A502CD /* CabinetGrotesk-Medium.otf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -151,6 +212,14 @@
 				5709B34CF0A7D63546082F79 /* Pods-Openweight.release.xcconfig */,
 				5B7EB9410499542E8C5724F5 /* Pods-Openweight-OpenweightTests.debug.xcconfig */,
 				89C6BE57DB24E9ADA2F236DE /* Pods-Openweight-OpenweightTests.release.xcconfig */,
+				2F14D0C5F0BE7589E28626EC /* Pods-OpenweightCommonPods-Openweight.debug.xcconfig */,
+				9FC1A9B1254A1A0E82F4BA07 /* Pods-OpenweightCommonPods-Openweight.release.xcconfig */,
+				1C81C1B668415B7E8B4BE439 /* Pods-OpenweightCommonPods-OpenweightDev.debug.xcconfig */,
+				0F91A80527FC4212CFB6ABAD /* Pods-OpenweightCommonPods-OpenweightDev.release.xcconfig */,
+				F0334B63BD48B924FBA041AF /* Pods-OpenweightCommonPods-OpenweightStg.debug.xcconfig */,
+				C7874E9BC6F1BA05CB18649D /* Pods-OpenweightCommonPods-OpenweightStg.release.xcconfig */,
+				4368767A657D9ED5262BFBB1 /* Pods-OpenweightCommonPods-OpenweightTests.debug.xcconfig */,
+				B4ADB21F370EC3E6F5CD9A9F /* Pods-OpenweightCommonPods-OpenweightTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -201,6 +270,50 @@
 			productReference = 13B07F961A680F5B00A75B9A /* Openweight.app */;
 			productType = "com.apple.product-type.application";
 		};
+		813D71032AF059C500210064 /* OpenweightDev */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 813D71132AF059C500210064 /* Build configuration list for PBXNativeTarget "OpenweightDev" */;
+			buildPhases = (
+				813D71042AF059C500210064 /* [CP] Check Pods Manifest.lock */,
+				813D71052AF059C500210064 /* Start Packager */,
+				813D71062AF059C500210064 /* Sources */,
+				813D710A2AF059C500210064 /* Frameworks */,
+				813D710C2AF059C500210064 /* Resources */,
+				813D71102AF059C500210064 /* Bundle React Native code and images */,
+				813D71112AF059C500210064 /* [CP] Embed Pods Frameworks */,
+				813D71122AF059C500210064 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenweightDev;
+			productName = Openweight;
+			productReference = 813D71162AF059C500210064 /* OpenweightDev.app */;
+			productType = "com.apple.product-type.application";
+		};
+		813D71182AF059D400210064 /* OpenweightStg */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 813D71282AF059D400210064 /* Build configuration list for PBXNativeTarget "OpenweightStg" */;
+			buildPhases = (
+				813D71192AF059D400210064 /* [CP] Check Pods Manifest.lock */,
+				813D711A2AF059D400210064 /* Start Packager */,
+				813D711B2AF059D400210064 /* Sources */,
+				813D711F2AF059D400210064 /* Frameworks */,
+				813D71212AF059D400210064 /* Resources */,
+				813D71252AF059D400210064 /* Bundle React Native code and images */,
+				813D71262AF059D400210064 /* [CP] Embed Pods Frameworks */,
+				813D71272AF059D400210064 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenweightStg;
+			productName = Openweight;
+			productReference = 813D712B2AF059D400210064 /* OpenweightStg.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -233,6 +346,8 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* Openweight */,
 				00E356ED1AD99517003FC87E /* OpenweightTests */,
+				813D71032AF059C500210064 /* OpenweightDev */,
+				813D71182AF059D400210064 /* OpenweightStg */,
 			);
 		};
 /* End PBXProject section */
@@ -251,6 +366,27 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				9383C00302CB469EBFDE7324 /* CabinetGrotesk-Medium.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813D710C2AF059C500210064 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813D710D2AF059C500210064 /* LaunchScreen.storyboard in Resources */,
+				813D710E2AF059C500210064 /* Images.xcassets in Resources */,
+				813D710F2AF059C500210064 /* CabinetGrotesk-Medium.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813D71212AF059D400210064 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813D71222AF059D400210064 /* LaunchScreen.storyboard in Resources */,
+				813D71232AF059D400210064 /* Images.xcassets in Resources */,
+				813D71242AF059D400210064 /* CabinetGrotesk-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,15 +415,197 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight/Pods-Openweight-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight/Pods-Openweight-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Openweight/Pods-Openweight-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		813D71042AF059C500210064 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OpenweightCommonPods-OpenweightDev-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		813D71052AF059C500210064 /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		813D71102AF059C500210064 /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		813D71112AF059C500210064 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		813D71122AF059C500210064 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightDev/Pods-OpenweightCommonPods-OpenweightDev-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		813D71192AF059D400210064 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OpenweightCommonPods-OpenweightStg-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		813D711A2AF059D400210064 /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		813D71252AF059D400210064 /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		813D71262AF059D400210064 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		813D71272AF059D400210064 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightStg/Pods-OpenweightCommonPods-OpenweightStg-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
@@ -305,7 +623,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Openweight-OpenweightTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-OpenweightCommonPods-OpenweightTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -327,7 +645,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Openweight-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-OpenweightCommonPods-Openweight-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -340,15 +658,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
@@ -357,15 +675,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight/Pods-Openweight-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight/Pods-Openweight-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Openweight/Pods-Openweight-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-Openweight/Pods-OpenweightCommonPods-Openweight-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
@@ -374,15 +692,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Openweight-OpenweightTests/Pods-Openweight-OpenweightTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenweightCommonPods-OpenweightTests/Pods-OpenweightCommonPods-OpenweightTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -425,6 +743,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		813D71062AF059C500210064 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813D71072AF059C500210064 /* AppDelegate.mm in Sources */,
+				813D71082AF059C500210064 /* main.m in Sources */,
+				813D71092AF059C500210064 /* wmelon.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813D711B2AF059D400210064 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813D711C2AF059D400210064 /* AppDelegate.mm in Sources */,
+				813D711D2AF059D400210064 /* main.m in Sources */,
+				813D711E2AF059D400210064 /* wmelon.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -438,7 +776,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-Openweight-OpenweightTests.debug.xcconfig */;
+			baseConfigurationReference = 4368767A657D9ED5262BFBB1 /* Pods-OpenweightCommonPods-OpenweightTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -466,7 +804,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-Openweight-OpenweightTests.release.xcconfig */;
+			baseConfigurationReference = B4ADB21F370EC3E6F5CD9A9F /* Pods-OpenweightCommonPods-OpenweightTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -491,7 +829,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-Openweight.debug.xcconfig */;
+			baseConfigurationReference = 2F14D0C5F0BE7589E28626EC /* Pods-OpenweightCommonPods-Openweight.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -527,7 +865,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-Openweight.release.xcconfig */;
+			baseConfigurationReference = 9FC1A9B1254A1A0E82F4BA07 /* Pods-OpenweightCommonPods-Openweight.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -549,6 +887,146 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.opencoach.bodyweight;
 				PRODUCT_NAME = Openweight;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Openweight-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		813D71142AF059C500210064 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1C81C1B668415B7E8B4BE439 /* Pods-OpenweightCommonPods-OpenweightDev.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Openweight/Openweight.entitlements;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = KBZSY5H6TS;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "Openweight dev-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Openweight (Dev)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.opencoach.bodyweight.dev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Openweight-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		813D71152AF059C500210064 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0F91A80527FC4212CFB6ABAD /* Pods-OpenweightCommonPods-OpenweightDev.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Openweight/Openweight.entitlements;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = KBZSY5H6TS;
+				INFOPLIST_FILE = "Openweight dev-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Openweight (Dev)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.opencoach.bodyweight.dev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Openweight-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		813D71292AF059D400210064 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F0334B63BD48B924FBA041AF /* Pods-OpenweightCommonPods-OpenweightStg.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Openweight/Openweight.entitlements;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = KBZSY5H6TS;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "Openweight stg-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Openweight (Stg)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.opencoach.bodyweight.stg;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Openweight-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		813D712A2AF059D400210064 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7874E9BC6F1BA05CB18649D /* Pods-OpenweightCommonPods-OpenweightStg.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Openweight/Openweight.entitlements;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = KBZSY5H6TS;
+				INFOPLIST_FILE = "Openweight stg-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Openweight (Stg)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.opencoach.bodyweight.stg;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -713,6 +1191,24 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		813D71132AF059C500210064 /* Build configuration list for PBXNativeTarget "OpenweightDev" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				813D71142AF059C500210064 /* Debug */,
+				813D71152AF059C500210064 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		813D71282AF059D400210064 /* Build configuration list for PBXNativeTarget "OpenweightStg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				813D71292AF059D400210064 /* Debug */,
+				813D712A2AF059D400210064 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

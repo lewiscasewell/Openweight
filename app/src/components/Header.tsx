@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import Text from './Text';
 import {colors} from '../styles/theme';
 import {MaterialIcon} from '../icons/material-icons';
 import Animated, {FadeInUp} from 'react-native-reanimated';

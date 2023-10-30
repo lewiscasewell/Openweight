@@ -1,14 +1,7 @@
 import React, {useCallback} from 'react';
 import Profile from '../watermelondb/model/Profile';
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Pressable,
-  Alert,
-} from 'react-native';
+import {StyleSheet, View, ScrollView, Pressable, Alert} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
@@ -28,6 +21,7 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Weight from '../watermelondb/model/Weight';
 import dayjs from 'dayjs';
 import {TabStackNavigationProps} from '../stacks/types';
+import Text from './Text';
 
 const permissions = {
   permissions: {
@@ -239,8 +233,8 @@ const ProfileComponent = ({profiles}: Props) => {
         </View>
         <Pressable
           style={styles.logoutButton}
-          onPress={() => {
-            supabase.auth.signOut();
+          onPress={async () => {
+            await supabase.auth.signOut();
           }}>
           <Text style={styles.buttonText}>Logout</Text>
         </Pressable>

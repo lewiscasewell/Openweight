@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TextInput,
   Dimensions,
@@ -10,8 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {colors} from '../../styles/theme';
-// import {Header} from '../../../components/Header';
-
+import Text from '../../components/Text';
 import {useAtom} from 'jotai';
 import {supabase} from '../../supabase';
 import {useForm} from 'react-hook-form';
@@ -115,7 +113,7 @@ const EmailScreen = () => {
       </Animated.View>
       <Animated.View
         entering={FadeInUp.duration(300).delay(300).springify()}
-        style={styles.mobileInputContainer}>
+        style={styles.emailInputContainer}>
         <TextInput
           style={styles.emailTextInput}
           keyboardType="email-address"
@@ -177,23 +175,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 8,
   },
-  mobileInputContainer: {
+  emailInputContainer: {
     flexDirection: 'row',
     marginTop: 40,
-  },
-  countryCodeContainer: {
-    backgroundColor: colors.black[900],
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 12,
-    paddingLeft: 12,
-    borderTopLeftRadius: 14,
-    borderBottomLeftRadius: 14,
-  },
-  countryCodeText: {
-    fontSize: 22,
-    color: colors.white,
   },
   emailTextInput: {
     backgroundColor: colors.black[900],
@@ -202,6 +186,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 14,
     flex: 1,
+    fontFamily: 'CabinetGrotesk-Medium',
   },
   touchable: {
     backgroundColor: colors.black[900],
@@ -212,7 +197,7 @@ const styles = StyleSheet.create({
   },
   touchableText: {
     color: colors.white,
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
     fontWeight: 'bold',
   },

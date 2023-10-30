@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Alert,
-  Dimensions,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Alert, Dimensions, StyleSheet, TextInput, View} from 'react-native';
+import Text from '../../components/Text';
 import {Header} from '../../components/Header';
 import {
   initialLoginFlowState,
@@ -358,10 +352,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     flexDirection: 'row',
     justifyContent: 'center',
+    fontFamily: 'CabinetGrotesk-Medium',
   },
   touchableText: {
     color: colors.white,
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
     fontWeight: 'bold',
   },

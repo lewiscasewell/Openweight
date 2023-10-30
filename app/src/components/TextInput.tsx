@@ -19,6 +19,7 @@ export const PrimaryTextInput: React.FC<PrimaryTextInputProps> = ({
         placeholderTextColor={colors.grey[500]}
         autoCorrect={false}
         autoCapitalize={'none'}
+        keyboardAppearance="dark"
       />
     </View>
   );
@@ -35,11 +36,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    backgroundColor: colors.grey[900],
+    backgroundColor: colors.black[900],
     borderRadius: 10,
     padding: 16,
     fontSize: 20,
     color: colors.white,
     fontWeight: 'bold',
+    fontFamily: 'CabinetGrotesk-Medium',
   },
 });

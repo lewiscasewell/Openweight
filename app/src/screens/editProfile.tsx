@@ -1,7 +1,6 @@
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect} from 'react';
 import {
-  Text,
   StyleSheet,
   Pressable,
   View,
@@ -9,6 +8,7 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
+import Text from '../components/Text';
 import {ScrollView} from 'react-native-gesture-handler';
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
 import {colors} from '../styles/theme';
@@ -345,6 +345,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     alignItems: 'center',
                   }}>
                   <TextInput
+                    keyboardAppearance="dark"
                     style={[
                       {color: 'white', fontSize: 18, fontWeight: 'bold'},
                       styles.selectOptionContainer,
@@ -352,6 +353,8 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                       profile.heightUnit === 'cm' ? {} : {opacity: 0.5},
                     ]}
                     keyboardType="numeric"
+                    placeholder="Enter your height"
+                    placeholderTextColor={colors.grey['400']}
                     value={value ?? ''}
                     onChangeText={text => {
                       setValue('height', text, {shouldDirty: true});
@@ -554,6 +557,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     alignItems: 'center',
                   }}>
                   <TextInput
+                    keyboardAppearance="dark"
                     style={[
                       {color: 'white', fontSize: 18, fontWeight: 'bold'},
                       styles.selectOptionContainer,
@@ -562,7 +566,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     ]}
                     keyboardType="numeric"
                     placeholder="Enter your target weight"
-                    placeholderTextColor="lightgrey"
+                    placeholderTextColor={colors.grey['400']}
                     value={value ?? ''}
                     onChangeText={text => {
                       setValue('target_weight', text, {shouldDirty: true});
@@ -635,7 +639,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 14,
     borderRadius: 10,
-    backgroundColor: colors.grey['800'],
+    backgroundColor: colors.black[900],
+    fontFamily: 'CabinetGrotesk-Medium',
   },
   selectOptionText: {
     fontSize: 18,

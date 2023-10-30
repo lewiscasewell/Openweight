@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Tabs from './TabStack';
 import EditProfileScreen from '../screens/editProfile';
 import {UpdateEmailAddressScreen} from '../screens/updateEmailAddress';
-import AddWeightScreen from '../screens/addWeight';
+import AddWeightScreen from '../screens/addWeight/addWeight';
 import {AuthStackParamList} from './types';
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
