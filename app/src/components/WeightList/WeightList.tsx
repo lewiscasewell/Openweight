@@ -11,21 +11,20 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-import {useAtom} from 'jotai';
-import {sessionAtom} from '../atoms/session.atom';
+import {useAtom, useAtomValue} from 'jotai';
+import {sessionAtom} from '../../atoms/session.atom';
 
 import {Database, Q} from '@nozbe/watermelondb';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
-import Weight from '../watermelondb/model/Weight';
+import Weight from '../../watermelondb/model/Weight';
 
 import * as R from 'remeda';
 import {map} from 'rxjs';
 
-import {colors} from '../styles/theme';
+import {colors} from '../../styles/theme';
 import {GraphPoint, LineGraph} from 'react-native-graph';
-import {TabStackNavigationProps} from '../../App';
-import {MaterialIcon} from '../icons/material-icons';
+import {MaterialIcon} from '../../icons/material-icons';
 import dayjs from 'dayjs';
 import Animated, {
   FadeIn,
@@ -35,14 +34,15 @@ import Animated, {
   FadeOutUp,
   Layout,
 } from 'react-native-reanimated';
-import {dateRangeAtom, dateRanges} from '../atoms/dateRange.atom';
-import {hapticFeedback} from '../utils/hapticFeedback';
+import {dateRangeAtom, dateRanges} from '../../atoms/dateRange.atom';
+import {hapticFeedback} from '../../utils/hapticFeedback';
 import AppleHealthKit, {
   HealthKitPermissions,
   HealthValue,
 } from 'react-native-health';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
-import Profile from '../watermelondb/model/Profile';
+import Profile from '../../watermelondb/model/Profile';
+import {TabStackNavigationProps} from '../../stacks/types';
 const {width} = Dimensions.get('screen');
 
 type Props = {
@@ -131,6 +131,8 @@ const Header: React.FC<{weights: Weight[]}> = ({weights}) => {
 
     return percentageDifference;
   };
+
+  console.log(points.length);
 
   return (
     <Animated.View
@@ -252,7 +254,7 @@ const permissions: HealthKitPermissions = {
 };
 
 const WeightList = ({weights}: Props) => {
-  const [session] = useAtom(sessionAtom);
+  const session = useAtomValue(sessionAtom);
   const navigation = useNavigation<TabStackNavigationProps>();
   const database = useDatabase();
 
@@ -303,7 +305,7 @@ const WeightList = ({weights}: Props) => {
 
             return (
               <Animated.View
-                entering={FadeInDown.delay(index * 200)}
+                entering={FadeInDown.delay(index * 30)}
                 exiting={FadeOutUp}>
                 <TouchableOpacity
                   style={styles.weightItemContainer}
@@ -586,7 +588,7 @@ const styles = StyleSheet.create({
   },
   calendarDateDay: {
     color: 'white',
-    fontWeight: '800',
+    fontWeight: '900',
     fontSize: 24,
   },
   calendarDateMonth: {

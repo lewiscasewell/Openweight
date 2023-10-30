@@ -15,7 +15,6 @@ import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {Database, Q} from '@nozbe/watermelondb';
 import Profile from '../watermelondb/model/Profile';
 import {RouteProp, useNavigation} from '@react-navigation/native';
-import {TabStackNavigationProps, TabStackParamList} from '../../App';
 import {PrimaryButton} from '../components/Button';
 import {colors} from '../styles/theme';
 import Animated, {FadeIn, FadeOut, Layout} from 'react-native-reanimated';
@@ -28,6 +27,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {MaterialIcon} from '../icons/material-icons';
 import {Canvas} from '@shopify/react-native-skia';
 import {ProgressCircle} from '../components/ProgressCircle';
+import {TabStackNavigationProps, TabStackParamList} from '../stacks/types';
 
 type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
 
@@ -284,25 +284,29 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                 width: Dimensions.get('screen').width - 28,
                 height: Dimensions.get('screen').width,
               }}>
-              <ProgressCircle
-                maxValue={
-                  isBulking
-                    ? latestWeight.weight / currentProfile.targetWeight!
-                    : currentProfile.targetWeight! / latestWeight?.weight
-                }
-                difference={
-                  isBulking
-                    ? currentProfile.targetWeight! - latestWeight.weight
-                    : latestWeight?.weight - currentProfile.targetWeight!
-                }
-                daysLeft={Number(
-                  (
-                    ((currentProfile.targetWeight! - latestWeight?.weight) *
-                      7700) /
-                    calorieTarget
-                  ).toFixed(0),
-                )}
-              />
+              {
+                <ProgressCircle
+                  maxValue={
+                    isBulking
+                      ? latestWeight.weight / currentProfile.targetWeight!
+                      : currentProfile.targetWeight! / latestWeight?.weight
+                  }
+                  difference={
+                    isBulking
+                      ? currentProfile.targetWeight! - latestWeight.weight
+                      : latestWeight?.weight - currentProfile.targetWeight!
+                  }
+                  daysLeft={Number(
+                    (
+                      (Number(
+                        currentProfile.targetWeight! - latestWeight?.weight,
+                      ) *
+                        7700) /
+                      calorieTarget
+                    ).toFixed(0),
+                  )}
+                />
+              }
             </Canvas>
           </Animated.View>
         </Animated.View>

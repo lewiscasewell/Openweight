@@ -12,6 +12,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
     "@miblanchard/react-native-slider": "^2.3.1",
     "@nozbe/watermelondb": "^0.25.5",
     "@react-native-community/datetimepicker": "^7.0.1",
@@ -49,7 +50,8 @@
     "rxjs": "^7.8.0",
     "superjson": "^1.12.2",
     "uuid": "^9.0.0",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

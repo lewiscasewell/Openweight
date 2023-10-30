@@ -1,7 +1,6 @@
 import {DefaultTheme} from '@react-navigation/native';
 
 export const colors = {
-  black: '#000000',
   white: '#FFFFFF',
   transparent: 'transparent',
   success: '#22c55e',
@@ -33,16 +32,30 @@ export const colors = {
     '950': '#082b28',
   },
   grey: {
-    50: '#F9FAFB',
-    100: '#F3F4F6',
-    200: '#E5E7EB',
-    300: '#D1D5DB',
-    400: '#9CA3AF',
-    500: '#6B7280',
-    600: '#4B5563',
-    700: '#374151',
-    800: '#1F2937',
-    900: '#111827',
+    '50': '#f7f7f7',
+    '100': '#e3e3e3',
+    '200': '#c8c8c8',
+    '300': '#a4a4a4',
+    '400': '#818181',
+    '500': '#666666',
+    '600': '#515151',
+    '700': '#434343',
+    '800': '#383838',
+    '900': '#313131',
+    '950': '#000000',
+  },
+  black: {
+    '950': '#000000',
+    '900': '#0f0f0f',
+    '800': '#1d1d1d',
+    '700': '#2c2c2c',
+    '600': '#3a3a3a',
+    '500': '#474747',
+    '400': '#545454',
+    '300': '#616161',
+    '200': '#6e6e6e',
+    '100': '#7b7b7b',
+    '50': '#888888',
   },
 };
 
@@ -50,11 +63,11 @@ export const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: colors.black,
+    background: colors.black[950],
     primary: colors.white,
     text: colors.white,
-    border: colors.black,
+    border: colors.black[950],
     notification: 'red',
-    card: colors.black,
+    card: colors.black[950],
   },
 };
