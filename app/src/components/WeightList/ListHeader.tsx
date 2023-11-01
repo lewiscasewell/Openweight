@@ -9,6 +9,7 @@ import Text from '../Text';
 import {colors} from '../../styles/theme';
 import {LineGraph} from 'react-native-graph';
 import {hapticFeedback} from '../../utils/hapticFeedback';
+import {count} from 'rxjs';
 
 const {width} = Dimensions.get('window');
 
@@ -93,7 +94,20 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
     return percentageDifference;
   };
 
-  console.log(points.length);
+  useEffect(() => {
+    if (!isDragging) {
+      setCurrentPoint({
+        value: points[points.length - 1]?.value,
+        index: 0,
+      });
+    }
+    if (isDragging && currentPoint.index === 0) {
+      setCurrentPoint({
+        value: points[points.length - 2]?.value,
+        index: 1,
+      });
+    }
+  }, [isDragging]);
 
   return (
     <Animated.View
@@ -130,6 +144,7 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
         {points.length > 0 ? (
           <LineGraph
             onGestureStart={() => {
+              hapticFeedback('impactLight');
               if (!isDragging) {
                 setIsDragging(true);
               }
@@ -146,15 +161,16 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
               }
             }}
             onPointSelected={point => {
-              hapticFeedback('impactLight');
               const index = point.date.getTime();
-
-              if (!isDragging && currentPoint.index !== 0) {
-                setCurrentPoint({value: point.value, index});
+              if (!isDragging && currentPoint.index === 0) {
+                return;
               }
 
-              if (isDragging) {
-                setCurrentPoint({value: point.value, index});
+              if (currentPoint.value !== point.value) {
+                setCurrentPoint({
+                  value: point.value,
+                  index,
+                });
               }
             }}
             TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
