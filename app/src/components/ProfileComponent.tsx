@@ -221,6 +221,13 @@ const ProfileComponent = ({profiles}: Props) => {
           <TouchableHighlight
             style={styles.optionContainer}
             onPress={() => {
+              navigation.navigate('Preferences');
+            }}>
+            <Text style={styles.optionText}>Preferences</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.optionContainer}
+            onPress={() => {
               navigation.navigate('UpdateEmailAddress');
             }}>
             <Text style={styles.optionText}>Change email address</Text>

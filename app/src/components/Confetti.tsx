@@ -13,6 +13,7 @@ import {
 } from '@shopify/react-native-skia';
 import {processTransform3d, toMatrix3} from 'react-native-redash';
 import {atom, useAtom} from 'jotai';
+import {hapticFeedback} from '../utils/hapticFeedback';
 
 const NUM_OF_CONFETTI = 100;
 const CONFETTI_WIDTH = 10;
@@ -37,6 +38,7 @@ export const useConfettiAnimation = () => {
   const [confettiPieces, setConfettiPieces] = useAtom(confettiAtom);
   const [, setIsAnimating] = useAtom(isConfettiAnimatingAtom);
   const startAnimation = () => {
+    hapticFeedback('impactHeavy');
     const pieces: Offset[] = [];
     setIsAnimating(true);
 
