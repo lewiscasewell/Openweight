@@ -41,6 +41,7 @@ async function onCreateTriggerNotification({
   repeatFrequency: RepeatFrequency;
 }) {
   await cancelNotification();
+  await notifee.requestPermission();
 
   const trigger: TimestampTrigger = {
     type: TriggerType.TIMESTAMP,
