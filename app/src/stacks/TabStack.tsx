@@ -14,6 +14,7 @@ import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 import LinearGradient from 'react-native-linear-gradient';
 import {colors} from '../styles/theme';
 import StaticSafeAreaInsets from 'react-native-static-safe-area-insets';
+import Confetti from '../components/Confetti';
 const TabStack = createBottomTabNavigator<TabStackParamList>();
 
 const renderWeightsIcon = ({
@@ -96,6 +97,7 @@ const Tabs = () => {
         />
       </TabStack.Navigator>
       <TabGradient />
+      <Confetti />
       <AddWeightButton />
     </>
   );

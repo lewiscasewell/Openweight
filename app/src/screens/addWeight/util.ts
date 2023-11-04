@@ -12,6 +12,7 @@ export async function addWeight({
   date,
   weightInput,
   navigation,
+  startAnimation,
 }: {
   database: Database;
   weights: Weight[];
@@ -19,6 +20,7 @@ export async function addWeight({
   date: Date;
   weightInput: string;
   navigation: TabStackNavigationProps;
+  startAnimation: () => void;
 }): Promise<void> {
   await database.write(async () => {
     const profile = await database
@@ -32,13 +34,18 @@ export async function addWeight({
         dayjs(date).format('YYYY-MM-DD'),
     );
 
+    const isTargetWeightReached =
+      parseFloat(weightInput) === profile?.[0]?.targetWeight;
+
     if (weightOnDate !== undefined && weightInput) {
       await weightOnDate.update(weightRecord => {
         weightRecord.weight = parseFloat(weightInput);
       });
 
       navigation.goBack();
-
+      if (isTargetWeightReached) {
+        startAnimation();
+      }
       return;
     }
     if (weightInput) {
@@ -50,6 +57,10 @@ export async function addWeight({
         weight.dateAt = date;
         weight.supabaseUserId = session?.user.id!;
       });
+    }
+
+    if (isTargetWeightReached) {
+      startAnimation();
     }
 
     navigation.goBack();

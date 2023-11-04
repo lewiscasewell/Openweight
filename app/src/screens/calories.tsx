@@ -279,8 +279,10 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                 <ProgressCircle
                   maxValue={
                     isBulking
-                      ? latestWeight.weight / currentProfile.targetWeight!
-                      : currentProfile.targetWeight! / latestWeight?.weight
+                      ? latestWeight.weight / currentProfile.targetWeight! -
+                        0.000001
+                      : currentProfile.targetWeight! / latestWeight?.weight -
+                        0.000001
                   }
                   difference={
                     isBulking
