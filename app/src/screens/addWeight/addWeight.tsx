@@ -270,8 +270,8 @@ const styles = StyleSheet.create({
   },
   weightInput: {
     height: 200,
-    width: 250,
-    fontSize: 100,
+    width: 220,
+    fontSize: 90,
     color: colors.white,
     fontWeight: 'bold',
     textAlign: 'center',

@@ -1,7 +1,7 @@
 import 'react-native-get-random-values';
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
-import {LogBox, StatusBar, StyleSheet} from 'react-native';
+import {LogBox, StatusBar} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {supabase} from './src/supabase';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
