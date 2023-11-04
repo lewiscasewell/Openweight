@@ -13,7 +13,8 @@ import {
 } from 'rxjs/operators';
 import {sync, whenUpdatableDataSetChanges} from '.';
 import {useAtom} from 'jotai';
-import {appStateAtom} from '../../atoms/appLoading.atom';
+
+import {isConfettiAnimatingAtom} from '../../components/Confetti';
 
 const TIME_DELAY_IN_MILLIS = 2000;
 
@@ -21,10 +22,10 @@ export function useSyncDatabase() {
   const [isSyncing, setIsSyncing] = React.useState(false);
   const syncSubscription = React.useRef<Subscription | null>(null);
   const [errorMessage, setErrorMessage] = React.useState<string>();
-  const [, setIsAppLoading] = useAtom(appStateAtom);
+  const [isAnimating] = useAtom(isConfettiAnimatingAtom);
 
   React.useEffect(() => {
-    if (!syncSubscription.current) {
+    if (!syncSubscription.current || syncSubscription.current.closed) {
       syncSubscription.current = whenUpdatableDataSetChanges()
         .pipe(
           map(hasChanges => {
@@ -38,7 +39,11 @@ export function useSyncDatabase() {
               isInternetReachable,
               appState,
             });
-            return isInternetReachable && (changes || appState === 'active');
+            return (
+              isInternetReachable &&
+              (changes || appState === 'active') &&
+              !isAnimating
+            );
           }),
           switchMap(async isReadyToSync => isReadyToSync),
           debounceTime(TIME_DELAY_IN_MILLIS),
@@ -53,13 +58,12 @@ export function useSyncDatabase() {
             console.log('Syncronization error', error, caught);
             setIsSyncing(false);
             setErrorMessage('Could not sync to database!');
-            setIsAppLoading({isAppLoading: false});
           }),
         )
         .subscribe();
     }
     return () => syncSubscription.current?.unsubscribe();
-  }, [setIsAppLoading]);
+  }, [isAnimating]);
 
   return {isSyncing, error: errorMessage};
 }

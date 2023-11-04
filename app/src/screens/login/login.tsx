@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -7,14 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {supabase} from '../../supabase';
-import Profile from '../../watermelondb/model/Profile';
-import {useDatabase} from '@nozbe/watermelondb/hooks';
-import Config from 'react-native-config';
 import {useAtom, useAtomValue} from 'jotai';
-import {appStateAtom} from '../../atoms/appLoading.atom';
-import Weight from '../../watermelondb/model/Weight';
-import {sync} from '../../watermelondb/sync';
 import Animated, {FadeInUp} from 'react-native-reanimated';
 import {colors} from '../../styles/theme';
 import {loginFlowAtom} from '../../atoms/login-flow-state.atom';

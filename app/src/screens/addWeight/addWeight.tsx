@@ -25,6 +25,7 @@ import utc from 'dayjs/plugin/utc';
 import {map} from 'rxjs';
 import {hapticFeedback} from '../../utils/hapticFeedback';
 import {addWeight, deleteWeight} from './util';
+import {useConfettiAnimation} from '../../components/Confetti';
 
 dayjs.extend(utc);
 
@@ -42,6 +43,7 @@ const AddWeightScreen = ({weights}: Props) => {
   const [session] = useAtom(sessionAtom);
   const database = useDatabase();
   const navigation = useNavigation<TabStackNavigationProps>();
+  const {startAnimation} = useConfettiAnimation();
 
   const [weightInputInterval, setWeightInputInterval] = useState(
     setInterval(() => {}, 100),
@@ -238,6 +240,7 @@ const AddWeightScreen = ({weights}: Props) => {
                     ? latestWeight?.toString() ?? '70'
                     : weightInput,
                 navigation,
+                startAnimation,
               });
             }}>
             <Text style={styles.touchableText}>Save</Text>

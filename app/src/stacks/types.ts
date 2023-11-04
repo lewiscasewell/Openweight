@@ -28,4 +28,6 @@ export type AuthStackParamList = {
     id: string;
   };
   UpdateEmailAddress: undefined;
+  Preferences: undefined;
+  NotificationPreferences: undefined;
 };

@@ -5,17 +5,9 @@ import {colors} from '../styles/theme';
 import {MaterialIcon} from '../icons/material-icons';
 import Animated, {FadeInUp} from 'react-native-reanimated';
 
-type HeaderIconProps = {
-  name: string;
-  onPress: () => void;
-  type: 'feather' | 'material-community';
-  disabled?: boolean;
-};
-
 type HeaderProps = {
   title?: string;
   nodes?: Array<React.ReactElement>;
-  icons?: HeaderIconProps[];
   backButtonCallback?: () => void;
   disabled?: boolean;
 };
@@ -23,7 +15,6 @@ type HeaderProps = {
 export const Header: React.FC<HeaderProps> = ({
   title,
   nodes = [<></>],
-  icons,
   backButtonCallback,
 }) => {
   return (

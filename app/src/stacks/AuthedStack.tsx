@@ -5,6 +5,8 @@ import EditProfileScreen from '../screens/editProfile';
 import {UpdateEmailAddressScreen} from '../screens/updateEmailAddress';
 import AddWeightScreen from '../screens/addWeight/addWeight';
 import {AuthStackParamList} from './types';
+import PreferencesScreen from '../screens/preferences';
+import NotificationPreferencesScreen from '../screens/notificationPreferences';
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -37,6 +39,11 @@ const AuthedStack = () => {
         options={{
           presentation: 'modal',
         }}
+      />
+      <AuthStack.Screen name="Preferences" component={PreferencesScreen} />
+      <AuthStack.Screen
+        name="NotificationPreferences"
+        component={NotificationPreferencesScreen}
       />
     </AuthStack.Navigator>
   );
