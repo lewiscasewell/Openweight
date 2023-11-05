@@ -176,6 +176,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
       />
       <ScrollView
         style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{flexGrow: 1}}>
         <Controller
           name="name"
@@ -342,7 +343,9 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                   {isEditing === 'height' ? 'Close' : 'Edit'}
                 </Text>
               </Pressable>
-              {isEditing === 'height' && (
+              <CollapsableContainer
+                expanded={isEditing === 'height'}
+                duration={100}>
                 <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
                   <View
                     style={{
@@ -377,7 +380,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     </Text>
                   </View>
                 </Animated.View>
-              )}
+              </CollapsableContainer>
             </Animated.View>
           )}
         />
@@ -408,7 +411,9 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                   {isEditing === 'activityLevel' ? 'Close' : 'Edit'}
                 </Text>
               </Pressable>
-              {isEditing === 'activityLevel' && (
+              <CollapsableContainer
+                expanded={isEditing === 'activityLevel'}
+                duration={100}>
                 <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
                   <View>
                     <TouchableOpacity
@@ -478,7 +483,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     </TouchableOpacity>
                   </View>
                 </Animated.View>
-              )}
+              </CollapsableContainer>
             </Animated.View>
           )}
         />
@@ -505,7 +510,9 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                   {isEditing === 'targetCalories' ? 'Close' : 'Edit'}
                 </Text>
               </Pressable>
-              {isEditing === 'targetCalories' && (
+              <CollapsableContainer
+                expanded={isEditing === 'targetCalories'}
+                duration={100}>
                 <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
                   <View
                     style={{
@@ -529,7 +536,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     />
                   </View>
                 </Animated.View>
-              )}
+              </CollapsableContainer>
             </Animated.View>
           )}
         />
@@ -558,7 +565,9 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                   {isEditing === 'targetWeight' ? 'Close' : 'Edit'}
                 </Text>
               </Pressable>
-              {isEditing === 'targetWeight' && (
+              <CollapsableContainer
+                expanded={isEditing === 'targetWeight'}
+                duration={100}>
                 <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
                   <View
                     style={{
@@ -593,7 +602,7 @@ const EditProfileScreen = ({profile}: {profile: Profile}) => {
                     </Text>
                   </View>
                 </Animated.View>
-              )}
+              </CollapsableContainer>
             </Animated.View>
           )}
         />

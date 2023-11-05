@@ -186,6 +186,7 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
             <View style={styles.confirmCalorieTargetContainer}>
               <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   onPress={async () => {
                     await database.write(async () => {
                       await currentProfile.update(profile => {
@@ -202,6 +203,7 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
               </Animated.View>
               <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   onPress={() =>
                     setCalorieTarget(currentProfile.calorieSurplus!)
                   }>

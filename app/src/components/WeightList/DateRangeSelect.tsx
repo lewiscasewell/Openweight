@@ -31,7 +31,7 @@ const DateRangeSelect = () => {
           translateX: withSpring((selectedIndex * width) / dateRanges.length, {
             mass: 1,
             stiffness: 500,
-            damping: 300,
+            damping: 30,
           }),
         },
       ],
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width,
+    borderRadius: 10,
   },
   touchable: {
     width: width / dateRanges.length,
