@@ -52,7 +52,7 @@ async function onCreateTriggerNotification({
   await notifee.createTriggerNotification(
     {
       id: 'log-weight-notification',
-      title: 'How much do you weigh today?',
+      title: 'Openweight',
       body: 'Tap to log your daily bodyweight',
     },
     trigger,

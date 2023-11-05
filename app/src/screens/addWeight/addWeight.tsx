@@ -186,8 +186,8 @@ const AddWeightScreen = ({weights}: Props) => {
                   deleteWeight({database, weights, date, navigation});
                 }}
                 style={{
-                  backgroundColor: colors.black[900],
-                  paddingVertical: 6,
+                  backgroundColor: colors.black[800],
+                  paddingVertical: 7,
                   paddingHorizontal: 12,
                   borderRadius: 10,
                 }}>

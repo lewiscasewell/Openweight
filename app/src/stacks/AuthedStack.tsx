@@ -45,9 +45,9 @@ const AuthedStack = () => {
       <AuthStack.Screen
         name="EditProfile"
         component={EditProfileScreen}
-        options={{
-          headerShown: true,
-        }}
+        // options={{
+        //   headerShown: true,
+        // }}
       />
       <AuthStack.Screen
         name="UpdateEmailAddress"

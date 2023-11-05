@@ -26,6 +26,7 @@ import {MaterialIcon} from '../icons/material-icons';
 import {Canvas} from '@shopify/react-native-skia';
 import {ProgressCircle} from '../components/ProgressCircle';
 import {TabStackNavigationProps, TabStackParamList} from '../stacks/types';
+import CollapsableContainer from '../components/CollapsibleContainer';
 
 type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
 
@@ -166,7 +167,7 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
             {calcCalorieTarget()?.toFixed(0)}
           </Text>
           <Text style={styles.surplusOrDeficitText}>
-            {calorieTarget > 0 ? '+' : ''}
+            {calorieTarget >= 0 ? '+' : ''}
             {calorieTarget} calories
           </Text>
           <Slider
@@ -179,7 +180,9 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
             maximumTrackTintColor={colors.grey[500]}
             thumbTintColor={colors['picton-blue'][400]}
           />
-          {currentProfile?.calorieSurplus !== calorieTarget && (
+          <CollapsableContainer
+            duration={100}
+            expanded={currentProfile?.calorieSurplus !== calorieTarget}>
             <View style={styles.confirmCalorieTargetContainer}>
               <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <TouchableOpacity
@@ -206,7 +209,8 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
                 </TouchableOpacity>
               </Animated.View>
             </View>
-          )}
+          </CollapsableContainer>
+
           <Animated.View
             layout={Layout.duration(200)}
             style={{

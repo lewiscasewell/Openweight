@@ -1,6 +1,6 @@
-import {useAtom} from 'jotai';
+import {useAtomValue} from 'jotai';
 import Weight from '../../watermelondb/model/Weight';
-import {dateRangeAtom, dateRanges} from '../../atoms/dateRange.atom';
+import {dateRangeAtom} from '../../atoms/dateRange.atom';
 import {useEffect, useState} from 'react';
 import dayjs from 'dayjs';
 import Animated, {FadeInUp, Layout} from 'react-native-reanimated';
@@ -9,12 +9,17 @@ import Text from '../Text';
 import {colors} from '../../styles/theme';
 import {LineGraph} from 'react-native-graph';
 import {hapticFeedback} from '../../utils/hapticFeedback';
-import {count} from 'rxjs';
+import DateRangeSelect from './DateRangeSelect';
 
 const {width} = Dimensions.get('window');
+const GRADIENT_COLORS = [
+  `${colors['picton-blue'][950]}5D`,
+  `${colors['picton-blue'][950]}4D`,
+  `${colors['picton-blue'][950]}00`,
+];
 
 const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
-  const [dateRange, setDateRange] = useAtom(dateRangeAtom);
+  const dateRange = useAtomValue(dateRangeAtom);
   const [isDragging, setIsDragging] = useState(false);
 
   // @ts-ignore
@@ -179,6 +184,9 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
             )}
             style={styles.graph}
             points={points}
+            gradientFillColors={GRADIENT_COLORS}
+            verticalPadding={20}
+            horizontalPadding={8}
             color={colors['picton-blue']['400']}
             animated={true}
             enablePanGesture={true}
@@ -197,27 +205,7 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
           </View>
         )}
 
-        <View style={styles.dateRangeContainer}>
-          {dateRanges.map(range => (
-            <Pressable
-              key={range}
-              onPressIn={() => {
-                setDateRange(range);
-              }}
-              style={[
-                styles.dateRangeButton,
-                dateRange === range && styles.dateRangeButtonActive,
-              ]}>
-              <Text
-                style={[
-                  styles.dateRangeButtonText,
-                  dateRange === range && styles.dateRangeButtonTextActive,
-                ]}>
-                {range}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+        <DateRangeSelect />
       </>
     </Animated.View>
   );
