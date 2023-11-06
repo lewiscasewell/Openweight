@@ -1,21 +1,31 @@
-import {useAtom} from 'jotai';
+import {useAtomValue} from 'jotai';
 import Weight from '../../watermelondb/model/Weight';
-import {dateRangeAtom, dateRanges} from '../../atoms/dateRange.atom';
-import {useEffect, useState} from 'react';
+import {dateRangeAtom} from '../../atoms/dateRange.atom';
+import {RefObject, useEffect, useRef, useState} from 'react';
 import dayjs from 'dayjs';
 import Animated, {FadeInUp, Layout} from 'react-native-reanimated';
-import {Dimensions, Pressable, StyleSheet, View} from 'react-native';
+import {Button, Dimensions, Pressable, StyleSheet, View} from 'react-native';
 import Text from '../Text';
 import {colors} from '../../styles/theme';
-import {LineGraph} from 'react-native-graph';
+import {LineGraph, GraphPoint} from 'react-native-graph';
 import {hapticFeedback} from '../../utils/hapticFeedback';
-import {count} from 'rxjs';
+import DateRangeSelect from './DateRangeSelect';
 
 const {width} = Dimensions.get('window');
+const GRADIENT_COLORS = [
+  `${colors['picton-blue'][950]}5D`,
+  `${colors['picton-blue'][950]}4D`,
+  `${colors['picton-blue'][950]}00`,
+];
 
 const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
-  const [dateRange, setDateRange] = useAtom(dateRangeAtom);
+  const dateRange = useAtomValue(dateRangeAtom);
   const [isDragging, setIsDragging] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(300);
+
+  const onLayout = (event: any) => {
+    setContainerWidth(event.nativeEvent.layout.width);
+  };
 
   // @ts-ignore
   const points: GraphPoint[] = weights
@@ -78,8 +88,44 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weights, dateRange]);
 
-  const max = Math.max(...points.map(point => point.value));
-  const min = Math.min(...points.map(point => point.value));
+  // const max = Math.max(...points.map(point => point.value));
+  // const min = Math.min(...points.map(point => point.value));
+  const maxPoint = points.reduce(
+    (acc, point, index) => {
+      if (point.value > acc.value) {
+        const x = (index * containerWidth) / points.length;
+        return {
+          value: point.value,
+          index,
+          x,
+        };
+      }
+      return acc;
+    },
+    {
+      value: 0,
+      index: 0,
+      x: 0,
+    },
+  );
+  const minPoint = points.reduce(
+    (acc, point, index) => {
+      if (point.value < acc.value) {
+        const x = (index * containerWidth) / points.length;
+        return {
+          value: point.value,
+          index,
+          x,
+        };
+      }
+      return acc;
+    },
+    {
+      value: 1000,
+      index: 0,
+      x: 0,
+    },
+  );
 
   const splitDate = weights?.[currentPoint.index]?.dateAt;
 
@@ -111,6 +157,7 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
 
   return (
     <Animated.View
+      onLayout={onLayout}
       entering={FadeInUp}
       layout={Layout.delay(200)}
       style={styles.headerContainer}>
@@ -173,12 +220,21 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
                 });
               }
             }}
-            TopAxisLabel={() => <Text style={styles.white}>{max} kg</Text>}
+            TopAxisLabel={() => (
+              <Text style={[styles.white, {left: maxPoint.x}]}>
+                {maxPoint.value} kg
+              </Text>
+            )}
             BottomAxisLabel={() => (
-              <Text style={[styles.white, styles.moveRight]}>{min} kg</Text>
+              <Text style={[styles.white, {left: minPoint.x}]}>
+                {minPoint.value} kg
+              </Text>
             )}
             style={styles.graph}
             points={points}
+            gradientFillColors={GRADIENT_COLORS}
+            verticalPadding={8}
+            horizontalPadding={8}
             color={colors['picton-blue']['400']}
             animated={true}
             enablePanGesture={true}
@@ -196,28 +252,7 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
             </Text>
           </View>
         )}
-
-        <View style={styles.dateRangeContainer}>
-          {dateRanges.map(range => (
-            <Pressable
-              key={range}
-              onPressIn={() => {
-                setDateRange(range);
-              }}
-              style={[
-                styles.dateRangeButton,
-                dateRange === range && styles.dateRangeButtonActive,
-              ]}>
-              <Text
-                style={[
-                  styles.dateRangeButtonText,
-                  dateRange === range && styles.dateRangeButtonTextActive,
-                ]}>
-                {range}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+        <DateRangeSelect />
       </>
     </Animated.View>
   );
@@ -235,34 +270,6 @@ const styles = StyleSheet.create({
     height: 200,
     width: '100%',
     marginVertical: 20,
-  },
-  dateRangeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  dateRangeButton: {
-    backgroundColor: colors.transparent,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  dateRangeButtonText: {
-    color: 'darkgrey',
-    fontWeight: 'bold',
-  },
-  dateRangeButtonActive: {
-    backgroundColor: '#1d1d1d',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  dateRangeButtonTextActive: {
-    color: 'white',
-    fontWeight: 'bold',
   },
   calendarDate: {
     width: 60,
@@ -306,7 +313,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   moveRight: {
-    left: width - 80,
+    left: 0,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
+    backgroundColor: 'red',
   },
 });
 

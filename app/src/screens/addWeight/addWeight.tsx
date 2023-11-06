@@ -186,8 +186,8 @@ const AddWeightScreen = ({weights}: Props) => {
                   deleteWeight({database, weights, date, navigation});
                 }}
                 style={{
-                  backgroundColor: colors.black[900],
-                  paddingVertical: 6,
+                  backgroundColor: colors.black[800],
+                  paddingVertical: 7,
                   paddingHorizontal: 12,
                   borderRadius: 10,
                 }}>
@@ -270,8 +270,8 @@ const styles = StyleSheet.create({
   },
   weightInput: {
     height: 200,
-    width: 250,
-    fontSize: 100,
+    width: 220,
+    fontSize: 90,
     color: colors.white,
     fontWeight: 'bold',
     textAlign: 'center',

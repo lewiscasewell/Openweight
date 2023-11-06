@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Alert,
-  Dimensions,
   SectionList,
   StyleSheet,
   TouchableOpacity,
@@ -35,7 +34,6 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Profile from '../../watermelondb/model/Profile';
 import {TabStackNavigationProps} from '../../stacks/types';
 import ListHeader from './ListHeader';
-const {width} = Dimensions.get('screen');
 
 type Props = {
   database: Database;
@@ -333,88 +331,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
   },
-  count: {
-    paddingVertical: 10,
-    color: '#888',
-    textAlign: 'center',
-  },
-  graph: {
-    flex: 1,
-    height: 200,
-    width: '100%',
-    marginVertical: 20,
-  },
-  dateRangeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  dateRangeButton: {
-    backgroundColor: colors.transparent,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  dateRangeButtonText: {
-    color: 'darkgrey',
-    fontWeight: 'bold',
-  },
-  dateRangeButtonActive: {
-    backgroundColor: '#1d1d1d',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  dateRangeButtonTextActive: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
   calendarDate: {
     width: 60,
     height: 60,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: '#1d1d1d',
+    backgroundColor: colors.black[900],
     justifyContent: 'center',
     alignItems: 'center',
   },
   calendarDateDay: {
-    color: 'white',
-    fontWeight: '900',
+    color: colors.white,
     fontSize: 24,
   },
   calendarDateMonth: {
-    color: 'white',
+    color: colors.white,
     fontSize: 16,
   },
   sectionHeader: {
-    backgroundColor: 'black',
+    backgroundColor: colors.black[950],
     paddingVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   sectionHeaderTitle: {
-    color: 'lightgrey',
+    color: colors.grey[300],
     fontWeight: '800',
     fontSize: 20,
   },
   weight: {
-    color: 'white',
+    color: colors.white,
     fontSize: 24,
-    fontWeight: 'bold',
   },
   footer: {
     height: 120,
-  },
-  white: {
-    color: 'white',
-  },
-  moveRight: {
-    left: width - 80,
   },
 });
 

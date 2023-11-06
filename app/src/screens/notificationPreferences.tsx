@@ -1,4 +1,4 @@
-import {Button, StyleSheet, Switch, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Switch, TouchableOpacity, View} from 'react-native';
 import Text from '../components/Text';
 import {Header} from '../components/Header';
 import {useNavigation} from '@react-navigation/native';
@@ -17,17 +17,17 @@ import {
   ensureFutureDate,
   notificationPreferencesAtom,
 } from '../atoms/notification-preferences.atom';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {colors} from '../styles/theme';
 
-const notificationId = 'log-weight-notification';
+export const logNotificationId = 'log-weight-notification';
 
 async function cancelNotification() {
   const notifications = await notifee.getTriggerNotifications();
 
   notifications.forEach(notification => {
-    if (notification.notification.id === notificationId) {
+    if (notification.notification.id === logNotificationId) {
       notifee.cancelNotification(notification.notification.id);
     }
   });
@@ -41,6 +41,7 @@ async function onCreateTriggerNotification({
   repeatFrequency: RepeatFrequency;
 }) {
   await cancelNotification();
+  await notifee.requestPermission();
 
   const trigger: TimestampTrigger = {
     type: TriggerType.TIMESTAMP,
@@ -51,7 +52,7 @@ async function onCreateTriggerNotification({
   await notifee.createTriggerNotification(
     {
       id: 'log-weight-notification',
-      title: 'How much do you weigh today?',
+      title: 'Openweight',
       body: 'Tap to log your daily bodyweight',
     },
     trigger,

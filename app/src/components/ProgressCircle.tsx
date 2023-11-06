@@ -78,7 +78,7 @@ export const ProgressCircle = ({
         />
         <Box box={fromCircle(12 + r1, 12 + r1, r1)}>
           <BoxShadow dx={18} dy={18} blur={65} color="#141415" />
-          <BoxShadow dx={-18} dy={-18} blur={65} color="#485057" />
+          <BoxShadow dx={-10} dy={-10} blur={65} color="#485057" />
         </Box>
       </Group>
 
