@@ -10,15 +10,19 @@ type HeaderProps = {
   nodes?: Array<React.ReactElement>;
   backButtonCallback?: () => void;
   disabled?: boolean;
+  transparent?: boolean;
 };
 
 export const Header: React.FC<HeaderProps> = ({
   title,
   nodes = [<></>],
   backButtonCallback,
+  transparent = false,
 }) => {
   return (
-    <Animated.View entering={FadeInUp.delay(100)} style={styles.header}>
+    <Animated.View
+      entering={FadeInUp.delay(100)}
+      style={[styles.header, transparent && {backgroundColor: 'transparent'}]}>
       <View style={styles.titleContainer}>
         {!!backButtonCallback && (
           <TouchableOpacity

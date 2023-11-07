@@ -6652,6 +6652,11 @@ react-native-mmkv@^2.8.0:
   resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.8.0.tgz#328318256eb50f0b87826edceaff4b1cd70ba957"
   integrity sha512-sfI2uzr5UCz7jS6QxIWnC7AbIuoIw9T7hDtsw0ohSlIdCABPoORPu8xpOSZN2bMkK7Z7sMQwLeP73uBXu0A3jw==
 
+react-native-patterns@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-patterns/-/react-native-patterns-1.0.2.tgz#9b8e65a87480753c705cde7cb86b6a3ab2783c8e"
+  integrity sha512-XgmffAZAvVWaEGAibnrvGWYE5Vh3LnRYsTTkgN3UzsVDYKkGJhZbdL5JwMhgE7h5XWzc+ANb6XNCrIyHfJB/Hg==
+
 react-native-reanimated@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.1.0.tgz#6fe757dadf06a59b365c1c0339e992751ab03792"

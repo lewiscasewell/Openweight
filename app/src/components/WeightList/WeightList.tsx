@@ -34,6 +34,7 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import Profile from '../../watermelondb/model/Profile';
 import {TabStackNavigationProps} from '../../stacks/types';
 import ListHeader from './ListHeader';
+import {MeshGradient} from 'react-native-patterns';
 
 type Props = {
   database: Database;
@@ -108,10 +109,16 @@ const WeightList = ({weights}: Props) => {
                       id: session?.user.id,
                     });
                   }}>
-                  <View style={styles.calendarDate}>
+                  <MeshGradient
+                    width={60}
+                    height={60}
+                    uniqueKey={weight.id}
+                    overlayOpacity={0.7}
+                    blurRadius={0.4}
+                    style={styles.calendarDate}>
                     <Text style={styles.calendarDateDay}>{dayString}</Text>
                     <Text style={styles.calendarDateMonth}>{monthString}</Text>
-                  </View>
+                  </MeshGradient>
                   <View
                     style={{justifyContent: 'center', alignItems: 'flex-end'}}>
                     <Text style={styles.weight}>

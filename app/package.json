@@ -38,6 +38,7 @@
     "react-native-health": "^1.17.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-mmkv": "^2.8.0",
+    "react-native-patterns": "1.0.2",
     "react-native-reanimated": "^3.1.0",
     "react-native-redash": "^18.1.1",
     "react-native-rename": "^3.2.12",

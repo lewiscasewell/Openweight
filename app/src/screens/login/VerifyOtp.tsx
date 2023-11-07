@@ -216,6 +216,7 @@ const VerifyOTP: React.FC = () => {
     <View style={styles.container}>
       <Animated.View entering={FadeInUp.duration(300).delay(100).springify()}>
         <Header
+          transparent
           title={`Login with ${loginFlowState.credentialType}`}
           backButtonCallback={backButtonCallback}
         />
