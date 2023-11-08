@@ -16,6 +16,7 @@ import {Dimensions} from 'react-native';
 import EmailScreen from './EmailScreen';
 import VerifyOTP from './VerifyOtp';
 import Text from '../../components/Text';
+import {MeshGradient} from 'react-native-patterns';
 
 const {width} = Dimensions.get('window');
 
@@ -58,13 +59,27 @@ export const LoginScreen = () => {
   const loginFlowState = useAtomValue(loginFlowAtom);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      {loginFlowState.status === 'landing' && <LandingScreen />}
-      {loginFlowState.status === 'email-entry' && <EmailScreen />}
-      {loginFlowState.status === 'otp-verification' && <VerifyOTP />}
-    </KeyboardAvoidingView>
+    <MeshGradient
+      uniqueKey="login-to-openweight"
+      height={Dimensions.get('screen').height}
+      width={Dimensions.get('screen').width}
+      blurRadius={0.7}
+      colors={[
+        colors['picton-blue'][900],
+        colors['picton-blue'][300],
+        colors['picton-blue'][400],
+        colors['picton-blue'][700],
+        colors['picton-blue'][950],
+      ]}
+      overlayOpacity={0.8}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {loginFlowState.status === 'landing' && <LandingScreen />}
+        {loginFlowState.status === 'email-entry' && <EmailScreen />}
+        {loginFlowState.status === 'otp-verification' && <VerifyOTP />}
+      </KeyboardAvoidingView>
+    </MeshGradient>
   );
 };
 

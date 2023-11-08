@@ -352,7 +352,7 @@ export default withDatabase(withModels(CaloriesScreen));
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StaticSafeAreaInsets.safeAreaInsetsTop,
+    // paddingTop: StaticSafeAreaInsets.safeAreaInsetsTop,
     paddingHorizontal: 14,
   },
   graph: {

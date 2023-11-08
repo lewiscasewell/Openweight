@@ -42,13 +42,7 @@ const AuthedStack = () => {
         };
       }}>
       <AuthStack.Screen name="index" component={Tabs} />
-      <AuthStack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        // options={{
-        //   headerShown: true,
-        // }}
-      />
+      <AuthStack.Screen name="EditProfile" component={EditProfileScreen} />
       <AuthStack.Screen
         name="UpdateEmailAddress"
         component={UpdateEmailAddressScreen}

@@ -21,6 +21,7 @@
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
+    "@shopify/flash-list": "^1.6.2",
     "@shopify/react-native-skia": "^0.1.184",
     "@supabase/supabase-js": "^2.19.0",
     "dayjs": "^1.11.7",
@@ -38,6 +39,7 @@
     "react-native-health": "^1.17.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-mmkv": "^2.8.0",
+    "react-native-patterns": "1.0.2",
     "react-native-reanimated": "^3.1.0",
     "react-native-redash": "^18.1.1",
     "react-native-rename": "^3.2.12",
@@ -49,6 +51,7 @@
     "remeda": "^1.12.0",
     "rxjs": "^7.8.0",
     "superjson": "^1.12.2",
+    "use-debounce": "^10.0.0",
     "uuid": "^9.0.0",
     "yarn": "^1.22.19",
     "zod": "^3.22.4"

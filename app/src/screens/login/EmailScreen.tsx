@@ -101,6 +101,7 @@ const EmailScreen = () => {
     <View style={styles.container}>
       <Animated.View entering={FadeInUp.duration(300).delay(100).springify()}>
         <Header
+          transparent
           title="Login with email"
           backButtonCallback={backButtonCallback}
         />
