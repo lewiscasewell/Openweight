@@ -23,7 +23,10 @@ export type TabStackNavigationProps = CompositeNavigationProp<
 
 export type AuthStackParamList = {
   index: undefined;
-  AddWeight: {dateToPass: string; id: string};
+  AddWeight: {
+    dateToPass: string;
+    id: string;
+  };
   EditProfile: {
     id: string;
   };

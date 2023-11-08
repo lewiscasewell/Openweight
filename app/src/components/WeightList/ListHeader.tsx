@@ -1,7 +1,7 @@
 import {useAtomValue} from 'jotai';
 import Weight from '../../watermelondb/model/Weight';
 import {dateRangeAtom} from '../../atoms/dateRange.atom';
-import {RefObject, useEffect, useRef, useState} from 'react';
+import React, {RefObject, useEffect, useRef, useState} from 'react';
 import dayjs from 'dayjs';
 import Animated, {FadeInUp, Layout} from 'react-native-reanimated';
 import {Button, Dimensions, Pressable, StyleSheet, View} from 'react-native';
@@ -10,13 +10,22 @@ import {colors} from '../../styles/theme';
 import {LineGraph, GraphPoint} from 'react-native-graph';
 import {hapticFeedback} from '../../utils/hapticFeedback';
 import DateRangeSelect from './DateRangeSelect';
+import {Database, Q} from '@nozbe/watermelondb';
+import {map} from 'rxjs';
+import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
+import withObservables from '@nozbe/with-observables';
 
-const {width} = Dimensions.get('window');
 const GRADIENT_COLORS = [
   `${colors['picton-blue'][950]}5D`,
   `${colors['picton-blue'][950]}4D`,
   `${colors['picton-blue'][950]}00`,
 ];
+
+type Props = {
+  weights: Weight[];
+  supabaseUserId: string;
+  database: Database;
+};
 
 const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
   const dateRange = useAtomValue(dateRangeAtom);
@@ -264,6 +273,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 100,
   },
   graph: {
     flex: 1,
@@ -321,4 +331,31 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListHeader;
+const withModels = withObservables(
+  ['weights'],
+  ({database, supabaseUserId}: Props) => {
+    return {
+      weights: database
+        .get<Weight>('weights')
+        .query(Q.where('supabase_user_id', supabaseUserId))
+        .observeWithColumns([
+          'weight',
+          'unit',
+          'supabase_user_id',
+          'date_at',
+          'id',
+        ])
+        .pipe(
+          map(weights =>
+            weights.sort((a, b) => {
+              return (
+                new Date(b.dateAt).getTime() - new Date(a.dateAt).getTime()
+              );
+            }),
+          ),
+        ),
+    };
+  },
+);
+
+export default withDatabase(withModels(ListHeader));
