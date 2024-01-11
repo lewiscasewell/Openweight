@@ -14,6 +14,7 @@ import {Database, Q} from '@nozbe/watermelondb';
 import {map} from 'rxjs';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
+import AnimatedNumber from '../AnimatedText';
 
 const GRADIENT_COLORS = [
   `${colors['picton-blue'][950]}5D`,
@@ -171,9 +172,16 @@ const ListHeader: React.FC<{weights: Weight[]}> = ({weights}) => {
       layout={Layout.delay(200)}
       style={styles.headerContainer}>
       <Text style={{color: 'white', fontSize: 16}}>{displayDate}</Text>
-      <Text style={{color: 'white', fontSize: 50, fontWeight: '700'}}>
+      {/* <Text style={{color: 'white', fontSize: 50, fontWeight: '700'}}>
         {currentPoint.value ?? weights?.[0]?.weight}kg
-      </Text>
+      </Text> */}
+      <AnimatedNumber
+        text={`${
+          currentPoint.value?.toFixed(1) ??
+          weights?.[0]?.weight?.toFixed(1) ??
+          '0.0'
+        }kg`}
+      />
       <Text
         style={{
           fontWeight: '700',

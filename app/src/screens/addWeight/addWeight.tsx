@@ -112,7 +112,7 @@ const AddWeightScreen = ({weights}: Props) => {
         height={height}
         width={width}
         blurRadius={0.5}
-        overlayOpacity={0.8}
+        overlayOpacity={0.95}
         uniqueKey={currentWeight?.id ?? 'no-id'}
       />
       <SafeAreaView style={styles.flex}>

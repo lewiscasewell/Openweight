@@ -27,6 +27,7 @@ import {Canvas} from '@shopify/react-native-skia';
 import {ProgressCircle} from '../components/ProgressCircle';
 import {TabStackNavigationProps, TabStackParamList} from '../stacks/types';
 import CollapsableContainer from '../components/CollapsibleContainer';
+import AnimatedNumber from '../components/AnimatedText';
 
 type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
 
@@ -163,9 +164,12 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
           <Text style={styles.dailyCalorieTargetTitle}>
             Daily calorie target
           </Text>
-          <Text style={styles.calorieTargetNumber}>
+          <View style={{alignItems: 'center'}}>
+            <AnimatedNumber text={calcCalorieTarget()?.toFixed(0) ?? '0'} />
+          </View>
+          {/* <Text style={styles.calorieTargetNumber}>
             {calcCalorieTarget()?.toFixed(0)}
-          </Text>
+          </Text> */}
           <Text style={styles.surplusOrDeficitText}>
             {calorieTarget >= 0 ? '+' : ''}
             {calorieTarget} calories
