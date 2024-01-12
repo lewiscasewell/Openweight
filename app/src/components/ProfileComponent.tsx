@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react';
 import Profile from '../watermelondb/model/Profile';
-
 import {StyleSheet, View, ScrollView, Pressable, Alert} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
@@ -76,10 +75,16 @@ const ProfileComponent = ({profiles}: Props) => {
 
                   const checkWeight = await database
                     .get<Weight>('weights')
-                    .query(Q.where('id', result.id))
+                    .query(
+                      Q.or(
+                        Q.where('id', result.id),
+                        Q.where('date_at', result.startDate),
+                      ),
+                    )
                     .fetch();
 
                   if (checkWeight?.[0]) {
+                    console.log(checkWeight[0]);
                     await database.write(async () => {
                       await checkWeight[0].update(weight => {
                         weight.weight = parseFloat(

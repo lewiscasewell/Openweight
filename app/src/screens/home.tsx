@@ -1,6 +1,6 @@
 import {useAtomValue} from 'jotai';
 import React from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import SafeAreaInsets from 'react-native-static-safe-area-insets';
 import {sessionAtom} from '../atoms/session.atom';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';

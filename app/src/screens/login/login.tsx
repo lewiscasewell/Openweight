@@ -71,7 +71,7 @@ export const LoginScreen = () => {
         colors['picton-blue'][700],
         colors['picton-blue'][950],
       ]}
-      overlayOpacity={0.8}>
+      overlayOpacity={0.9}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

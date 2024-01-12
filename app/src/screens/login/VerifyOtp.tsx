@@ -224,8 +224,9 @@ const VerifyOTP: React.FC = () => {
       <Animated.View entering={FadeInUp.duration(300).delay(200).springify()}>
         <Text style={styles.subtitle}>
           Please enter the 6 digit code that was sent to your{' '}
-          {loginFlowState.credentialType}. If you did not receive a code, please
-          try again.
+          {loginFlowState.credentialType},{' '}
+          <Text style={{color: 'white'}}>{loginFlowState.credential}</Text>. If
+          you did not receive a code, please try again.
         </Text>
       </Animated.View>
       <TextInput
@@ -305,7 +306,7 @@ const VerifyOTP: React.FC = () => {
                 styles.touchableText,
                 otp.length < 6 && styles.disabledTouachableText,
               ]}>
-              Send code
+              Login
             </Text>
           )}
         </TouchableOpacity>

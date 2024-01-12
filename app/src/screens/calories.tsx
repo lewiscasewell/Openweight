@@ -27,6 +27,7 @@ import {Canvas} from '@shopify/react-native-skia';
 import {ProgressCircle} from '../components/ProgressCircle';
 import {TabStackNavigationProps, TabStackParamList} from '../stacks/types';
 import CollapsableContainer from '../components/CollapsibleContainer';
+import AnimatedNumber from '../components/AnimatedText';
 
 type CaloriesScreenRouteProp = RouteProp<TabStackParamList, 'Calories'>;
 
@@ -160,125 +161,129 @@ const CaloriesScreen = ({profiles, weights}: Props) => {
     <ScrollView style={styles.container}>
       {isCompleteProfile && hasWeights ? (
         <Animated.View style={styles.graph}>
-          <Text style={styles.dailyCalorieTargetTitle}>
-            Daily calorie target
-          </Text>
-          <Text style={styles.calorieTargetNumber}>
-            {calcCalorieTarget()?.toFixed(0)}
-          </Text>
-          <Text style={styles.surplusOrDeficitText}>
-            {calorieTarget >= 0 ? '+' : ''}
-            {calorieTarget} calories
-          </Text>
-          <Slider
-            value={calorieTarget}
-            onValueChange={value => setCalorieTarget(value[0])}
-            minimumValue={-1000}
-            maximumValue={1000}
-            step={100}
-            minimumTrackTintColor={colors.grey[700]}
-            maximumTrackTintColor={colors.grey[500]}
-            thumbTintColor={colors['picton-blue'][400]}
-          />
-          <CollapsableContainer
-            duration={100}
-            expanded={currentProfile?.calorieSurplus !== calorieTarget}>
-            <View style={styles.confirmCalorieTargetContainer}>
-              <Animated.View entering={FadeIn} exiting={FadeOut}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={async () => {
-                    await database.write(async () => {
-                      await currentProfile.update(profile => {
-                        profile.calorieSurplus = calorieTarget;
-                      });
-                    });
-                  }}>
-                  <MaterialIcon
-                    color={colors['water-leaf']['300']}
-                    name="check"
-                    size={30}
-                  />
-                </TouchableOpacity>
-              </Animated.View>
-              <Animated.View entering={FadeIn} exiting={FadeOut}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() =>
-                    setCalorieTarget(currentProfile.calorieSurplus!)
-                  }>
-                  <MaterialIcon color="pink" name="close" size={30} />
-                </TouchableOpacity>
-              </Animated.View>
+          <View style={{paddingHorizontal: 14}}>
+            <Text style={styles.dailyCalorieTargetTitle}>
+              Daily calorie target
+            </Text>
+            <View style={{alignItems: 'center'}}>
+              <AnimatedNumber text={calcCalorieTarget()?.toFixed(0) ?? '0'} />
             </View>
-          </CollapsableContainer>
-
-          <Animated.View
-            layout={Layout.duration(200)}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              alignItems: 'center',
-              paddingVertical: 20,
-            }}>
-            <TouchableHighlight
-              onPress={() => {
-                navigation.navigate('AddWeight', {
-                  dateToPass: dayjs().format('YYYY-MM-DD'),
-                  id: currentProfile.supabaseUserId,
-                });
-              }}>
-              <>
-                <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
-                  Current
-                </Text>
-                <Text
-                  style={{
-                    color: colors.grey['100'],
-                    textAlign: 'center',
-                    fontSize: 40,
-                  }}>
-                  {latestWeight?.weight}
-                  <Text style={{fontSize: 20}}>
-                    {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
-                  </Text>
-                </Text>
-              </>
-            </TouchableHighlight>
-            <View
-              style={{
-                height: 50,
-                width: 1,
-                backgroundColor: colors.grey['600'],
-              }}
+            <Text style={styles.surplusOrDeficitText}>
+              {calorieTarget >= 0 ? '+' : ''}
+              {calorieTarget} calories
+            </Text>
+            <Slider
+              value={calorieTarget}
+              onValueChange={value => setCalorieTarget(value[0])}
+              minimumValue={-1000}
+              maximumValue={1000}
+              step={100}
+              minimumTrackTintColor={colors.grey[700]}
+              maximumTrackTintColor={colors.grey[500]}
+              thumbTintColor={colors['picton-blue'][400]}
             />
-            <TouchableHighlight
-              onPress={() => {
-                navigation.navigate('EditProfile', {id: currentProfile.id});
+            <CollapsableContainer
+              duration={100}
+              expanded={currentProfile?.calorieSurplus !== calorieTarget}>
+              <View style={styles.confirmCalorieTargetContainer}>
+                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={async () => {
+                      await database.write(async () => {
+                        await currentProfile.update(profile => {
+                          profile.calorieSurplus = calorieTarget;
+                        });
+                      });
+                    }}>
+                    <MaterialIcon
+                      color={colors['water-leaf']['300']}
+                      name="check"
+                      size={30}
+                    />
+                  </TouchableOpacity>
+                </Animated.View>
+                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() =>
+                      setCalorieTarget(currentProfile.calorieSurplus!)
+                    }>
+                    <MaterialIcon color="pink" name="close" size={30} />
+                  </TouchableOpacity>
+                </Animated.View>
+              </View>
+            </CollapsableContainer>
+
+            <Animated.View
+              layout={Layout.duration(200)}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+                paddingVertical: 20,
               }}>
-              <>
-                <Text style={{color: colors.grey['400'], textAlign: 'center'}}>
-                  Target
-                </Text>
-                <Text
-                  style={{
-                    color: colors.grey['100'],
-                    textAlign: 'center',
-                    fontSize: 40,
-                  }}>
-                  {currentProfile.targetWeight}
-                  <Text style={{fontSize: 20}}>
-                    {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
+              <TouchableHighlight
+                onPress={() => {
+                  navigation.navigate('AddWeight', {
+                    dateToPass: dayjs().format('YYYY-MM-DD'),
+                    id: currentProfile.supabaseUserId,
+                  });
+                }}>
+                <>
+                  <Text
+                    style={{color: colors.grey['400'], textAlign: 'center'}}>
+                    Current
                   </Text>
-                </Text>
-              </>
-            </TouchableHighlight>
-          </Animated.View>
+                  <Text
+                    style={{
+                      color: colors.grey['100'],
+                      textAlign: 'center',
+                      fontSize: 40,
+                    }}>
+                    {latestWeight?.weight?.toFixed(1)}
+                    <Text style={{fontSize: 20}}>
+                      {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
+                    </Text>
+                  </Text>
+                </>
+              </TouchableHighlight>
+              <View
+                style={{
+                  height: 50,
+                  width: 1,
+                  backgroundColor: colors.grey['600'],
+                }}
+              />
+              <TouchableHighlight
+                onPress={() => {
+                  navigation.navigate('EditProfile', {id: currentProfile.id});
+                }}>
+                <>
+                  <Text
+                    style={{color: colors.grey['400'], textAlign: 'center'}}>
+                    Target
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.grey['100'],
+                      textAlign: 'center',
+                      fontSize: 40,
+                    }}>
+                    {currentProfile.targetWeight?.toFixed(1)}
+                    <Text style={{fontSize: 20}}>
+                      {currentProfile.targetWeightUnit === 'kg' ? 'kg' : 'lbs'}
+                    </Text>
+                  </Text>
+                </>
+              </TouchableHighlight>
+            </Animated.View>
+          </View>
           <Animated.View layout={Layout.duration(200)}>
             <Canvas
               style={{
-                width: Dimensions.get('screen').width - 28,
+                width: Dimensions.get('screen').width,
                 height: Dimensions.get('screen').width,
               }}>
               {
@@ -352,13 +357,13 @@ export default withDatabase(withModels(CaloriesScreen));
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: StaticSafeAreaInsets.safeAreaInsetsTop,
-    paddingHorizontal: 14,
+    paddingTop: StaticSafeAreaInsets.safeAreaInsetsTop,
+    // paddingHorizontal: 14,
   },
   graph: {
     flex: 1,
     paddingTop: 50,
-    paddingBottom: 20,
+    paddingBottom: 100,
   },
   title: {
     fontSize: 30,

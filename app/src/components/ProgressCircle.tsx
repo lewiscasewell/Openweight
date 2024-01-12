@@ -21,6 +21,9 @@ import {
 
 import React from 'react';
 import {colors as themeColors} from '../styles/theme';
+import {Dimensions} from 'react-native';
+const {width} = Dimensions.get('window');
+const STROKE_WIDTH = 15;
 
 const r1 = 120;
 const path = Skia.Path.Make();
@@ -69,7 +72,11 @@ export const ProgressCircle = ({
   }
 
   return (
-    <Group transform={translate({x: 50, y: 60})}>
+    <Group
+      transform={translate({
+        x: (width - (r1 * 2 + STROKE_WIDTH * 2)) / 2,
+        y: 60,
+      })}>
       <Group>
         <LinearGradient
           start={vec(12, 12)}
@@ -140,7 +147,7 @@ export const ProgressCircle = ({
         <Path
           path={path}
           style="stroke"
-          strokeWidth={15}
+          strokeWidth={STROKE_WIDTH}
           start={0}
           end={progress.current}
           strokeCap="round"
