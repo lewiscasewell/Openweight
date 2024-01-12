@@ -1,29 +1,22 @@
 FROM node:18-alpine AS builder
 
-RUN apk update && apk add --update --no-cache bash openssl1.1-compat python3 py3-pip make g++
+# Install only essential dependencies
+RUN apk update && apk add --no-cache bash openssl
 
 WORKDIR /server
-
-COPY server/package.json .
-COPY server/yarn.lock .
-
+COPY server/package.json server/yarn.lock ./
 RUN yarn install
-
 COPY server .
-
 RUN yarn build
 
-FROM softonic/node-prune:latest AS pruner
-WORKDIR /server
+# If node-prune is necessary, include it, otherwise skip to the final stage
+# FROM softonic/node-prune:latest AS pruner
+# ... node-prune steps ...
 
-COPY --from=builder /server/ ./
-RUN node-prune ./node_modules
-
+# Final Image
 FROM node:18-alpine
-RUN apk update && apk add --update --no-cache bash openssl1.1-compat
+RUN apk update && apk add --no-cache bash openssl
 WORKDIR /server
-
-COPY --from=pruner /server/ ./
+COPY --from=builder /server ./
 
 CMD ["yarn", "start:prod"]
-
