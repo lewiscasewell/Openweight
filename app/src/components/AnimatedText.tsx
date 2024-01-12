@@ -39,18 +39,38 @@ const AnimatedDigit: React.FC<{num: number; index: number}> = ({
       ],
     };
   });
+  const width = useSharedValue(0);
+
+  useAnimatedReaction(
+    () => index,
+    newNum => {
+      width.value = withTiming(30, {
+        duration: 200,
+        easing: Easing.inOut(Easing.back(2)),
+      });
+    },
+  );
+
+  const animatedWidth = useAnimatedStyle(() => {
+    return {
+      width: width.value,
+    };
+  });
 
   return (
     <Animated.View
-      style={{
-        overflow: 'hidden',
-        height: 60,
-        width: 30,
-      }}>
+      style={[
+        {
+          overflow: 'hidden',
+          height: 60,
+          // width: 30,
+        },
+        animatedWidth,
+      ]}>
       <Animated.View
-        entering={SlideInLeft.delay(index * 100)}
-        exiting={SlideOutLeft.delay(index * 50)}
-        style={[{position: 'absolute'}, stylez]}>
+        // entering={SlideInLeft.delay(index * 50)}
+        // exiting={SlideOutLeft.delay(index * 50)}
+        style={[{position: 'absolute', overflow: 'hidden'}, stylez]}>
         {Array.from({length: 10}).map((_, i) => {
           return (
             <Text
@@ -59,7 +79,7 @@ const AnimatedDigit: React.FC<{num: number; index: number}> = ({
                 height: 60,
                 color: 'white',
                 fontSize: 50,
-                textAlign: 'right',
+                textAlign: 'center',
                 fontWeight: '700',
               }}>
               {i}
